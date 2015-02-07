@@ -1,6 +1,8 @@
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Panel;
@@ -9,15 +11,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -25,6 +33,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ListCellRenderer;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
@@ -53,35 +62,61 @@ public class Application extends TwitterAppGui {
 	private static JPanel panel_Timeline = new JPanel();
 	private static JPanel panel_Statistics = new JPanel();
 	private JLabel lblHomebutton;
-
+	private static Map<String, ImageIcon> imageMap;
+	ImageIcon[] profileimages;
+	String statusArr[];
 
 	/* Shows Public Timeline */
 
-	public static void TimeLine() throws IllegalStateException, TwitterException{
+	@SuppressWarnings("null")
+	public static void TimeLine() throws IllegalStateException, TwitterException, MalformedURLException{
 		Twitter twitter = twitter2;
 		List<Status> statusList = twitter.getHomeTimeline();
 		String statusArr[] = new String[statusList.size()];
+		URL[] profileimages = new URL[statusList.size()];
+		DefaultListModel dlm = new DefaultListModel();
 	    	for (int i = 0; i < statusList.size(); i++) {
 	              Date tweetDate = statusList.get(i).getCreatedAt();
 	              SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy HH:mm");
 	              statusArr[i] = formatter.format(tweetDate) + " - " + statusList.get(i).getUser().getName() + ": " + statusList.get(i).getText();
+				  profileimages[i] = new URL(statusList.get(i).getUser().getMiniProfileImageURL());
+				  dlm.addElement(new ListEntry(statusArr[i], new ImageIcon (profileimages[i])));
+	              System.out.println(profileimages[i]);
 	        }
+	    	JList imagestatusList = new JList(dlm);
+	        //JList ImageStatusList = new JList(statusArr);
+	        //statusJList.setCellRenderer(ListCellRenderer());
+	        //renderer.setPreferredSize(new Dimension(200, 130));
 	    	//For Printing out in Console
 /*	        for (Status status : statusList) {
 	            System.out.println(status.getUser().getName() + ":" +
 	                               status.getText());
 	        }*/
 	    panel_Timeline.setLayout(new CardLayout(0, 0));
-	    JList statusJList = new JList(statusArr);
-	    statusJList.setFont(new Font("SansSerif", Font.PLAIN, 11));
-	    statusJList.setFixedCellHeight(25);
-	    JScrollPane scrollPane = new JScrollPane(statusJList,
+	    //JList statusJList = new JList(statusArr);
+	    imagestatusList.setCellRenderer(new ListEntryCellRenderer());
+	    imagestatusList.setFont(new Font("SansSerif", Font.PLAIN, 11));
+	    imagestatusList.setFixedCellHeight(25);
+	    JScrollPane scrollPane = new JScrollPane(imagestatusList,
 	                  JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, // vertical bar
 	                  JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	    setHomeTimeLine(scrollPane);
 	    panel_Timeline.add(hometimeline, "home");
 
 	}
+    /** Returns an ImageIcon, or null if the path was invalid. */
+    protected static ImageIcon createImageIcon(URL path) {
+    	java.net.URL imgURL = path;
+        if (imgURL != null) {
+            return new ImageIcon(imgURL);
+        } else {
+            System.err.println("Couldn't find file: " + path);
+                return null;
+        }
+    }
+
+
+
 	public static void userTimeLine() throws IllegalStateException, TwitterException{
 		Twitter twitter = twitter2;
 		List<Status> statusList2 = twitter.getUserTimeline();
@@ -342,7 +377,7 @@ public class Application extends TwitterAppGui {
 						userTimeLine();
 						panel_Timeline.updateUI();
 						panel_Statistics.updateUI();
-					} catch (IllegalStateException | TwitterException e) {
+					} catch (IllegalStateException | TwitterException | MalformedURLException e) {
 						e.printStackTrace();
 					}
 
@@ -377,7 +412,7 @@ public class Application extends TwitterAppGui {
 				TimeLine();
 				userTimeLine();
 				Trending();
-			} catch (IllegalStateException | TwitterException e) {
+			} catch (IllegalStateException | TwitterException | MalformedURLException e) {
 				e.printStackTrace();
 			}
 
@@ -493,7 +528,7 @@ public class Application extends TwitterAppGui {
 		btnNewButton.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.lightBlue));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				new Map().setVisible(true);
+				//new Map2().setVisible(true);
 			}
 		});
 		btnNewButton.setBounds(723, 556, 164, 23);
@@ -513,4 +548,5 @@ public class Application extends TwitterAppGui {
 		new TwitterAppGui().setVisible(true);
 	}
 }
+
 
