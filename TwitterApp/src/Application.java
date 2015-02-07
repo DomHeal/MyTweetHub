@@ -1,48 +1,43 @@
-import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Panel;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
+import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
+
+import twitter4j.GeoLocation;
+import twitter4j.QueryResult;
 import twitter4j.Status;
 import twitter4j.Trend;
 import twitter4j.Trends;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import java.awt.Color;
-import javax.swing.SwingConstants;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JList;
-import java.awt.Font;
-import javax.swing.JTextField;
-
-import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
-import org.jb2011.lnf.beautyeye.ch4_scroll.BEScrollPaneUI;
-
-import java.awt.Cursor;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.FlowLayout;
-import java.awt.Image;
-import java.awt.Toolkit;
-
-import javax.swing.JCheckBox;
-import java.awt.CardLayout;
-import javax.swing.border.LineBorder;
-import javax.swing.border.EtchedBorder;
-import java.awt.SystemColor;
+import twitter4j.Query;
 
 
 @SuppressWarnings("serial")
@@ -109,6 +104,7 @@ public class Application extends TwitterAppGui {
 	                  JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	          setUserTimeLine(scrollPane2);
 	          panel_Timeline.add(usertimeline, "user");
+
 
 	}
 	public static void Trending() {
@@ -508,7 +504,8 @@ public class Application extends TwitterAppGui {
 		lblBackground.setBounds(0, 0, 1055, 590);
 		lblBackground.setIcon(new javax.swing.ImageIcon(getClass().getResource("/twitterbackground.png"))); 
 		contentPane.add(lblBackground);
- 
+		
+
 
 	}
 	protected void btnLogoutActionPerformed(ActionEvent evt) {

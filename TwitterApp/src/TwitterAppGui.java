@@ -3,23 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import java.awt.Cursor;
 import java.awt.Desktop;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
 
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
-import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.FrameBorderStyle;
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
 
-
-import twitter4j.Trend;
-import twitter4j.Trends;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -27,11 +26,6 @@ import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.Cursor;
-import java.awt.Toolkit;
 /**
  *
  * @author Dominic
@@ -292,6 +286,7 @@ public class TwitterAppGui extends JFrame {
             setTweetCount(user.getStatusesCount());
             setName(user.getName());
             setAccess(1);
+            System.out.println(user.getMiniProfileImageURL());
             
    
         } catch (TwitterException te) {
