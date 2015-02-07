@@ -111,7 +111,7 @@ public class Map extends JFrame implements JMapViewerEventListener {
 	        JLabel helpLabel = new JLabel("Use right mouse button to move,\n "
 	                + "left double click or mouse wheel to zoom.");
 	        helpPanel.add(helpLabel);
-	        JButton button = new JButton("setDisplayToFitMapMarkers");
+	        JButton button = new JButton("Fit Map Markers");
 	        button.setForeground(new Color(255, 255, 255));
 	        button.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.green));
 	        button.addActionListener(new ActionListener() {
