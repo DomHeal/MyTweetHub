@@ -206,4 +206,5 @@ public class Map extends JFrame implements JMapViewerEventListener {
             updateZoomParameters();
         }
     }
+    
 }

@@ -6,19 +6,20 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Panel;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
+
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
@@ -29,11 +30,14 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
@@ -46,7 +50,9 @@ import twitter4j.Trend;
 import twitter4j.Trends;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.Query;
+import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 
 @SuppressWarnings("serial")
@@ -61,10 +67,11 @@ public class Application extends TwitterAppGui {
 	private JPanel panel_4;
 	private static JPanel panel_Timeline = new JPanel();
 	private static JPanel panel_Statistics = new JPanel();
-	private JLabel lblHomebutton;
-	private static Map<String, ImageIcon> imageMap;
 	ImageIcon[] profileimages;
 	String statusArr[];
+	private static JLabel lblNewLabel;
+	private static int CardCounter = 0;
+	private static JList imagestatusList = new JList();
 
 	/* Shows Public Timeline */
 
@@ -81,19 +88,24 @@ public class Application extends TwitterAppGui {
 	              statusArr[i] = formatter.format(tweetDate) + " - " + statusList.get(i).getUser().getName() + ": " + statusList.get(i).getText();
 				  profileimages[i] = new URL(statusList.get(i).getUser().getMiniProfileImageURL());
 				  dlm.addElement(new ListEntry(statusArr[i], new ImageIcon (profileimages[i])));
-	              System.out.println(profileimages[i]);
 	        }
-	    	JList imagestatusList = new JList(dlm);
-	        //JList ImageStatusList = new JList(statusArr);
-	        //statusJList.setCellRenderer(ListCellRenderer());
-	        //renderer.setPreferredSize(new Dimension(200, 130));
+	    	final JList imagestatusList = new JList(dlm);
+	    	
+/*	    	imagestatusList.addMouseMotionListener(new MouseAdapter() {
+	    		public void mousePressed(MouseEvent me) {
+		    		Point p = new Point(me.getX(),me.getY());
+		    		imagestatusList.setSelectedIndex(imagestatusList.locationToIndex(p));
+		    		System.out.println(imagestatusList.locationToIndex(p));
+	    		}
+	    		});*/
+	   
 	    	//For Printing out in Console
 /*	        for (Status status : statusList) {
 	            System.out.println(status.getUser().getName() + ":" +
 	                               status.getText());
 	        }*/
+	    	
 	    panel_Timeline.setLayout(new CardLayout(0, 0));
-	    //JList statusJList = new JList(statusArr);
 	    imagestatusList.setCellRenderer(new ListEntryCellRenderer());
 	    imagestatusList.setFont(new Font("SansSerif", Font.PLAIN, 11));
 	    imagestatusList.setFixedCellHeight(25);
@@ -101,6 +113,7 @@ public class Application extends TwitterAppGui {
 	                  JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, // vertical bar
 	                  JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	    setHomeTimeLine(scrollPane);
+	    
 	    panel_Timeline.add(hometimeline, "home");
 
 	}
@@ -145,12 +158,11 @@ public class Application extends TwitterAppGui {
 	public static void Trending() {
         try {
         	Twitter twitter = twitter2;
-            //Twitter twitter = new TwitterFactory().getInstance();
         	DefaultListModel model = new DefaultListModel();
             Trends trends = twitter.getPlaceTrends(23424975);
             List<String> xlist = new ArrayList<>();
-          //System.out.println("Showing current trends");
-          //System.out.println("As of : " + trends.getAsOf());
+            //System.out.println("Showing current trends");
+            //System.out.println("As of : " + trends.getAsOf());
             for (Trend trend : trends.getTrends()) {
             	model.addElement(trend.getName());
                // System.out.println(" " + trend.getName());
@@ -218,9 +230,9 @@ public class Application extends TwitterAppGui {
 
 		
 		JLabel lblDefault_Pic = new JLabel();
-		lblDefault_Pic.setBorder(null);
+		lblDefault_Pic.setBorder(new LineBorder(Color.WHITE, 2, true));
 		lblDefault_Pic.setToolTipText("Its you!");
-		lblDefault_Pic.setBounds(0, 3, 48, 48);
+		lblDefault_Pic.setBounds(10, 3, 48, 48);
 		lblDefault_Pic.setIcon(new ImageIcon(ProfilePic));
 		panel_Statistics.add(lblDefault_Pic);
 		
@@ -232,9 +244,10 @@ public class Application extends TwitterAppGui {
 		panel_Statistics.add(lblWelcome);
 		
 		JLabel lblUsername = new JLabel("@" + Username);
+		lblUsername.setHorizontalAlignment(SwingConstants.TRAILING);
 		lblUsername.setFont(new Font("Myriad Pro", Font.ITALIC, 10));
 		lblUsername.setVerticalAlignment(SwingConstants.TOP);
-		lblUsername.setBounds(88, 30, 76, 21);
+		lblUsername.setBounds(61, 30, 103, 21);
 		lblUsername.setForeground(new Color(255, 255, 255));
 		panel_Statistics.add(lblUsername);
 		
@@ -301,21 +314,28 @@ public class Application extends TwitterAppGui {
 		lblTweetsCount.setBounds(107, 115, 57, 14);
 		panel_Statistics.add(lblTweetsCount);
 		
-		lblHomebutton = new JLabel("");
+		JLabel lblHomebutton = new JLabel("");
 		lblHomebutton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblHomebutton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				CardLayout c1 = (CardLayout)(panel_Timeline.getLayout());
-				c1.last(panel_Timeline);
+				c1.next(panel_Timeline);
+				if (CardCounter % 2 == 0){
+					lblNewLabel.setIcon(new ImageIcon(getClass().getResource("/twitter-profile3.png")));
+				}
+				else {
+					lblNewLabel.setIcon(new ImageIcon(getClass().getResource("/twitter-profile2.png")));
+				}
+				CardCounter++;
 			}
 		});
 		lblHomebutton.setBounds(170, 3, 30, 48);
 		panel_Statistics.add(lblHomebutton);
 		
-		JLabel lblNewLabel = new JLabel();
+		lblNewLabel = new JLabel();
 		lblNewLabel.setBorder(null);
-		lblNewLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/twitter-profile2.png")));
+		lblNewLabel.setIcon(new ImageIcon(getClass().getResource("/twitter-profile2.png")));
 		lblNewLabel.setBounds(0, 0, 200, 138);
 		panel_Statistics.add(lblNewLabel);
 		
@@ -419,9 +439,6 @@ public class Application extends TwitterAppGui {
 
 		panel_Timeline.setBounds(215, 37, 830, 512);
 		contentPane.add(panel_Timeline);
-		//hometimeline.setBounds(0, 0, 753, 512);
-		//panel.add(hometimeline);
-		//panel.add(usertimeline);
 		
 		trends.setFont(new Font("SansSerif", Font.PLAIN, 11));
 		panel_Trending.add(trends);
@@ -528,7 +545,7 @@ public class Application extends TwitterAppGui {
 		btnNewButton.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.lightBlue));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//new Map2().setVisible(true);
+				new Map().setVisible(true);
 			}
 		});
 		btnNewButton.setBounds(723, 556, 164, 23);
@@ -537,8 +554,27 @@ public class Application extends TwitterAppGui {
 		JLabel lblBackground = new JLabel("");
 		lblBackground.setBorder(null);
 		lblBackground.setBounds(0, 0, 1055, 590);
-		lblBackground.setIcon(new javax.swing.ImageIcon(getClass().getResource("/twitterbackground.png"))); 
+		lblBackground.setIcon(new ImageIcon(getClass().getResource("/twitterbackground.png"))); 
 		contentPane.add(lblBackground);
+
+        JPopupMenu popup = new JPopupMenu();
+        JMenuItem menuItem = new JMenuItem("Get Info");
+        MouseListener mouseListener = new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int index = imagestatusList.locationToIndex(e.getPoint());
+                    System.out.println("Double clicked on Item " + index);
+                 }
+            }
+        };
+        imagestatusList.addMouseListener(mouseListener);
+            
+       
+        
+/*      JMenuItem menuItem = new JMenuItem("Favourite");
+      
+        JMenuItem menuItem = new JMenuItem("Retweet");*/
+        
 		
 
 
@@ -548,5 +584,6 @@ public class Application extends TwitterAppGui {
 		new TwitterAppGui().setVisible(true);
 	}
 }
+
 
 
