@@ -11,13 +11,10 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JTextField;
-import javax.swing.WindowConstants;
 
 import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
@@ -25,8 +22,6 @@ import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
-import twitter4j.TwitterStream;
-import twitter4j.TwitterStreamFactory;
 import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
@@ -43,7 +38,7 @@ public class TwitterAppGui extends JFrame {
         initComponents();
         setLocationRelativeTo(null);
     }
-    private static JTextField txtboxPin;
+    private static JTextField Pintxtbox;
         
     private static String tokenSecret;
 
@@ -84,7 +79,7 @@ public class TwitterAppGui extends JFrame {
 		return FollowingCnt;
 	}
     public static JTextField getPintxtbox() {
-		return txtboxPin;
+		return Pintxtbox;
 	}
     public static URL getProfilePic() {
 		return ProfilePic;
@@ -115,7 +110,7 @@ public class TwitterAppGui extends JFrame {
 		FollowingCnt = followingCnt;
 	}
     public static void setPintxtbox(JTextField pintxtbox) {
-		txtboxPin = pintxtbox;
+		Pintxtbox = pintxtbox;
 	}
     public static void setProfilePic(URL string) {
 		ProfilePic = string;
@@ -136,11 +131,11 @@ public class TwitterAppGui extends JFrame {
 	}
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private JLabel lblBackground;
+    private JLabel BackgroundLbl;
 
-	private JButton BtnLogin;
+	private JButton LoginBtn;
 
-	private JLabel lblPin;
+	private JLabel PinLbl;
 
 	/**
      * Creates new form TwitterAppGui
@@ -148,7 +143,7 @@ public class TwitterAppGui extends JFrame {
 	AccessToken accessToken;
 
 	public JLabel getPinLbl() {
-		return lblPin;
+		return PinLbl;
 	}
     /**
      * This method is called from within the constructor to initialize the form.
@@ -166,44 +161,44 @@ public class TwitterAppGui extends JFrame {
     	   {    
     		   
     	   } 
-        lblPin = new JLabel();
-        BtnLogin = new JButton();
-        BtnLogin.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        txtboxPin = new JTextField();
-        lblBackground = new JLabel();
+        PinLbl = new JLabel();
+        LoginBtn = new JButton();
+        LoginBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        Pintxtbox = new JTextField();
+        BackgroundLbl = new JLabel();
         
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBounds(new java.awt.Rectangle(0, 0, 0, 0));
         setMinimumSize(new java.awt.Dimension(330, 450));
         setResizable(false);
         getContentPane().setLayout(null);
-        lblPin.setForeground(new java.awt.Color(255, 255, 255));
-        lblPin.setText("Enter PIN:");
-        getContentPane().add(lblPin);
-        lblPin.setBounds(140, 270, 70, 14);
+        PinLbl.setForeground(new java.awt.Color(255, 255, 255));
+        PinLbl.setText("Enter PIN:");
+        getContentPane().add(PinLbl);
+        PinLbl.setBounds(140, 270, 70, 14);
 
-        BtnLogin.setText("Login");
-        BtnLogin.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.normal));
-        BtnLogin.addActionListener(new ActionListener() {
+        LoginBtn.setText("Login");
+        LoginBtn.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.normal));
+        LoginBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 LoginBtnActionPerformed(evt);
             }
         });
-        getContentPane().add(BtnLogin);
-        BtnLogin.setBounds(120, 340, 90, 20);
-        getContentPane().add(txtboxPin);
-        txtboxPin.setBounds(110, 300, 110, 20);
+        getContentPane().add(LoginBtn);
+        LoginBtn.setBounds(120, 340, 90, 20);
+        getContentPane().add(Pintxtbox);
+        Pintxtbox.setBounds(110, 300, 110, 20);
         
-        lblBackground.setIcon(new ImageIcon(getClass().getResource("/Twitte2r.png"))); 
-        lblBackground.setText("");
-        getContentPane().add(lblBackground);
-        lblBackground.setBounds(0, 0, 330, 420);
+        BackgroundLbl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Twitte2r.png"))); 
+        BackgroundLbl.setText("");
+        getContentPane().add(BackgroundLbl);
+        BackgroundLbl.setBounds(0, 0, 330, 420);
 
         pack();
     }
 
 	public void setPinLbl(JLabel pinLbl) {
-		lblPin = pinLbl;
+		PinLbl = pinLbl;
 	}
 
 	private TwitterFactory login() throws IOException { {
@@ -221,7 +216,6 @@ public class TwitterAppGui extends JFrame {
         
         try {
             TwitterFactory tf = new TwitterFactory(cb.build());
-            TwitterStreamFactory twitterStream = new TwitterStreamFactory(cb.build());
             Twitter twitter = tf.getInstance();
              
             try {
@@ -247,12 +241,12 @@ public class TwitterAppGui extends JFrame {
                 catch (Exception e) {}
                 
                 while (null == accessToken) {
-
+                	
                     //System.out.print("Enter the PIN(if available) and hit enter after you granted access.[PIN]:");                    
                     //String pin = br.readLine();
                     String pin;
                     pin = getPintxtbox().getText();
-
+                    
                     try {
                         if (pin.length() > 0) {
                             accessToken = twitter.getOAuthAccessToken(requestToken, pin);
@@ -305,7 +299,7 @@ public class TwitterAppGui extends JFrame {
 	return null;
     }
 	
-	static Twitter getTwitter2() {
+	private static Twitter getTwitter2() {
 		return twitter2;
 	}
 	private static void setTwitter2(Twitter twitter2) {

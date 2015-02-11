@@ -45,17 +45,11 @@ import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
 
 import twitter4j.GeoLocation;
 import twitter4j.QueryResult;
-import twitter4j.StallWarning;
 import twitter4j.Status;
-import twitter4j.StatusDeletionNotice;
-import twitter4j.StatusListener;
 import twitter4j.Trend;
 import twitter4j.Trends;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.TwitterStream;
-import twitter4j.TwitterStreamFactory;
-
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -580,44 +574,10 @@ public class Application extends TwitterAppGui {
 /*      JMenuItem menuItem = new JMenuItem("Favourite");
       
         JMenuItem menuItem = new JMenuItem("Retweet");*/
-        TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
-        StatusListener listener = new StatusListener(){
-            public void onStatus(Status status) {
-                System.out.println(status.getUser().getName() + " : " + status.getText());
-            }
+        
+		
 
-			@Override
-			public void onException(Exception arg0) {
-				// TODO Auto-generated method stub
-				
-			}
 
-			@Override
-			public void onDeletionNotice(StatusDeletionNotice arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onScrubGeo(long arg0, long arg1) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onStallWarning(StallWarning arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void onTrackLimitationNotice(int arg0) {
-				// TODO Auto-generated method stub
-			}
-        };
-        twitterStream.addListener(listener);
-        twitterStream.sample();
-            
 	}
 	protected void btnLogoutActionPerformed(ActionEvent evt) {
 		this.dispose();
