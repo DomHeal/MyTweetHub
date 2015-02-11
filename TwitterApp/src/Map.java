@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -12,6 +13,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+/*import javax.management.Query;*/
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -23,7 +25,10 @@ import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
 import org.openstreetmap.gui.jmapviewer.JMapViewerTree;
+import org.openstreetmap.gui.jmapviewer.Layer;
 import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
+import org.openstreetmap.gui.jmapviewer.MapPolygonImpl;
+import org.openstreetmap.gui.jmapviewer.MapRectangleImpl;
 import org.openstreetmap.gui.jmapviewer.events.JMVCommandEvent;
 import org.openstreetmap.gui.jmapviewer.interfaces.JMapViewerEventListener;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
@@ -31,6 +36,12 @@ import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.MapQuestOpenAerialTileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.MapQuestOsmTileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
+
+import twitter4j.GeoLocation;
+import twitter4j.QueryResult;
+import twitter4j.Twitter;
+import twitter4j.Query;
+import twitter4j.TwitterException;
 
 
 public class Map extends JFrame implements JMapViewerEventListener {
@@ -42,6 +53,7 @@ public class Map extends JFrame implements JMapViewerEventListener {
     private JLabel mperpLabelValue = null;
     
     private JMapViewerTree treeMap = null;
+    Twitter twitter = TwitterAppGui.getTwitter2();
 
 	/**
 	 * Launch the application.
@@ -133,6 +145,7 @@ public class Map extends JFrame implements JMapViewerEventListener {
 	        showMapMarker.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
 	                map().setMapMarkerVisible(showMapMarker.isSelected());
+	                map().setMapPolygonsVisible(showMapMarker.isSelected());
 	            }
 	        });
 	        panelBottom.add(showMapMarker);
@@ -178,9 +191,55 @@ public class Map extends JFrame implements JMapViewerEventListener {
 	                if(showToolTip.isSelected()) map().setToolTipText(map().getPosition(p).toString());
 	            }
 	        });
-	        map().addMapMarker(new MapMarkerDot(51.6291, -4));
+	        double lat = 51;
+	        double lon = -4;
+	        double res = 5;
+	        String resUnit = "mi";
+	        Query query = new Query().geoCode(new GeoLocation(lat,lon), res, resUnit); 
+	        query.count(10); //You can also set the number of tweets to return per page, up to a max of 100
+	        try {
+				QueryResult result = twitter.search(query);
+				System.out.println(result.getTweets());
+		        for (int i = 0; result.getTweets().size()>i; i++){
+		        	System.out.println(result.getTweets().get(i).getGeoLocation().getLatitude());
+		        	map().addMapMarker(new MapMarkerDot(result.getTweets().get(i).getGeoLocation().getLatitude(), result.getTweets().get(i).getGeoLocation().getLongitude()));
+		        }
+			} catch (TwitterException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 
-	}
+	        
+	        Layer worldGroup = new Layer("World");
+	        //map().addMapMarker(new MapMarkerDot(worldGroup, "Wales", 51.6291, -4));
+	        //map().addMapMarker(new MapMarkerDot(worldGroup, "Italy", 41, 15));
+	        treeMap.addLayer(worldGroup);
+	        map().addMapPolygon(new MapPolygonImpl(new Coordinate(51.6291, -4), new Coordinate(41, 15),new Coordinate(41, 15)));
+	        
+	        map().addMouseListener(new MouseAdapter() {
+	            @Override
+	            public void mouseClicked(MouseEvent e) {
+	                if (e.getButton() == MouseEvent.BUTTON1) {
+	                    map().getAttribution().handleAttribution(e.getPoint(), true);
+	                }
+	            }
+	        });
+
+	        map().addMouseMotionListener(new MouseAdapter() {
+	            @Override
+	            public void mouseMoved(MouseEvent e) {
+	                Point p = e.getPoint();
+	                boolean cursorHand = map().getAttribution().handleAttributionCursor(p);
+	                if (cursorHand) {
+	                    map().setCursor(new Cursor(Cursor.HAND_CURSOR));
+	                } else {
+	                    map().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+	                }
+	                if(showToolTip.isSelected()) map().setToolTipText(map().getPosition(p).toString());
+	            }
+	        });
+	    }
+	
 
     private JMapViewer map(){
         return treeMap.getViewer();
