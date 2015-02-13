@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Toolkit;
@@ -11,10 +12,12 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 
 import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
@@ -167,12 +170,12 @@ public class TwitterAppGui extends JFrame {
         Pintxtbox = new JTextField();
         BackgroundLbl = new JLabel();
         
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBounds(new java.awt.Rectangle(0, 0, 0, 0));
         setMinimumSize(new java.awt.Dimension(330, 450));
         setResizable(false);
         getContentPane().setLayout(null);
-        PinLbl.setForeground(new java.awt.Color(255, 255, 255));
+        PinLbl.setForeground(new Color(255, 255, 255));
         PinLbl.setText("Enter PIN:");
         getContentPane().add(PinLbl);
         PinLbl.setBounds(140, 270, 70, 14);
@@ -189,7 +192,7 @@ public class TwitterAppGui extends JFrame {
         getContentPane().add(Pintxtbox);
         Pintxtbox.setBounds(110, 300, 110, 20);
         
-        BackgroundLbl.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Twitte2r.png"))); 
+        BackgroundLbl.setIcon(new ImageIcon(getClass().getResource("/Twitte2r.png"))); 
         BackgroundLbl.setText("");
         getContentPane().add(BackgroundLbl);
         BackgroundLbl.setBounds(0, 0, 330, 420);
@@ -299,7 +302,7 @@ public class TwitterAppGui extends JFrame {
 	return null;
     }
 	
-	private static Twitter getTwitter2() {
+	static Twitter getTwitter2() {
 		return twitter2;
 	}
 	private static void setTwitter2(Twitter twitter2) {

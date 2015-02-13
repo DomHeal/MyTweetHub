@@ -11,6 +11,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -32,17 +34,23 @@ import org.openstreetmap.gui.jmapviewer.tilesources.MapQuestOpenAerialTileSource
 import org.openstreetmap.gui.jmapviewer.tilesources.MapQuestOsmTileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
+import twitter4j.GeoLocation;
+import twitter4j.Query;
+import twitter4j.QueryResult;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+
 
 public class Map extends JFrame implements JMapViewerEventListener {
 	private JFrame frame;
     private JLabel zoomLabel=null;
     private JLabel zoomValue=null;
 
-    private JLabel mperpLabelName=null;
-    private JLabel mperpLabelValue = null;
+    private JLabel lblMperName=null;
+    private JLabel lblMperValue = null;
     
     private JMapViewerTree treeMap = null;
-
+    Twitter twitter = TwitterAppGui.getTwitter2();
 	/**
 	 * Launch the application.
 	 */
@@ -89,8 +97,8 @@ public class Map extends JFrame implements JMapViewerEventListener {
 	        JPanel helpPanel = new JPanel();
 	        
 	        // Displaying Information
-	        mperpLabelName=new JLabel("Meters/Pixels: ");
-	        mperpLabelValue=new JLabel(String.format("%s",map().getMeterPerPixel()));
+	        lblMperName = new JLabel("Meters/Pixels: ");
+	        lblMperValue = new JLabel(String.format("%s",map().getMeterPerPixel()));
 
 	        zoomLabel = new JLabel("Zoom: ");
 	        zoomValue = new JLabel(String.format("%s", map().getZoom()));
@@ -160,8 +168,8 @@ public class Map extends JFrame implements JMapViewerEventListener {
 
 	        panelTop.add(zoomLabel);
 	        panelTop.add(zoomValue);
-	        panelTop.add(mperpLabelName);
-	        panelTop.add(mperpLabelValue);
+	        panelTop.add(lblMperName);
+	        panelTop.add(lblMperValue);
 
 	        getContentPane().add(treeMap, BorderLayout.CENTER);
 
@@ -178,7 +186,33 @@ public class Map extends JFrame implements JMapViewerEventListener {
 	                if(showToolTip.isSelected()) map().setToolTipText(map().getPosition(p).toString());
 	            }
 	        });
-	        map().addMapMarker(new MapMarkerDot(51.6291, -4));
+	        
+	        double lat = 51.6;
+	        double lon = -4;
+	        double res = 5;
+	        String resUnit = "mi";
+	        Query query = new Query().geoCode(new GeoLocation(lat,lon), res, resUnit); 
+	        query.count(100);
+	        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy HH:mm");
+	        try {
+				QueryResult result = twitter.search(query);
+		        for (int i = 0; result.getTweets().size()>i; i++){
+		        	Date tweetDate = result.getTweets().get(i).getCreatedAt();
+		        	System.out.println("Latitude = " + result.getTweets().get(i).getGeoLocation().getLatitude() + " " +
+		        			" Longitude = " + result.getTweets().get(i).getGeoLocation().getLongitude() + " " +
+		        			formatter.format(tweetDate) + " - " +
+		        			"@" + result.getTweets().get(i).getUser().getScreenName() + ": " +
+		        			result.getTweets().get(i).getText());
+		        	map().addMapMarker(new MapMarkerDot(result.getTweets().get(i).getGeoLocation().getLatitude(), result.getTweets().get(i).getGeoLocation().getLongitude()));
+		        }
+		        System.out.println("----------------------");
+		        System.out.println("Finished Tweet Query!");
+		        System.out.println("----------------------");
+		        
+			} catch (TwitterException e1) {
+				System.out.println("Error getting results");
+				e1.printStackTrace();
+			}
 
 	}
 
@@ -193,8 +227,8 @@ public class Map extends JFrame implements JMapViewerEventListener {
      * @param args
      */
     private void updateZoomParameters() {
-        if (mperpLabelValue!=null)
-            mperpLabelValue.setText(String.format("%s",map().getMeterPerPixel()));
+        if (lblMperValue!=null)
+            lblMperValue.setText(String.format("%s",map().getMeterPerPixel()));
         if (zoomValue!=null)
             zoomValue.setText(String.format("%s", map().getZoom()));
     }
