@@ -9,9 +9,18 @@ import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -36,6 +45,7 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterAppGui extends JFrame {
 	public TwitterAppGui() {
+		setUndecorated(true);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(TwitterAppGui.class.getResource("twitter47.png")));
     	setTitle("MyTweetHub - Making Twitter Simple");
         initComponents();
@@ -56,6 +66,8 @@ public class TwitterAppGui extends JFrame {
     protected static int FollowingCnt;
     
     protected static URL ProfilePic; 
+    
+    protected static URL MiniProfilePic; 
     
 	protected static String token;
 	
@@ -118,6 +130,9 @@ public class TwitterAppGui extends JFrame {
     public static void setProfilePic(URL string) {
 		ProfilePic = string;
 	}
+    public static void setMiniProfilePic(URL string) {
+		MiniProfilePic = string;
+	}
     public static void setUsername(String username) {
 		Username = username;
 	}
@@ -168,6 +183,7 @@ public class TwitterAppGui extends JFrame {
         LoginBtn = new JButton();
         LoginBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         Pintxtbox = new JTextField();
+        Pintxtbox.setBorder(null);
         BackgroundLbl = new JLabel();
         
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -192,10 +208,23 @@ public class TwitterAppGui extends JFrame {
         getContentPane().add(Pintxtbox);
         Pintxtbox.setBounds(110, 300, 110, 20);
         
+        JButton btnClose = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().getImage(Application.class.getResource("close_button.png"))));
+        btnClose.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        		System.exit(0);
+        	}
+        });
+        btnClose.setFocusPainted(false);
+        btnClose.setBorderPainted(false);
+        btnClose.setBounds(241, 11, 89, 37);
+        btnClose.setBorder(BorderFactory.createEmptyBorder());
+        btnClose.setContentAreaFilled(false);
+        getContentPane().add(btnClose);
+        
         BackgroundLbl.setIcon(new ImageIcon(getClass().getResource("/Twitte2r.png"))); 
         BackgroundLbl.setText("");
         getContentPane().add(BackgroundLbl);
-        BackgroundLbl.setBounds(0, 0, 330, 420);
+        BackgroundLbl.setBounds(0, 0, 330, 450);
 
         pack();
     }
@@ -286,11 +315,11 @@ public class TwitterAppGui extends JFrame {
             setFollowersCnt(user.getFollowersCount());
             setFollowingCnt(user.getFriendsCount());
             setProfilePic(new URL(user.getProfileImageURL()));
+            setMiniProfilePic(new URL(user.getMiniProfileImageURL()));
             setTweetCount(user.getStatusesCount());
             setName(user.getName());
             setAccess(1);
-            System.out.println(user.getMiniProfileImageURL());
-            
+
    
         } catch (TwitterException te) {
             te.printStackTrace();
@@ -324,6 +353,4 @@ public class TwitterAppGui extends JFrame {
 		Access = i;
 		
 	}
-	
-	
 }

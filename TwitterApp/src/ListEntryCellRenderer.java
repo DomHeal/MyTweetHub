@@ -19,6 +19,7 @@ class ListEntry
    public ListEntry(String value, ImageIcon icon) {
       this.value = value;
       this.icon = icon;
+
    }
   
    public String getValue() {
@@ -40,18 +41,23 @@ class ListEntry
     	//Get the selected index. (The index param isn't
         //always valid, so just use the value.)
         ListEntry entry = (ListEntry) value;
-        
+ 
         setText(value.toString());
         setIcon(entry.getIcon());
-     
+        
+
+        if (index % 2 == 0) {
+        	setBackground(new Color(227,227,227));
+        }
+        else {
+        	setBackground(Color.WHITE);
+        }
         if (isSelected) {
            setBackground(list.getSelectionBackground());
            setForeground(list.getSelectionForeground());
         }
-        else {
-           setBackground(list.getBackground());
-           setForeground(list.getForeground());
-        }
+        
+
     
         setEnabled(list.isEnabled());
         setFont(list.getFont());
