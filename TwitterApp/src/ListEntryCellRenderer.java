@@ -1,10 +1,5 @@
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -35,8 +30,13 @@ class ListEntry
    }
 }
    class ListEntryCellRenderer
-   extends JLabel implements ListCellRenderer{
-    public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+   extends JLabel implements ListCellRenderer<Object>{
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 7127843271346897163L;
+
+	public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 
     	//Get the selected index. (The index param isn't
         //always valid, so just use the value.)

@@ -1,9 +1,11 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Stroke;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,20 +16,28 @@ import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
 import org.openstreetmap.gui.jmapviewer.Coordinate;
+import org.openstreetmap.gui.jmapviewer.DefaultMapController;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
 import org.openstreetmap.gui.jmapviewer.JMapViewerTree;
+import org.openstreetmap.gui.jmapviewer.Layer;
 import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
+import org.openstreetmap.gui.jmapviewer.MapObjectImpl;
+import org.openstreetmap.gui.jmapviewer.Style;
 import org.openstreetmap.gui.jmapviewer.events.JMVCommandEvent;
 import org.openstreetmap.gui.jmapviewer.interfaces.JMapViewerEventListener;
+import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.MapQuestOpenAerialTileSource;
@@ -42,15 +52,20 @@ import twitter4j.TwitterException;
 
 
 public class Map extends JFrame implements JMapViewerEventListener {
-	private JFrame frame;
-    private JLabel zoomLabel=null;
+
+	private static final long serialVersionUID = 1L;
+	private JLabel zoomLabel=null;
     private JLabel zoomValue=null;
 
     private JLabel lblMperName=null;
     private JLabel lblMperValue = null;
     
-    private JMapViewerTree treeMap = null;
-    Twitter twitter = TwitterAppGui.getTwitter2();
+    private static JMapViewerTree treeMap = null;
+    static Double lat;
+    static Double lon;
+    String jlabels[];
+    static String Status;
+    static Twitter twitter = TwitterAppGui.getTwitter2();
 	/**
 	 * Launch the application.
 	 */
@@ -121,7 +136,7 @@ public class Map extends JFrame implements JMapViewerEventListener {
 	                map().setDisplayToFitMapMarkers();
 	            }
 	        });
-           JComboBox<TileSource> tileSourceSelector = new JComboBox<>(new TileSource[] {
+/*           JComboBox<TileSource> tileSourceSelector = new JComboBox<>(new TileSource[] {
 	                new OsmTileSource.Mapnik(),
 	                new OsmTileSource.CycleMap(),
 	                new BingAerialTileSource(),
@@ -133,7 +148,7 @@ public class Map extends JFrame implements JMapViewerEventListener {
 	            }
 	        });
 
-	        panelTop.add(tileSourceSelector);
+	        panelTop.add(tileSourceSelector);*/
 
 	        final JCheckBox showMapMarker = new JCheckBox("Map markers visible");
 	        showMapMarker.setBackground(Color.LIGHT_GRAY);
@@ -143,6 +158,25 @@ public class Map extends JFrame implements JMapViewerEventListener {
 	                map().setMapMarkerVisible(showMapMarker.isSelected());
 	            }
 	        });
+	        
+	        JButton btnEnterCoordinates = new JButton("Enter Coordinates");
+	        btnEnterCoordinates.addActionListener(new ActionListener() {
+	        	public void actionPerformed(ActionEvent arg0) {
+	        		InputCord();
+	        	}
+	        });
+	        panelBottom.add(btnEnterCoordinates);
+	        
+	        JCheckBox chckbxStatusVisible = new JCheckBox("Status visible");
+	        chckbxStatusVisible.setBackground(Color.LIGHT_GRAY);
+	        chckbxStatusVisible.addActionListener(new ActionListener() {
+	            public void actionPerformed(ActionEvent e) {
+	                //map().;
+	            }
+	        });
+	        
+	        panelBottom.add(chckbxStatusVisible);
+	        
 	        panelBottom.add(showMapMarker);
 
 	        final JCheckBox showToolTip = new JCheckBox("ToolTip visible");
@@ -177,59 +211,32 @@ public class Map extends JFrame implements JMapViewerEventListener {
 	            @Override
 	            public void mouseMoved(MouseEvent e) {
 	                Point p = e.getPoint();
-	                boolean cursorHand = map().getAttribution().handleAttributionCursor(p);
-	                if (cursorHand) {
-	                    map().setCursor(new Cursor(Cursor.HAND_CURSOR));
-	                } else {
-	                    map().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-	                }
 	                if(showToolTip.isSelected()) map().setToolTipText(map().getPosition(p).toString());
 	            }
 	        });
 	        
-	        double lat = 51.6;
-	        double lon = -4;
-	        double res = 5;
-	        String resUnit = "mi";
-	        Query query = new Query().geoCode(new GeoLocation(lat,lon), res, resUnit); 
-	        query.count(100);
-	        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy HH:mm");
-	        try {
-				QueryResult result = twitter.search(query);
-		        for (int i = 0; result.getTweets().size()>i; i++){
-		        	Date tweetDate = result.getTweets().get(i).getCreatedAt();
-		        	System.out.println("Latitude = " + result.getTweets().get(i).getGeoLocation().getLatitude() + " " +
-		        			" Longitude = " + result.getTweets().get(i).getGeoLocation().getLongitude() + " " +
-		        			formatter.format(tweetDate) + " - " +
-		        			"@" + result.getTweets().get(i).getUser().getScreenName() + ": " +
-		        			result.getTweets().get(i).getText());
-		        	map().addMapMarker(new MapMarkerDot(result.getTweets().get(i).getGeoLocation().getLatitude(), result.getTweets().get(i).getGeoLocation().getLongitude()));
-		        }
-		        System.out.println("----------------------");
-		        System.out.println("Finished Tweet Query!");
-		        System.out.println("----------------------");
-		        
-			} catch (TwitterException e1) {
-				System.out.println("Error getting results");
-				e1.printStackTrace();
-			}
+	            
+	        new DefaultMapController(map()){
 
+	            @Override
+	            public void mouseClicked(MouseEvent e) {
+	                System.out.println(map.getPosition(e.getPoint()));
+	            }
+	        };
+	        
 	}
 
-    private JMapViewer map(){
+    private static JMapViewer map(){
         return treeMap.getViewer();
-    }
-    private static Coordinate c(double lat, double lon){
-        return new Coordinate(lat, lon);
     }
 
     /**
      * @param args
      */
     private void updateZoomParameters() {
-        if (lblMperValue!=null)
+        if (lblMperValue != null)
             lblMperValue.setText(String.format("%s",map().getMeterPerPixel()));
-        if (zoomValue!=null)
+        if (zoomValue != null)
             zoomValue.setText(String.format("%s", map().getZoom()));
     }
 
@@ -240,5 +247,64 @@ public class Map extends JFrame implements JMapViewerEventListener {
             updateZoomParameters();
         }
     }
-    
+    public static void InputCord() {
+        JTextField xField = new JTextField(5);
+        JTextField yField = new JTextField(5);
+        xField.setText("51.60974");
+        yField.setText("-3.98034");
+        JPanel myPanel = new JPanel();
+        myPanel.add(new JLabel("Latitude:"));
+        myPanel.add(xField);
+        myPanel.add(Box.createHorizontalStrut(15));
+        myPanel.add(new JLabel("Longitude:"));
+        myPanel.add(yField);
+
+        int result = JOptionPane.showConfirmDialog(null, myPanel, 
+                 "Please Enter Latitude and Longitude Values", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+           System.out.println("Latitude: " + xField.getText());
+           System.out.println("Longitude: " + yField.getText());
+           map().removeAllMapMarkers();
+           paintMarkers(Double.parseDouble(xField.getText()), Double.parseDouble(yField.getText()));
+        }
+    }
+
+	public static void paintMarkers(double lat, double lon) {
+		double res = 5;
+		String resUnit = "mi";
+		Query query = new Query().geoCode(new GeoLocation(lat, lon), res, resUnit);
+		query.count(100);
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy HH:mm");
+		try {
+			QueryResult result = twitter.search(query);
+			for (int i = 0; result.getTweets().size() > i; i++) {
+				Date tweetDate = result.getTweets().get(i).getCreatedAt();
+				System.out.println("Latitude = " + result.getTweets().get(i).getGeoLocation().getLatitude()	+ " " 
+						+ " Longitude = "	+ result.getTweets().get(i).getGeoLocation().getLongitude() + " "
+						+ formatter.format(tweetDate) + " - " 
+						+ "@" + result.getTweets().get(i).getUser().getScreenName()
+						+ ": " + result.getTweets().get(i).getText());
+				
+				setStatus(result.getTweets().get(i).getText());
+				Coordinate tweetCoordinate = new Coordinate(result.getTweets().get(i).getGeoLocation().getLatitude(), result.getTweets().get(i).getGeoLocation().getLongitude());
+				map().addMapMarker(new MapMarkerDot("@" + result.getTweets().get(i).getUser().getScreenName(), tweetCoordinate));
+				map().addMapMarker(new SourceMarker(tweetCoordinate, res));
+				//map().addMapMarker(new MapMarkerDot(Color.RED, result.getTweets().get(i).getGeoLocation().getLatitude(), result.getTweets().get(i).getGeoLocation().getLongitude()));
+			}
+			System.out.println("----------------------");
+			System.out.println("Finished Tweet Query!");
+			System.out.println("----------------------");
+
+		} catch (TwitterException e1) {
+			System.out.println("Error getting results");
+			e1.printStackTrace();
+		}
+	}
+
+    public static void setStatus(String status) {
+		Status = status;
+	}
+    public static String getStatus() {
+  		return Status;
+  	}
 }

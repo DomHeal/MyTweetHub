@@ -6,15 +6,16 @@
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
-import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -25,7 +26,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
 import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
@@ -38,12 +41,21 @@ import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.border.LineBorder;
 /**
  *
  * @author Dominic
  */
 
 public class TwitterAppGui extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -660514811678429307L;
+
+
 	public TwitterAppGui() {
 		setUndecorated(true);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(TwitterAppGui.class.getResource("twitter47.png")));
@@ -78,6 +90,12 @@ public class TwitterAppGui extends JFrame {
 	protected static String Username;
 	
 	protected static String Name;
+	
+	static JLabel lblVerify;
+	
+	static JButton btnLogin;
+	
+	static RequestToken requestToken;
 
 
 	public static int getAccess() {
@@ -151,7 +169,6 @@ public class TwitterAppGui extends JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JLabel BackgroundLbl;
 
-	private JButton LoginBtn;
 
 	private JLabel PinLbl;
 
@@ -159,6 +176,7 @@ public class TwitterAppGui extends JFrame {
      * Creates new form TwitterAppGui
      */
 	AccessToken accessToken;
+	private JLabel lblBrowser;
 
 	public JLabel getPinLbl() {
 		return PinLbl;
@@ -180,15 +198,17 @@ public class TwitterAppGui extends JFrame {
     		   
     	   } 
         PinLbl = new JLabel();
-        LoginBtn = new JButton();
-        LoginBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        Pintxtbox = new JTextField();
-        Pintxtbox.setBorder(null);
+        btnLogin = new JButton();
+        btnLogin.setEnabled(true);
+        btnLogin.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        Pintxtbox = new JTextField(5);
+        Pintxtbox.setHorizontalAlignment(SwingConstants.CENTER);
+        Pintxtbox.setBorder(new LineBorder(new Color(171, 173, 179)));
         BackgroundLbl = new JLabel();
         
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setBounds(new java.awt.Rectangle(0, 0, 0, 0));
-        setMinimumSize(new java.awt.Dimension(330, 450));
+        setBounds(new Rectangle(0, 0, 0, 0));
+        setMinimumSize(new Dimension(330, 450));
         setResizable(false);
         getContentPane().setLayout(null);
         PinLbl.setForeground(new Color(255, 255, 255));
@@ -196,19 +216,25 @@ public class TwitterAppGui extends JFrame {
         getContentPane().add(PinLbl);
         PinLbl.setBounds(140, 270, 70, 14);
 
-        LoginBtn.setText("Login");
-        LoginBtn.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.normal));
-        LoginBtn.addActionListener(new ActionListener() {
+        btnLogin.setText("Login");
+        btnLogin.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.normal));
+        btnLogin.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                LoginBtnActionPerformed(evt);
+                try {
+					LoginBtnActionPerformed(evt);
+				} catch (TwitterException | ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         });
-        getContentPane().add(LoginBtn);
-        LoginBtn.setBounds(120, 340, 90, 20);
+        getContentPane().add(btnLogin);
+        btnLogin.setBounds(120, 340, 90, 20);
         getContentPane().add(Pintxtbox);
-        Pintxtbox.setBounds(110, 300, 110, 20);
+        Pintxtbox.setBounds(120, 300, 90, 20);
         
-        JButton btnClose = new JButton(new ImageIcon(Toolkit.getDefaultToolkit().getImage(Application.class.getResource("close_button.png"))));
+        JButton btnClose = new JButton(new ImageIcon(getClass().getResource(("close_button2.png"))));
+        btnClose.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnClose.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent arg0) {
         		System.exit(0);
@@ -216,10 +242,33 @@ public class TwitterAppGui extends JFrame {
         });
         btnClose.setFocusPainted(false);
         btnClose.setBorderPainted(false);
-        btnClose.setBounds(241, 11, 89, 37);
+        btnClose.setBounds(305, 0, 25, 25);
         btnClose.setBorder(BorderFactory.createEmptyBorder());
         btnClose.setContentAreaFilled(false);
         getContentPane().add(btnClose);
+        
+        lblVerify = new JLabel();        
+        lblVerify.setBounds(227, 303, 46, 14);
+        lblVerify.setIcon(new ImageIcon(getClass().getResource("/OK.png"))); 
+        lblVerify.setVisible(false);
+        getContentPane().add(lblVerify);
+        
+        lblBrowser = new JLabel("");
+        lblBrowser.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        lblBrowser.setBounds(102, 300, 16, 16);
+        lblBrowser.setIcon(new ImageIcon(getClass().getResource("/Link.png")));
+        btnClose.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        		try {
+					Desktop.getDesktop().browse(new URL(requestToken.getAuthorizationURL()).toURI());
+				} catch (IOException
+						| URISyntaxException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
+        });
+        getContentPane().add(lblBrowser);
         
         BackgroundLbl.setIcon(new ImageIcon(getClass().getResource("/Twitte2r.png"))); 
         BackgroundLbl.setText("");
@@ -293,6 +342,26 @@ public class TwitterAppGui extends JFrame {
                         }
                     }
                 }
+                lblVerify.setVisible(true);
+				AudioInputStream audioInputStream;
+				try {
+					audioInputStream = AudioSystem.getAudioInputStream(getClass().getResource("/blip1.wav"));
+					Clip clip = AudioSystem.getClip();
+					clip.open(audioInputStream);
+					clip.start();
+				} catch (UnsupportedAudioFileException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (LineUnavailableException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+
+
                 storeAccessToken(twitter.verifyCredentials().getId(), accessToken);
                 System.out.println("|-----");
                 System.out.println("Got access token.");
@@ -338,13 +407,17 @@ public class TwitterAppGui extends JFrame {
 		TwitterAppGui.twitter2 = twitter2;
 	}
 
-	private void LoginBtnActionPerformed(ActionEvent evt) {
+	private void LoginBtnActionPerformed(ActionEvent evt) throws TwitterException, ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
     	if (Access == 0){
-    		System.out.println(Error);
+			JOptionPane.showMessageDialog(null,
+					"The Pin you have entered is invalid, Try Again!",
+					"Invalid Pin!",
+					JOptionPane.ERROR_MESSAGE);
     	}
     	else if (Access == 1) {
 	    	this.dispose();
 	    	new Application().setVisible(true);
+	    	Access = 0;
     	}
 
     }
