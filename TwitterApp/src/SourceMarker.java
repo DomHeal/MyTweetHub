@@ -74,11 +74,9 @@ public class SourceMarker extends MapObjectImpl implements MapMarker {
 
     public void paint(Graphics g, Point position, int radio) {
         int size_h = radio;
-        int size = 64;
-        g.setColor(Color.ORANGE);
-
+        g.setColor(Color.BLACK);
         //g.draw3DRect(position.x - 5, position.y - 5, 400, 120, true);
-        g.drawString(Map.getStatus(), position.x + size - 10, position.y + 25);
+        g.drawString(getName(), position.x + 10, position.y + 5);
         //g.drawString("30°C", position.x + size - 10, position.y + 37);
         g.setColor(Color.gray);
        // g.drawLine(position.x + size + 18, position.y - 4, position.x + size + 18 ,        position.y + 112);

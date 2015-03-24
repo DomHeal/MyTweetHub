@@ -1,5 +1,9 @@
 import java.awt.BorderLayout;
+import net.java.balloontip.BalloonTip;
+
+import net.java.balloontip.utils.ToolTipUtils;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -15,16 +19,22 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import net.java.balloontip.examples.complete.Utils;
 
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import net.java.balloontip.styles.EdgedBalloonStyle;
 
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
 import org.openstreetmap.gui.jmapviewer.Coordinate;
@@ -45,6 +55,7 @@ import org.openstreetmap.gui.jmapviewer.tilesources.MapQuestOsmTileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
 import twitter4j.GeoLocation;
+import twitter4j.Paging;
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Twitter;
@@ -64,8 +75,15 @@ public class Map extends JFrame implements JMapViewerEventListener {
     static Double lat;
     static Double lon;
     String jlabels[];
+	private JButton btnEnterCoordinates;
+	private JButton btnID;
     static String Status;
     static Twitter twitter = TwitterAppGui.getTwitter2();
+	private static Query query;
+	static double res = 5;
+	private static Coordinate tweetCoordinate;
+	private static QueryResult result;
+	private static BalloonTip tooltipBalloon;
 	/**
 	 * Launch the application.
 	 */
@@ -159,21 +177,42 @@ public class Map extends JFrame implements JMapViewerEventListener {
 	            }
 	        });
 	        
-	        JButton btnEnterCoordinates = new JButton("Enter Coordinates");
+	        btnEnterCoordinates = new JButton("Enter Coordinates");
+	        btnEnterCoordinates.setForeground(Color.WHITE);
+	        btnEnterCoordinates.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.green));
 	        btnEnterCoordinates.addActionListener(new ActionListener() {
 	        	public void actionPerformed(ActionEvent arg0) {
 	        		InputCord();
 	        	}
 	        });
+	        
+	        btnID = new JButton("Enter Tweet ID");
+	        btnID.setForeground(Color.WHITE);
+	        btnID.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.green));
+	        btnID.addActionListener(new ActionListener() {
+	        	public void actionPerformed(ActionEvent arg0) {
+	        		InputID();
+	        	}
+	        });
+	        btnID.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+	        panelBottom.add(btnID);
 	        panelBottom.add(btnEnterCoordinates);
 	        
-	        JCheckBox chckbxStatusVisible = new JCheckBox("Status visible");
+	        final JCheckBox chckbxStatusVisible = new JCheckBox("Status visible");
 	        chckbxStatusVisible.setBackground(Color.LIGHT_GRAY);
 	        chckbxStatusVisible.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
-	                //map().;
+	            	 if (chckbxStatusVisible.isSelected() == true){
+	            		 map().removeAllMapMarkers();
+	            		 paintMarkers();
+	            		 paintStatus();
 	            }
-	        });
+	            	 else {
+	            		 map().removeAllMapMarkers();
+	            		 paintMarkers();
+	            }
+	            }
+	            	 });
 	        
 	        panelBottom.add(chckbxStatusVisible);
 	        
@@ -219,8 +258,40 @@ public class Map extends JFrame implements JMapViewerEventListener {
 	        new DefaultMapController(map()){
 
 	            @Override
-	            public void mouseClicked(MouseEvent e) {
-	                System.out.println(map.getPosition(e.getPoint()));
+	            public void mouseMoved(MouseEvent e) {
+
+	                     Point p = e.getPoint();
+	                        int X = p.x+3;
+	                        int Y = p.y+3;
+	                        List<MapMarker> ar = map.getMapMarkerList();
+	                        Iterator<MapMarker> i = ar.iterator();
+	                        while (i.hasNext()) {
+
+	                            MapMarker mapMarker = (MapMarker) i.next();
+
+	                            Point MarkerPosition = map.getMapPosition(mapMarker.getLat(), mapMarker.getLon());
+	                            if( MarkerPosition != null){
+
+	                                int centerX =  MarkerPosition.x;
+	                                int centerY = MarkerPosition.y;
+
+	                                // calculate the radius from the touch to the center of the dot
+	                                double radCircle  = Math.sqrt( (((centerX-X)*(centerX-X)) + (centerY-Y)*(centerY-Y)));
+
+	                                // if the radius is smaller then 23 (radius of a ball is 5), then it must be on the dot
+	                                if (radCircle < 8){
+	                                	System.out.println(mapMarker.toString() + " is clicked");
+	                                	treeMap.getViewer().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+	                                	map().setToolTipText(mapMarker.getName());
+	                                	repaint();
+	                                    }
+	                                else if (radCircle > 8) {
+	                                	treeMap.getViewer().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+	                                	repaint();
+	                                }
+	                            }
+	                        
+	                }
 	            }
 	        };
 	        
@@ -265,18 +336,33 @@ public class Map extends JFrame implements JMapViewerEventListener {
            System.out.println("Latitude: " + xField.getText());
            System.out.println("Longitude: " + yField.getText());
            map().removeAllMapMarkers();
-           paintMarkers(Double.parseDouble(xField.getText()), Double.parseDouble(yField.getText()));
+
+	   	   String resUnit = "mi";
+	   	   query = new Query().geoCode(new GeoLocation((Double.parseDouble(xField.getText())), Double.parseDouble(yField.getText())), res, resUnit);
+	   	   query.count(100);
+           paintMarkers();
+        }
+    }
+    public static void InputID() {
+        JTextField iD = new JTextField(15);
+        iD.setText("574940850662285312");
+        JPanel myPanel = new JPanel();
+        myPanel.add(new JLabel("Enter ID"));
+        myPanel.add(iD);
+
+        int result = JOptionPane.showConfirmDialog(null, myPanel, 
+                 "Please Enter the Tweet ID", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+           map().removeAllMapMarkers();
+           mentions(Long.parseLong(iD.getText()));
         }
     }
 
-	public static void paintMarkers(double lat, double lon) {
-		double res = 5;
-		String resUnit = "mi";
-		Query query = new Query().geoCode(new GeoLocation(lat, lon), res, resUnit);
-		query.count(100);
+	public static void paintMarkers() {
+
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy HH:mm");
 		try {
-			QueryResult result = twitter.search(query);
+			result = twitter.search(query);
 			for (int i = 0; result.getTweets().size() > i; i++) {
 				Date tweetDate = result.getTweets().get(i).getCreatedAt();
 				System.out.println("Latitude = " + result.getTweets().get(i).getGeoLocation().getLatitude()	+ " " 
@@ -285,26 +371,45 @@ public class Map extends JFrame implements JMapViewerEventListener {
 						+ "@" + result.getTweets().get(i).getUser().getScreenName()
 						+ ": " + result.getTweets().get(i).getText());
 				
-				setStatus(result.getTweets().get(i).getText());
-				Coordinate tweetCoordinate = new Coordinate(result.getTweets().get(i).getGeoLocation().getLatitude(), result.getTweets().get(i).getGeoLocation().getLongitude());
-				map().addMapMarker(new MapMarkerDot("@" + result.getTweets().get(i).getUser().getScreenName(), tweetCoordinate));
-				map().addMapMarker(new SourceMarker(tweetCoordinate, res));
-				//map().addMapMarker(new MapMarkerDot(Color.RED, result.getTweets().get(i).getGeoLocation().getLatitude(), result.getTweets().get(i).getGeoLocation().getLongitude()));
+				tweetCoordinate = new Coordinate(result.getTweets().get(i).getGeoLocation().getLatitude(), result.getTweets().get(i).getGeoLocation().getLongitude());
+				map().addMapMarker(new MapMarkerDot(tweetCoordinate));
 			}
-			System.out.println("----------------------");
-			System.out.println("Finished Tweet Query!");
-			System.out.println("----------------------");
-
 		} catch (TwitterException e1) {
 			System.out.println("Error getting results");
 			e1.printStackTrace();
 		}
 	}
 
-    public static void setStatus(String status) {
-		Status = status;
+	public static void paintStatus() {
+			for (int i = 0; result.getTweets().size() > i; i++) {
+				tweetCoordinate = new Coordinate(result.getTweets().get(i).getGeoLocation().getLatitude(), result.getTweets().get(i).getGeoLocation().getLongitude());
+				map().addMapMarker(new SourceMarker("@" + result.getTweets().get(i).getUser().getScreenName() + ": " + result.getTweets().get(i).getText(), tweetCoordinate, res));
+				
+			}
+		
+	}  
+	
+	public static void mentions(long tweetID){
+		Date tweetDate = null;
+		try {
+			tweetDate = twitter.showStatus(tweetID).getCreatedAt();
+			System.out.println(tweetDate);
+		} catch (TwitterException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		try {
+			System.out.println(twitter.getMentionsTimeline(new Paging().count(100)));
+			for (int i = 0; twitter.getMentionsTimeline().size() > i; i++) {
+				if (twitter.getMentionsTimeline().get(i).getCreatedAt().after(tweetDate) == true )
+				tweetCoordinate = new Coordinate(twitter.getMentionsTimeline().get(i).getGeoLocation().getLatitude(), twitter.getMentionsTimeline().get(i).getGeoLocation().getLongitude());
+				map().addMapMarker(new MapMarkerDot(tweetCoordinate));
+			}
+		} catch (TwitterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-    public static String getStatus() {
-  		return Status;
-  	}
+	
 }

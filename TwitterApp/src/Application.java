@@ -53,6 +53,7 @@ import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
 
 import com.jtattoo.plaf.aero.AeroLookAndFeel;
 
+import twitter4j.Paging;
 import twitter4j.RateLimitStatus;
 import twitter4j.Status;
 import twitter4j.Trend;
@@ -98,7 +99,7 @@ public class Application extends TwitterAppGui {
 
 		/* Creates and Displays Public Time */
 
-		final List<Status> statusList = twitter.getHomeTimeline();
+		final List<Status> statusList = twitter.getHomeTimeline(new Paging().count(200));
 		final String statusArr[] = new String[statusList.size()];
 		final URL[] profileimages = new URL[statusList.size()];
 		final DefaultListModel<ListEntry> dlm = new DefaultListModel<ListEntry>();
@@ -345,7 +346,7 @@ public class Application extends TwitterAppGui {
 	public static void userTimeLine() throws IllegalStateException, TwitterException{
 		Twitter twitter = twitter2;
 
-		final List<Status> statusList2 = twitter.getUserTimeline();
+		final List<Status> statusList2 = twitter.getUserTimeline(new Paging().count(200));
 		String statusAr[] = new String[statusList2.size()];
 		final DefaultListModel<ListEntry> dlm2 = new DefaultListModel<ListEntry>();
 		for (int i = 0; i < statusList2.size(); i++) {
@@ -474,8 +475,6 @@ public class Application extends TwitterAppGui {
 			Twitter twitter = twitter2;
 			DefaultListModel<String> model = new DefaultListModel<String>();
 			Trends trends = twitter.getPlaceTrends(23424975);
-			//System.out.println("Showing current trends");
-			//System.out.println("As of : " + trends.getAsOf());
 			for (Trend trend : trends.getTrends()) {
 				model.addElement(trend.getName());
 			}
@@ -759,10 +758,19 @@ public class Application extends TwitterAppGui {
 					panel_Statistics.updateUI();
 
 
-				} catch (IllegalStateException | TwitterException | MalformedURLException e) {
+				} catch (IllegalStateException | MalformedURLException e) {
 
 					e.printStackTrace();
+				} catch (TwitterException e) {
+					RateLimitStatus rls = e.getRateLimitStatus();
+					JOptionPane.showMessageDialog(frame,
+							"Please Retry After: " + rls.getSecondsUntilReset(),
+							e.getErrorMessage(),
+							JOptionPane.WARNING_MESSAGE);
+					e.printStackTrace();
 				}
+				panel_Timeline.updateUI();
+				panel_Statistics.updateUI();
 				AudioInputStream audioInputStream;
 				try {
 					audioInputStream = AudioSystem.getAudioInputStream(getClass().getResource("/pop.wav"));

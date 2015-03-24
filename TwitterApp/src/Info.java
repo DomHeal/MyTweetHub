@@ -16,6 +16,7 @@ import javax.swing.border.LineBorder;
 
 import twitter4j.Status;
 import twitter4j.TwitterException;
+import java.awt.Cursor;
 
 
 public class Info  {
@@ -55,6 +56,7 @@ public class Info  {
 	 */
 	private void initialize(Status status) throws MalformedURLException {
 		frame = new JFrame();
+		frame.getContentPane().setBackground(Color.DARK_GRAY);
 		frame.setAlwaysOnTop(true);
 		frame.setUndecorated(true);
 		frame.setBounds(100, 100, 332, 166);
@@ -127,8 +129,6 @@ public class Info  {
 		lblTweetsAns.setForeground(Color.WHITE);
 		lblTweetsAns.setBounds(63, 141, 46, 14);
 		frame.getContentPane().add(lblTweetsAns);
-		Color myColor = Color.decode("#" + status.getUser().getProfileBackgroundColor());
-		frame.getContentPane().setBackground(myColor);
 		
 		JLabel lblJoinedTwitter = new JLabel("Joined Twitter:");
 		lblJoinedTwitter.setForeground(Color.WHITE);
@@ -136,6 +136,7 @@ public class Info  {
 		frame.getContentPane().add(lblJoinedTwitter);
 		
 		JButton btnClose = new JButton(new ImageIcon(Application.class.getResource("close_button2.png")));
+		btnClose.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnClose.setBounds(275, 0, 89, 23);
         btnClose.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent arg0) {

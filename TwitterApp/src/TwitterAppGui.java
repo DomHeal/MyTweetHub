@@ -176,7 +176,6 @@ public class TwitterAppGui extends JFrame {
      * Creates new form TwitterAppGui
      */
 	AccessToken accessToken;
-	private JLabel lblBrowser;
 
 	public JLabel getPinLbl() {
 		return PinLbl;
@@ -252,11 +251,6 @@ public class TwitterAppGui extends JFrame {
         lblVerify.setIcon(new ImageIcon(getClass().getResource("/OK.png"))); 
         lblVerify.setVisible(false);
         getContentPane().add(lblVerify);
-        
-        lblBrowser = new JLabel("");
-        lblBrowser.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        lblBrowser.setBounds(102, 300, 16, 16);
-        lblBrowser.setIcon(new ImageIcon(getClass().getResource("/Link.png")));
         btnClose.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent arg0) {
         		try {
@@ -268,7 +262,6 @@ public class TwitterAppGui extends JFrame {
 				}
         	}
         });
-        getContentPane().add(lblBrowser);
         
         BackgroundLbl.setIcon(new ImageIcon(getClass().getResource("/Twitte2r.png"))); 
         BackgroundLbl.setText("");
