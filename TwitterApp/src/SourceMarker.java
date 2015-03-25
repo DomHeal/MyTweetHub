@@ -4,6 +4,7 @@
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -56,6 +57,7 @@ public class SourceMarker extends MapObjectImpl implements MapMarker {
     public Coordinate getCoordinate(){
         return coord;
     }
+    
     public double getLat() {
         return coord.getLat();
     }
@@ -74,8 +76,10 @@ public class SourceMarker extends MapObjectImpl implements MapMarker {
 
     public void paint(Graphics g, Point position, int radio) {
         int size_h = radio;
-        g.setColor(Color.BLACK);
+        //g.setColor(Color.WHITE);
         //g.draw3DRect(position.x - 5, position.y - 5, 400, 120, true);
+        g.setColor(Color.BLACK);
+        //g.setFont(new Font("TimesRoman", Font.PLAIN, size_h/10));
         g.drawString(getName(), position.x + 10, position.y + 5);
         //g.drawString("30°C", position.x + size - 10, position.y + 37);
         g.setColor(Color.gray);

@@ -251,17 +251,6 @@ public class TwitterAppGui extends JFrame {
         lblVerify.setIcon(new ImageIcon(getClass().getResource("/OK.png"))); 
         lblVerify.setVisible(false);
         getContentPane().add(lblVerify);
-        btnClose.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent arg0) {
-        		try {
-					Desktop.getDesktop().browse(new URL(requestToken.getAuthorizationURL()).toURI());
-				} catch (IOException
-						| URISyntaxException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        	}
-        });
         
         BackgroundLbl.setIcon(new ImageIcon(getClass().getResource("/Twitte2r.png"))); 
         BackgroundLbl.setText("");
@@ -335,6 +324,7 @@ public class TwitterAppGui extends JFrame {
                         }
                     }
                 }
+                setAccess(1);
                 lblVerify.setVisible(true);
 				AudioInputStream audioInputStream;
 				try {
@@ -409,7 +399,7 @@ public class TwitterAppGui extends JFrame {
     	}
     	else if (Access == 1) {
 	    	this.dispose();
-	    	new Application().setVisible(true);
+	    	new Splash().setVisible(true);
 	    	Access = 0;
     	}
 

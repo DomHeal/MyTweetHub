@@ -1,7 +1,5 @@
 import java.awt.BorderLayout;
-import net.java.balloontip.BalloonTip;
 
-import net.java.balloontip.utils.ToolTipUtils;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -21,7 +19,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import net.java.balloontip.examples.complete.Utils;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -34,7 +31,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import net.java.balloontip.styles.EdgedBalloonStyle;
 
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
 import org.openstreetmap.gui.jmapviewer.Coordinate;
@@ -60,6 +56,7 @@ import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import twitter4j.Status;
 
 
 public class Map extends JFrame implements JMapViewerEventListener {
@@ -83,7 +80,11 @@ public class Map extends JFrame implements JMapViewerEventListener {
 	static double res = 5;
 	private static Coordinate tweetCoordinate;
 	private static QueryResult result;
-	private static BalloonTip tooltipBalloon;
+	private static List<Status> mentions;
+	private static List<Status> mentions2;
+	private static Coordinate sourceCoordinate;
+	private static Layer layer = new Layer("test");
+	private static Layer layer2;
 	/**
 	 * Launch the application.
 	 */
@@ -154,7 +155,7 @@ public class Map extends JFrame implements JMapViewerEventListener {
 	                map().setDisplayToFitMapMarkers();
 	            }
 	        });
-/*           JComboBox<TileSource> tileSourceSelector = new JComboBox<>(new TileSource[] {
+           JComboBox<TileSource> tileSourceSelector = new JComboBox<>(new TileSource[] {
 	                new OsmTileSource.Mapnik(),
 	                new OsmTileSource.CycleMap(),
 	                new BingAerialTileSource(),
@@ -166,7 +167,7 @@ public class Map extends JFrame implements JMapViewerEventListener {
 	            }
 	        });
 
-	        panelTop.add(tileSourceSelector);*/
+	        panelTop.add(tileSourceSelector);
 
 	        final JCheckBox showMapMarker = new JCheckBox("Map markers visible");
 	        showMapMarker.setBackground(Color.LIGHT_GRAY);
@@ -202,15 +203,8 @@ public class Map extends JFrame implements JMapViewerEventListener {
 	        chckbxStatusVisible.setBackground(Color.LIGHT_GRAY);
 	        chckbxStatusVisible.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
-	            	 if (chckbxStatusVisible.isSelected() == true){
-	            		 map().removeAllMapMarkers();
-	            		 paintMarkers();
-	            		 paintStatus();
-	            }
-	            	 else {
-	            		 map().removeAllMapMarkers();
-	            		 paintMarkers();
-	            }
+	            	   layer.setVisibleTexts(chckbxStatusVisible.isSelected());
+            
 	            }
 	            	 });
 	        
@@ -280,7 +274,7 @@ public class Map extends JFrame implements JMapViewerEventListener {
 
 	                                // if the radius is smaller then 23 (radius of a ball is 5), then it must be on the dot
 	                                if (radCircle < 8){
-	                                	System.out.println(mapMarker.toString() + " is clicked");
+	                                	//System.out.println(mapMarker.toString() + " is clicked");
 	                                	treeMap.getViewer().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 	                                	map().setToolTipText(mapMarker.getName());
 	                                	repaint();
@@ -288,6 +282,7 @@ public class Map extends JFrame implements JMapViewerEventListener {
 	                                else if (radCircle > 8) {
 	                                	treeMap.getViewer().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 	                                	repaint();
+	                                	map().setToolTipText(null);
 	                                }
 	                            }
 	                        
@@ -319,6 +314,7 @@ public class Map extends JFrame implements JMapViewerEventListener {
         }
     }
     public static void InputCord() {
+    	
         JTextField xField = new JTextField(5);
         JTextField yField = new JTextField(5);
         xField.setText("51.60974");
@@ -365,14 +361,10 @@ public class Map extends JFrame implements JMapViewerEventListener {
 			result = twitter.search(query);
 			for (int i = 0; result.getTweets().size() > i; i++) {
 				Date tweetDate = result.getTweets().get(i).getCreatedAt();
-				System.out.println("Latitude = " + result.getTweets().get(i).getGeoLocation().getLatitude()	+ " " 
-						+ " Longitude = "	+ result.getTweets().get(i).getGeoLocation().getLongitude() + " "
-						+ formatter.format(tweetDate) + " - " 
-						+ "@" + result.getTweets().get(i).getUser().getScreenName()
-						+ ": " + result.getTweets().get(i).getText());
-				
 				tweetCoordinate = new Coordinate(result.getTweets().get(i).getGeoLocation().getLatitude(), result.getTweets().get(i).getGeoLocation().getLongitude());
-				map().addMapMarker(new MapMarkerDot(tweetCoordinate));
+				Style style = new Style(Color.BLACK, Color.YELLOW, null, null);
+				//layer2 = new Layer("tester");
+				map().addMapMarker(new MapMarkerDot(layer, result.getTweets().get(i).getUser().getScreenName() + ": " + result.getTweets().get(i).getText()  , tweetCoordinate, style));
 			}
 		} catch (TwitterException e1) {
 			System.out.println("Error getting results");
@@ -380,36 +372,47 @@ public class Map extends JFrame implements JMapViewerEventListener {
 		}
 	}
 
-	public static void paintStatus() {
+/*	public static void paintStatus() {
 			for (int i = 0; result.getTweets().size() > i; i++) {
 				tweetCoordinate = new Coordinate(result.getTweets().get(i).getGeoLocation().getLatitude(), result.getTweets().get(i).getGeoLocation().getLongitude());
 				map().addMapMarker(new SourceMarker("@" + result.getTweets().get(i).getUser().getScreenName() + ": " + result.getTweets().get(i).getText(), tweetCoordinate, res));
 				
 			}
-		
-	}  
+	}  */
 	
 	public static void mentions(long tweetID){
 		Date tweetDate = null;
 		try {
 			tweetDate = twitter.showStatus(tweetID).getCreatedAt();
-			System.out.println(tweetDate);
+			sourceCoordinate = new Coordinate(twitter.showStatus(tweetID).getGeoLocation().getLatitude(), twitter.showStatus(tweetID).getGeoLocation().getLongitude());
+			
+			Style style = new Style(Color.BLACK, Color.RED, null, null);
+			map().addMapMarker(new MapMarkerDot(null, null, sourceCoordinate, style));
 		} catch (TwitterException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
 		try {
-			System.out.println(twitter.getMentionsTimeline(new Paging().count(100)));
-			for (int i = 0; twitter.getMentionsTimeline().size() > i; i++) {
-				if (twitter.getMentionsTimeline().get(i).getCreatedAt().after(tweetDate) == true )
-				tweetCoordinate = new Coordinate(twitter.getMentionsTimeline().get(i).getGeoLocation().getLatitude(), twitter.getMentionsTimeline().get(i).getGeoLocation().getLongitude());
-				map().addMapMarker(new MapMarkerDot(tweetCoordinate));
+			mentions = twitter.getMentionsTimeline(new Paging().count(100));
+			for (int i = 0; mentions.size() > i; i++) {	
+				System.out.println(mentions.size());
+				if (mentions.get(i).getCreatedAt().after(tweetDate) == true )
+					tweetCoordinate = new Coordinate(mentions.get(i).getGeoLocation().getLatitude(), mentions.get(i).getGeoLocation().getLongitude());
+					Style style = new Style(Color.BLACK, Color.YELLOW, null, null);
+					map().addMapMarker(new MapMarkerDot(layer,  mentions.get(i).getUser().getScreenName() + ": " + mentions.get(i).getText() ,tweetCoordinate, style));
+					//map().addMapMarker(new SourceMarker( "@" + mentions.get(i).getUser().getScreenName() + ": " + mentions.get(i).getText(), tweetCoordinate, res));
+					
 			}
+			
 		} catch (TwitterException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-	
+
+		JOptionPane.showMessageDialog (null, "We have found " + (map().getMapMarkerList().size() - 1)/2 + " Tweets" , "Searching Complete", JOptionPane.INFORMATION_MESSAGE);
+		for  ( MapMarker name :map().getMapMarkerList() ){
+			System.out.println(name.getCoordinate());
+			
+		}
+	}	
 }

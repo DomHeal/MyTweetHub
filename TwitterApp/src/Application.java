@@ -6,7 +6,6 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Panel;
 import java.awt.Point;
-import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,7 +18,6 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -30,7 +28,6 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -43,15 +40,13 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
-
-import com.jtattoo.plaf.aero.AeroLookAndFeel;
 
 import twitter4j.Paging;
 import twitter4j.RateLimitStatus;
@@ -155,17 +150,7 @@ public class Application extends TwitterAppGui {
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, // vertical bar
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
-		
-/*		Properties props = new Properties();
-		props.put("logoString", "TWEETHUB");
-		AeroLookAndFeel.setCurrentTheme(props);
-		  try {
-			UIManager.setLookAndFeel("com.jtattoo.plaf.aero.AeroLookAndFeel");
-		} catch (ClassNotFoundException | InstantiationException
-				| IllegalAccessException | UnsupportedLookAndFeelException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}*/
+
 		final JPopupMenu popupMenu = new JPopupMenu();
 		addPopup(imagestatusList, popupMenu);
 
@@ -402,9 +387,6 @@ public class Application extends TwitterAppGui {
 				long tweetid = statusList2.get(row).getId();
 
 				try {
-					System.out.println("row");
-					System.out.println(tweetid);
-					System.out.println(statusList2.get(row).getId());
 					twitter2.destroyStatus(tweetid);
 					dlm2.remove(row);
 					statusList2.remove(row);
