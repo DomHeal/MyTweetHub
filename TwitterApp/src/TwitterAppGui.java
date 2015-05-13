@@ -12,8 +12,6 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.sound.sampled.AudioInputStream;
@@ -28,8 +26,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
+import javax.swing.border.LineBorder;
 
 import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
@@ -41,9 +41,6 @@ import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.border.LineBorder;
 /**
  *
  * @author Dominic
@@ -58,8 +55,8 @@ public class TwitterAppGui extends JFrame {
 
 	public TwitterAppGui() {
 		setUndecorated(true);
-		setIconImage(Toolkit.getDefaultToolkit().getImage(TwitterAppGui.class.getResource("twitter47.png")));
     	setTitle("MyTweetHub - Making Twitter Simple");
+    	setIconImage(Toolkit.getDefaultToolkit().getImage(Application.class.getResource("twitter47.png")));
         initComponents();
         setLocationRelativeTo(null);
     }
@@ -177,6 +174,10 @@ public class TwitterAppGui extends JFrame {
      */
 	AccessToken accessToken;
 
+	static Thread x = new Splash();
+	
+	static Thread y = new Thread(new Application());
+
 	public JLabel getPinLbl() {
 		return PinLbl;
 	}
@@ -188,6 +189,7 @@ public class TwitterAppGui extends JFrame {
     
  
     public void initComponents() {
+    	
     	   try  
     	   {    
     	     BeautyEyeLNFHelper.frameBorderStyle = BeautyEyeLNFHelper.FrameBorderStyle.translucencyAppleLike;     
@@ -277,72 +279,37 @@ public class TwitterAppGui extends JFrame {
             }
         });
         
-        try {
-            TwitterFactory tf = new TwitterFactory(cb.build());
-            Twitter twitter = tf.getInstance();
-             
-            try {
-                System.out.println("-----");
- 
-                // get request token.
-                // this will throw IllegalStateException if access token is already available
-                // this is oob, desktop client version
-                RequestToken requestToken = twitter.getOAuthRequestToken();
- 
-                System.out.println("Got request token.");
-                System.out.println("Request token: " + requestToken.getToken());
-                System.out.println("Request token secret: " + requestToken.getTokenSecret());
-                System.out.println("|-----");
- 
-                AccessToken accessToken = null;
+			try {
+				TwitterFactory tf = new TwitterFactory(cb.build());
+				Twitter twitter = tf.getInstance();
 
-                /* Opens up the URL in default browser set be user */
-                try 
-                {
-                    Desktop.getDesktop().browse(new URL(requestToken.getAuthorizationURL()).toURI());
-                }           
-                catch (Exception e) {}
-                
-                while (null == accessToken) {
-                	
-                    //System.out.print("Enter the PIN(if available) and hit enter after you granted access.[PIN]:");                    
-                    //String pin = br.readLine();
-                    String pin;
-                    pin = getPintxtbox().getText();
-                    
-                    try {
-                        if (pin.length() > 0) {
-                            accessToken = twitter.getOAuthAccessToken(requestToken, pin);
-                        } else {
-                            accessToken = twitter.getOAuthAccessToken(requestToken);
-                        }
-                    } catch (TwitterException te) {
-                        if (401 == te.getStatusCode()) {
-                           // System.out.println("Unable to get the access token.");
-                        } else {
-                            te.printStackTrace();
-                        }
-                    }
-                }
-                setAccess(1);
-                lblVerify.setVisible(true);
-				AudioInputStream audioInputStream;
 				try {
-					audioInputStream = AudioSystem.getAudioInputStream(getClass().getResource("/blip1.wav"));
-					Clip clip = AudioSystem.getClip();
-					clip.open(audioInputStream);
-					clip.start();
-				} catch (UnsupportedAudioFileException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (LineUnavailableException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+					AccessToken accessToken = null;
+					RequestToken requestToken = twitter.getOAuthRequestToken();
+					/* Opens up the URL in default browser set be user */
+					try {
+						Desktop.getDesktop().browse(
+								new URL(requestToken.getAuthorizationURL())
+										.toURI());
+					} catch (Exception e) {
+					}
 
+					while (null == accessToken) {
+
+						String pin;
+						pin = getPintxtbox().getText();
+
+						try {
+							if (pin.length() > 0) {
+								accessToken = twitter.getOAuthAccessToken(
+										requestToken, pin);
+							} else {
+								accessToken = twitter
+										.getOAuthAccessToken(requestToken);
+							}
+						} catch (TwitterException te) {
+						}
+					}
 
 
                 storeAccessToken(twitter.verifyCredentials().getId(), accessToken);
@@ -370,7 +337,26 @@ public class TwitterAppGui extends JFrame {
             setMiniProfilePic(new URL(user.getMiniProfileImageURL()));
             setTweetCount(user.getStatusesCount());
             setName(user.getName());
+            
             setAccess(1);
+            lblVerify.setVisible(true);
+			AudioInputStream audioInputStream;
+			try {
+				audioInputStream = AudioSystem.getAudioInputStream(getClass().getResource("/blip1.wav"));
+				Clip clip = AudioSystem.getClip();
+				clip.open(audioInputStream);
+				clip.start();
+			} catch (UnsupportedAudioFileException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (LineUnavailableException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 
    
         } catch (TwitterException te) {
@@ -398,8 +384,10 @@ public class TwitterAppGui extends JFrame {
 					JOptionPane.ERROR_MESSAGE);
     	}
     	else if (Access == 1) {
-	    	this.dispose();
-	    	new Splash().setVisible(true);
+	    	this.setVisible(false);
+	    	x.start();
+	    	y.start();
+
 	    	Access = 0;
     	}
 

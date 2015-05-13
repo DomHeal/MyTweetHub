@@ -1,57 +1,53 @@
  
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Color;
+import java.awt.Frame;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JProgressBar;
+import java.awt.Font;
  
-public class Splash extends Frame implements ActionListener {
-    static void renderSplashFrame(Graphics2D g, int frame) {
-        final String[] comps = {"foo", "bar", "baz"};
-        g.setComposite(AlphaComposite.Clear);
-        g.fillRect(120,140,200,40);
-        g.setPaintMode();
-        g.setColor(Color.BLACK);
-        g.drawString("Loading "+comps[(frame/5)%3]+"...", 120, 150);
-    }
-    public Splash() {
-        super("MyTweetHub");
-        setSize(368, 172);
-        setLayout(new BorderLayout());
+public class Splash extends Thread {
+    static JLabel loadingResourcelbl = new JLabel("Loading Resources... Graphical Interface");
 
-        final SplashScreen splash = SplashScreen.getSplashScreen();
-        if (splash == null) {
-            System.out.println("SplashScreen.getSplashScreen() returned null");
-            return;
+    /**
+     * @wbp.parser.entryPoint
+     */
+    public void run() {
+    	frame = new JFrame();
+    	frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Application.class.getResource("twitter47.png")));
+        frame.setUndecorated(true);
+        frame.setSize(444, 212);
+        frame.getContentPane().setLayout(null);
+        frame.setBackground(new Color(0, 0, 0, 0));
+        label.setIcon(new ImageIcon((getClass().getResource("Splash.png"))));
+        frame.getContentPane().setLayout(null);
+        progressBar.setStringPainted(true);
+        progressBar.setForeground(Color.CYAN);
+        
+        loadingResourcelbl = new JLabel();
+        loadingResourcelbl.setFont(new Font("HelveticaNeue", Font.PLAIN, 10));
+        loadingResourcelbl.setForeground(Color.WHITE);
+        loadingResourcelbl.setBounds(149, 70, 211, 28);
+        frame.getContentPane().add(loadingResourcelbl);
+        progressBar.setBounds(149, 119, 194, 14);
+        frame.getContentPane().add(progressBar);
+        label.setBounds(0, 0, 428, 212);
+        frame. getContentPane().add(label);
+        
+        frame.setVisible(true);
+        frame.setLocationRelativeTo(null);
         }
-        Graphics2D g = splash.createGraphics();
-        if (g == null) {
-            System.out.println("g is null");
-            return;
-        }
-        for(int i=0; i<100; i++) {
-            renderSplashFrame(g, i);
-            splash.update();
-            try {
-                Thread.sleep(90);
-            }
-            catch(InterruptedException e) {
-            }
-        }
-        splash.close();
-        setVisible(true);
-        toFront();
-    }
-    public void actionPerformed(ActionEvent ae) {
-        System.exit(0);
-    }
+    
+
+    private final JLabel label = new JLabel("");
+    static JProgressBar progressBar = new JProgressBar();;
+	public static JFrame frame;
      
-    private static WindowListener closeWindow = new WindowAdapter(){
-        public void windowClosing(WindowEvent e){
-            e.getWindow().dispose();
-        }
-    };
-     
-    public static void main (String args[]) {
-        Splash test = new Splash();
-    }
+
 }
 
 
