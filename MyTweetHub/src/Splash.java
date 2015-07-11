@@ -18,12 +18,12 @@ public class Splash extends Thread {
      */
     public void run() {
     	frame = new JFrame();
-    	frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Application.class.getResource("twitter47.png")));
+    	frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Application.class.getResource("images/twitter47.png")));
         frame.setUndecorated(true);
         frame.setSize(444, 212);
         frame.getContentPane().setLayout(null);
         frame.setBackground(new Color(0, 0, 0, 0));
-        label.setIcon(new ImageIcon((getClass().getResource("Splash.png"))));
+        label.setIcon(new ImageIcon((getClass().getResource("images/Splash.png"))));
         frame.getContentPane().setLayout(null);
         progressBar.setStringPainted(true);
         progressBar.setForeground(Color.CYAN);

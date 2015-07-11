@@ -110,7 +110,7 @@ public class Map extends JFrame implements JMapViewerEventListener {
 		setLocationRelativeTo(null);
 		setTitle("MyTweetHub - Making Twitter Simple");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(
-				Application.class.getResource("twitter47.png")));
+				Application.class.getResource("images/twitter47.png")));
 
 		treeMap = new JMapViewerTree("Zones");
 		treeMap.getViewer().setBackground(Color.WHITE);

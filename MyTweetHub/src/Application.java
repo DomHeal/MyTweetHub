@@ -171,7 +171,7 @@ public class Application extends TwitterAppGui implements Runnable {
 
 		mntmGetInfo = new JMenuItem("Get Info");
 		mntmGetInfo.setIcon(new ImageIcon(Application.class
-				.getResource("Note-Add_hover.png")));
+				.getResource("images/Note-Add_hover.png")));
 		popupMenu.add(mntmGetInfo);
 		mntmGetInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -193,13 +193,13 @@ public class Application extends TwitterAppGui implements Runnable {
 						mntmGetInfo.setIcon(new ImageIcon(Toolkit
 								.getDefaultToolkit().getImage(
 										Application.class
-												.getResource("Note-Add.png"))));
+												.getResource("images/Note-Add.png"))));
 					} else {
 						mntmGetInfo.setIcon(new ImageIcon(
 								Toolkit.getDefaultToolkit()
 										.getImage(
 												Application.class
-														.getResource("Note-Add_hover.png"))));
+														.getResource("images/Note-Add_hover.png"))));
 					}
 				}
 			}
@@ -229,20 +229,20 @@ public class Application extends TwitterAppGui implements Runnable {
 						mntmRetweet.setIcon(new ImageIcon(Toolkit
 								.getDefaultToolkit().getImage(
 										Application.class
-												.getResource("retweet_on.png"))));
+												.getResource("images/retweet_on.png"))));
 					} else {
 						mntmRetweet.setIcon(new ImageIcon(
 								Toolkit.getDefaultToolkit()
 										.getImage(
 												Application.class
-														.getResource("retweet_hover.png"))));
+														.getResource("images/retweet_hover.png"))));
 					}
 				}
 			}
 		});
 
 		mntmRetweet.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				Application.class.getResource("retweet_hover.png"))));
+				Application.class.getResource("images/retweet_hover.png"))));
 		mntmRetweet.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -293,17 +293,17 @@ public class Application extends TwitterAppGui implements Runnable {
 					mntmFavourite = (JMenuItem) e.getSource();
 					if (mntmFavourite.isSelected() || mntmFavourite.isArmed()) {
 						mntmFavourite.setIcon(new ImageIcon(Application.class
-								.getResource("favorite_on.png")));
+								.getResource("images/favorite_on.png")));
 					} else {
 						mntmFavourite.setIcon(new ImageIcon(Application.class
-								.getResource("favorite_hover.png")));
+								.getResource("images/favorite_hover.png")));
 					}
 				}
 
 			}
 		});
 		mntmFavourite.setIcon(new ImageIcon(Application.class
-				.getResource("favorite_hover.png")));
+				.getResource("images/favorite_hover.png")));
 		popupMenu.add(mntmFavourite);
 		popupMenu.addSeparator();
 
@@ -321,17 +321,17 @@ public class Application extends TwitterAppGui implements Runnable {
 					mntmClose = (JMenuItem) e.getSource();
 					if (mntmClose.isSelected() || mntmClose.isArmed()) {
 						mntmClose.setIcon(new ImageIcon(Application.class
-								.getResource("dialog_cancel.png")));
+								.getResource("images/dialog_cancel.png")));
 					} else {
 						mntmClose.setIcon(new ImageIcon(Application.class
-								.getResource("dialog_close.png")));
+								.getResource("images/dialog_close.png")));
 					}
 				}
 
 			}
 		});
 		mntmClose.setIcon(new ImageIcon(Application.class
-				.getResource("dialog_close.png")));
+				.getResource("images/dialog_close.png")));
 		popupMenu.add(mntmClose);
 		setHomeTimeLine(scrollPane);
 
@@ -409,7 +409,7 @@ public class Application extends TwitterAppGui implements Runnable {
 		});
 		mntmGetInfo = new JMenuItem("Get Info");
 		mntmGetInfo.setIcon(new ImageIcon(Application.class
-				.getResource("Note-Add_hover.png")));
+				.getResource("images/Note-Add_hover.png")));
 		popupMenu.add(mntmGetInfo);
 		mntmGetInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -431,13 +431,13 @@ public class Application extends TwitterAppGui implements Runnable {
 						mntmGetInfo.setIcon(new ImageIcon(Toolkit
 								.getDefaultToolkit().getImage(
 										Application.class
-												.getResource("Note-Add.png"))));
+												.getResource("images/Note-Add.png"))));
 					} else {
 						mntmGetInfo.setIcon(new ImageIcon(
 								Toolkit.getDefaultToolkit()
 										.getImage(
 												Application.class
-														.getResource("Note-Add_hover.png"))));
+														.getResource("images/Note-Add_hover.png"))));
 					}
 				}
 			}
@@ -467,7 +467,7 @@ public class Application extends TwitterAppGui implements Runnable {
 				try {
 					audioInputStream = AudioSystem
 							.getAudioInputStream(new File(soundName).getClass()
-									.getResource("/Delete.wav"));
+									.getResource("sounds/Delete.wav"));
 					Clip clip = AudioSystem.getClip();
 					clip.open(audioInputStream);
 					clip.start();
@@ -484,7 +484,7 @@ public class Application extends TwitterAppGui implements Runnable {
 			}
 		});
 		mntmDelete.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				Application.class.getResource("delete_normal.png"))));
+				Application.class.getResource("images/delete_normal.png"))));
 		popupMenu.add(mntmDelete);
 
 		mntmDelete.addChangeListener(new ChangeListener() {
@@ -495,13 +495,13 @@ public class Application extends TwitterAppGui implements Runnable {
 						mntmDelete.setIcon(new ImageIcon(Toolkit
 								.getDefaultToolkit().getImage(
 										Application.class
-												.getResource("delete_on.png"))));
+												.getResource("images/delete_on.png"))));
 					} else {
 						mntmDelete.setIcon(new ImageIcon(
 								Toolkit.getDefaultToolkit()
 										.getImage(
 												Application.class
-														.getResource("delete_normal.png"))));
+														.getResource("images/delete_normal.png"))));
 					}
 				}
 			}
@@ -611,7 +611,7 @@ public class Application extends TwitterAppGui implements Runnable {
 		setBounds(100, 100, 1054, 590);
 		setLocationRelativeTo(null);
 		setIconImage(Toolkit.getDefaultToolkit().getImage(
-				Application.class.getResource("twitter47.png")));
+				Application.class.getResource("images/twitter47.png")));
 		// setSize(1061, 618);
 		// setShape(new RoundRectangle2D.Double(0, 0, 1061, 610, 20, 20));
 
@@ -623,7 +623,7 @@ public class Application extends TwitterAppGui implements Runnable {
 		contentPane.setLayout(null);
 
 		JButton btnClose = new JButton(new ImageIcon(
-				Application.class.getResource("close_button2.png")));
+				Application.class.getResource("images/close_button2.png")));
 		btnClose.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnClose.setSize(16, 16);
 		btnClose.setLocation(1029, 3);
@@ -737,10 +737,10 @@ public class Application extends TwitterAppGui implements Runnable {
 				c1.next(panel_Timeline);
 				if (CardCounter % 2 == 0) {
 					lblNewLabel.setIcon(new ImageIcon(getClass().getResource(
-							"/Statistics_panel_friends.png")));
+							"images/Statistics_panel_friends.png")));
 				} else {
 					lblNewLabel.setIcon(new ImageIcon(getClass().getResource(
-							"/Statistics_panel_new.png")));
+							"images/Statistics_panel_new.png")));
 				}
 				CardCounter++;
 			}
@@ -759,7 +759,7 @@ public class Application extends TwitterAppGui implements Runnable {
 		lblNewLabel = new JLabel();
 		lblNewLabel.setBorder(null);
 		lblNewLabel.setIcon(new ImageIcon(getClass().getResource(
-				"/Statistics_panel_new.png")));
+				"images/Statistics_panel_new.png")));
 		lblNewLabel.setBounds(0, 0, 208, 152);
 		panel_Statistics.add(lblNewLabel);
 
@@ -820,7 +820,7 @@ public class Application extends TwitterAppGui implements Runnable {
 					panel_Timeline.remove(hometimeline);
 					panel_Timeline.remove(usertimeline);
 					lblNewLabel.setIcon(new ImageIcon(getClass().getResource(
-							"/Statistics_panel_new.png")));
+							"images/Statistics_panel_new.png")));
 					TimeLine();
 					userTimeLine();
 					panel_Timeline.updateUI();
@@ -842,7 +842,7 @@ public class Application extends TwitterAppGui implements Runnable {
 				try {
 					audioInputStream = AudioSystem
 							.getAudioInputStream(getClass().getResource(
-									"/pop.wav"));
+									"sounds/pop.wav"));
 					Clip clip = AudioSystem.getClip();
 					clip.open(audioInputStream);
 					clip.start();
@@ -967,7 +967,7 @@ public class Application extends TwitterAppGui implements Runnable {
 		JLabel lblTrendingBg = new JLabel();
 		lblTrendingBg.setBounds(0, 0, 208, 303);
 		lblTrendingBg.setIcon(new ImageIcon(getClass().getResource(
-				"/Trending_panel.png")));
+				"images/Trending_panel.png")));
 		panel_4.add(lblTrendingBg);
 
 		JButton BtnToggleTimeline = new JButton("Switch Timeline");
@@ -982,10 +982,10 @@ public class Application extends TwitterAppGui implements Runnable {
 				c1.next(panel_Timeline);
 				if (CardCounter % 2 == 0) {
 					lblNewLabel.setIcon(new ImageIcon(getClass().getResource(
-							"/Statistics_panel_friends.png")));
+							"images/Statistics_panel_friends.png")));
 				} else {
 					lblNewLabel.setIcon(new ImageIcon(getClass().getResource(
-							"/Statistics_panel_new.png")));
+							"images/Statistics_panel_new.png")));
 				}
 				CardCounter++;
 			}
@@ -1017,13 +1017,13 @@ public class Application extends TwitterAppGui implements Runnable {
 
 		JLabel lblRightBg = new JLabel("");
 		lblRightBg.setBounds(208, 0, 849, 593);
-		lblRightBg.setIcon(new ImageIcon(getClass().getResource("/BG.png")));
+		lblRightBg.setIcon(new ImageIcon(getClass().getResource("images/BG.png")));
 		contentPane.add(lblRightBg);
 
 		AudioInputStream audioInputStream;
 		try {
 			audioInputStream = AudioSystem.getAudioInputStream(getClass()
-					.getResource("/pad_confirm.wav"));
+					.getResource("sounds/pad_confirm.wav"));
 			Clip clip = AudioSystem.getClip();
 			clip.open(audioInputStream);
 			clip.start();

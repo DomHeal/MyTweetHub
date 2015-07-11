@@ -135,7 +135,7 @@ public class Info  {
 		lblJoinedTwitter.setBounds(99, 97, 99, 14);
 		frame.getContentPane().add(lblJoinedTwitter);
 		
-		JButton btnClose = new JButton(new ImageIcon(Application.class.getResource("close_button2.png")));
+		JButton btnClose = new JButton(new ImageIcon(Application.class.getResource("images/close_button2.png")));
 		btnClose.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnClose.setBounds(362, 0, 30, 23);
         btnClose.addActionListener(new ActionListener() {

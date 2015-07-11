@@ -45,7 +45,7 @@ public class TwitterAppGui extends JFrame {
 		setUndecorated(true);
 		setTitle("MyTweetHub - Making Twitter Simple");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(
-				Application.class.getResource("twitter47.png")));
+				Application.class.getResource("images/twitter47.png")));
 		initComponents();
 		setLocationRelativeTo(null);
 	}
@@ -237,7 +237,7 @@ public class TwitterAppGui extends JFrame {
 		Pintxtbox.setBounds(120, 300, 90, 20);
 
 		final JButton btnClose = new JButton(new ImageIcon(getClass()
-				.getResource(("close_button2.png"))));
+				.getResource(("images/close_button2.png"))));
 		btnClose.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnClose.addActionListener(new ActionListener() {
 			@Override
@@ -254,12 +254,12 @@ public class TwitterAppGui extends JFrame {
 
 		lblVerify = new JLabel();
 		lblVerify.setBounds(227, 303, 46, 14);
-		lblVerify.setIcon(new ImageIcon(getClass().getResource("/OK.png")));
+		lblVerify.setIcon(new ImageIcon(getClass().getResource("images//OK.png")));
 		lblVerify.setVisible(false);
 		getContentPane().add(lblVerify);
 
 		BackgroundLbl.setIcon(new ImageIcon(getClass().getResource(
-				"/Twitte2r.png")));
+				"images/Twitte2r.png")));
 		BackgroundLbl.setText("");
 		getContentPane().add(BackgroundLbl);
 		BackgroundLbl.setBounds(0, 0, 330, 450);
@@ -362,7 +362,7 @@ public class TwitterAppGui extends JFrame {
 				try {
 					audioInputStream = AudioSystem
 							.getAudioInputStream(getClass().getResource(
-									"/blip1.wav"));
+									"sounds/blip1.wav"));
 					final Clip clip = AudioSystem.getClip();
 					clip.open(audioInputStream);
 					clip.start();
