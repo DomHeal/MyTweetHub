@@ -1,21 +1,19 @@
  
 import java.awt.Color;
-import java.awt.Frame;
+import java.awt.Font;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
-import java.awt.Font;
  
 public class Splash extends Thread {
-    static JLabel loadingResourcelbl = new JLabel("Loading Resources... Graphical Interface");
-
-    /**
-     * @wbp.parser.entryPoint
-     */
+    public static JLabel loadingResourcelbl = new JLabel("Loading Resources... Graphical Interface");
+    private final JLabel label = new JLabel("");
+    public static JProgressBar progressBar = new JProgressBar();;
+	public static JFrame frame;
+    // Thread created to display Splash page
     public void run() {
     	frame = new JFrame();
     	frame.setIconImage(Toolkit.getDefaultToolkit().getImage(Application.class.getResource("images/twitter47.png")));
@@ -42,10 +40,8 @@ public class Splash extends Thread {
         frame.setLocationRelativeTo(null);
         }
     
+    
 
-    private final JLabel label = new JLabel("");
-    static JProgressBar progressBar = new JProgressBar();;
-	public static JFrame frame;
      
 
 }

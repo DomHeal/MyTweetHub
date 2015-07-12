@@ -12,8 +12,6 @@ import java.net.URL;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -21,7 +19,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
 
@@ -51,40 +48,25 @@ public class TwitterAppGui extends JFrame {
 	}
 
 	private static JTextField Pintxtbox;
-
 	private static String tokenSecret;
-
-	protected static int Access;
-
+	protected static boolean Access;
 	protected static String Error;
-
 	protected static int FavouriteCnt;
-
 	protected static int FollowersCnt;
-
 	protected static int FollowingCnt;
-
 	protected static URL ProfilePic;
-
 	protected static URL MiniProfilePic;
-
 	protected static String token;
-
 	protected static int TweetCnt;
-
 	protected static Twitter twitter2;
-
 	protected static String Username;
-
 	protected static String Name;
-
-	static JLabel lblVerify;
-
-	static JButton btnLogin;
+	protected static JLabel lblVerify;
+	protected static JButton btnLogin;
 
 	static RequestToken requestToken;
 
-	public static int getAccess() {
+	public static boolean getAccess() {
 		return Access;
 	}
 
@@ -270,10 +252,15 @@ public class TwitterAppGui extends JFrame {
 	public void setPinLbl(final JLabel pinLbl) {
 		PinLbl = pinLbl;
 	}
-
+	
+	
+/*
+ * This method is use to configure the Access Tokens for each user.
+ */	
+	
 	private TwitterFactory login() throws IOException {
 		{
-			/* Credentials */
+			
 			final ConfigurationBuilder cb = new ConfigurationBuilder();
 			cb.setDebugEnabled(true)
 					.setOAuthConsumerKey("KxXwgeXCdJyUpVJNDPFsxdube")
@@ -304,7 +291,7 @@ public class TwitterAppGui extends JFrame {
 					}
 
 					while (accessToken == null) {
-						if (Access == 1) {
+						if (Access == true) {
 
 							String pin;
 							pin = getPintxtbox().getText();
@@ -318,7 +305,7 @@ public class TwitterAppGui extends JFrame {
 											.getOAuthAccessToken(requestToken);
 								}
 							} catch (final TwitterException te) {
-								Access = 0;
+								Access = false;
 
 							}
 
@@ -356,7 +343,7 @@ public class TwitterAppGui extends JFrame {
 				setTweetCount(user.getStatusesCount());
 				setName(user.getName());
 
-				setAccess(1);
+				setAccess(true);
 				lblVerify.setVisible(true);
 				AudioInputStream audioInputStream;
 				try {
@@ -392,18 +379,18 @@ public class TwitterAppGui extends JFrame {
 	private void LoginBtnActionPerformed(final ActionEvent evt)
 			throws Exception {
 		if (btnLogin.getText() == "Check") {
-			Access = 1;
+			Access = true;
 		} else if (btnLogin.getText() == "Login") {
 			this.setVisible(false);
 			x.start();
 			y.start();
 
-			Access = 0;
+			Access = false;
 		}
 
 	}
 
-	private void setAccess(final int i) {
+	private void setAccess(final boolean i) {
 		Access = i;
 
 	}

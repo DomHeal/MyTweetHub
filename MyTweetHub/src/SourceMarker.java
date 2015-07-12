@@ -17,7 +17,7 @@ import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
  * color.
  *
  * @author Jan Peter Stotz
- *
+ * @modified Dominic Heal
  */
 public class SourceMarker extends MapObjectImpl implements MapMarker {
 
@@ -72,14 +72,10 @@ public class SourceMarker extends MapObjectImpl implements MapMarker {
 
     public void paint(Graphics g, Point position, int radio) {
         int size_h = radio;
-        //g.setColor(Color.WHITE);
-        //g.draw3DRect(position.x - 5, position.y - 5, 400, 120, true);
         g.setColor(Color.BLACK);
-        //g.setFont(new Font("TimesRoman", Font.PLAIN, size_h/10));
         g.drawString(getName(), position.x + 10, position.y + 5);
-        //g.drawString("30°C", position.x + size - 10, position.y + 37);
         g.setColor(Color.gray);
-       // g.drawLine(position.x + size + 18, position.y - 4, position.x + size + 18 ,        position.y + 112);
+   
     }
 
     public static Style getDefaultStyle(){
