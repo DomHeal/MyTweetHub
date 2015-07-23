@@ -17,10 +17,35 @@ Features
 ------------------------------------
 - Auth 2.0
 - Statistics Panel
+  - Followers
+  - Favourites
+  - Following
+  - Tweet Count
 - Timelines
+  - Global
+  - Personal
 - Top Trend (UK-based)
 - Tweet Interaction
+  - Post
+  - Delete
+  - Favourite
+  - Retweet
+  - Additional Information
 - Map Visualisation
+  - Specific Tweets in Related Co-ordinates
+  - Tweet Relationship from Related Tweet Source
+
+`// Get Date from Tweet Source ID
+		tweetDate = twitter.showStatus(tweetID).getCreatedAt();
+// Save the Coordinates from Source Tweet - Longitude and Langitude
+		sourceCoordinate = new Coordinate(twitter.showStatus(tweetID)
+		.getGeoLocation().getLatitude(), twitter
+		.showStatus(tweetID).getGeoLocation().getLongitude());
+// Create Style for Source Tweet - RED
+			Style style = new Style(Color.BLACK, Color.RED, null, null);
+// Add it to the Map
+			map().addMapMarker(
+					new MapMarkerDot(null, "Source", sourceCoordinate, style));`
 
 Future Implementations
 ------------------------------------
