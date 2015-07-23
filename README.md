@@ -55,10 +55,13 @@ Response Tweets:
 ``` java
 mentions = twitter.getMentionsTimeline(new Paging().count(100));
 for (int i = 0; mentions.size() > i; i++) {
-	if (mentions.get(i).getCreatedAt().after(tweetDate) == true && mentions.get(i).getGeoLocation() != null) {
-		tweetCoordinate = new Coordinate(mentions.get(i).getGeoLocation().getLatitude(), 						mentions.get(i).getGeoLocation().getLongitude());
-		Style style = new Style(Color.BLACK, Color.YELLOW, null, null);
-		map().addMapMarker(new MapMarkerDot(layer, mentions.get(i).getUser()									.getScreenName()+ ": " + mentions.get(i).getText(),tweetCoordinate, style));
+	if (mentions.get(i).getCreatedAt().after(tweetDate) == true 
+		&& mentions.get(i).getGeoLocation() != null) {
+			tweetCoordinate = new Coordinate(mentions.get(i).getGeoLocation().getLatitude(), 						mentions.get(i).getGeoLocation().getLongitude());
+			Style style = new Style(Color.BLACK, Color.YELLOW, null, null);
+			map().addMapMarker(new MapMarkerDot(layer, 
+				mentions.get(i).getUser().getScreenName()+ ": " 
+				+ mentions.get(i).getText(),tweetCoordinate, style));
 	}
 }
 ```
