@@ -35,7 +35,11 @@ Features
   - Specific Tweets in Related Co-ordinates
   - Tweet Relationship from Related Tweet Source
 
-`// Get Date from Tweet Source ID
+Implementation
+---------------------------------
+Source Tweet:
+``` java
+// Get Date from Tweet Source ID
 		tweetDate = twitter.showStatus(tweetID).getCreatedAt();
 // Save the Coordinates from Source Tweet - Longitude and Langitude
 		sourceCoordinate = new Coordinate(twitter.showStatus(tweetID)
@@ -45,7 +49,19 @@ Features
 			Style style = new Style(Color.BLACK, Color.RED, null, null);
 // Add it to the Map
 			map().addMapMarker(
-					new MapMarkerDot(null, "Source", sourceCoordinate, style));`
+					new MapMarkerDot(null, "Source", sourceCoordinate, style));
+```
+Response Tweets:
+``` java
+mentions = twitter.getMentionsTimeline(new Paging().count(100));
+for (int i = 0; mentions.size() > i; i++) {
+	if (mentions.get(i).getCreatedAt().after(tweetDate) == true && mentions.get(i).getGeoLocation() != null) {
+		tweetCoordinate = new Coordinate(mentions.get(i).getGeoLocation().getLatitude(), 						mentions.get(i).getGeoLocation().getLongitude());
+		Style style = new Style(Color.BLACK, Color.YELLOW, null, null);
+		map().addMapMarker(new MapMarkerDot(layer, mentions.get(i).getUser()									.getScreenName()+ ": " + mentions.get(i).getText(),tweetCoordinate, style));
+	}
+}
+```
 
 Future Implementations
 ------------------------------------
