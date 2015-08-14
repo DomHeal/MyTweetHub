@@ -7,5 +7,5 @@ Java, Twitter REST API, Twitter4j, JMapViewer, BeautyEye Library -This applicati
 - MapMarker Update:
 <img src="http://i.imgur.com/WTLsFp4.png" /img>
 - Relation of Tweets
-<img src="http://i.imgur.com/O6FxlUm.png" /img>
+<img src="http://i.imgur.com/nrre2Jw.png" /img>
 </p>
