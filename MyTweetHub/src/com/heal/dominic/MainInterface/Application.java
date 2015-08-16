@@ -56,6 +56,7 @@ import com.heal.dominic.Login.LoginGUI;
 import com.heal.dominic.MapInterface.Map;
 import com.heal.dominic.ResourceManager.ImageController;
 import com.heal.dominic.ResourceManager.SoundController;
+import com.heal.dominic.Splash.Splash;
 
 @SuppressWarnings("serial")
 public class Application extends LoginGUI implements Runnable {
@@ -64,11 +65,11 @@ public class Application extends LoginGUI implements Runnable {
 
 	private static JPanel contentPane;
 	private static JScrollPane hometimeline;
-	private static JScrollPane usertimeline;
+	protected static JScrollPane usertimeline;
 	private static JList<String> trends = null;
 	private static JTextField txtPostATweet;
 	private JPanel panel_4;
-	private static JPanel panel_Timeline = new JPanel();
+	protected static JPanel panel_Timeline = new JPanel();
 	private static JPanel panel_Statistics = new JPanel();
 	//static ImageIcon[] profileimages;
 	static String statusArr[];
@@ -79,8 +80,8 @@ public class Application extends LoginGUI implements Runnable {
 	private static JMenuItem mntmRetweet;
 	private static JMenuItem mntmFavourite;
 	private static JMenuItem mntmClose;
-	private static JMenuItem mntmDelete;
-	private static JMenuItem mntmGetInfo;
+	static JMenuItem mntmDelete;
+	protected static JMenuItem mntmGetInfo;
 	static java.util.Map<String, RateLimitStatus> rateLimitStatus;
 	static Timer timer;
 	static JLabel lblTimeCounter;
@@ -93,58 +94,9 @@ public class Application extends LoginGUI implements Runnable {
 
 	/* Shows Public Timeline */
 
-	public Runnable TimeLine() throws IllegalStateException,
-			MalformedURLException, TwitterException {
 
-		twitter = getTwitter();
-
-		/* Creates and Displays Public Time */
-
-		statusList = twitter.getHomeTimeline(new Paging().count(200));
-		final String statusArr[] = new String[statusList.size()];
-		final URL[] profileimages = new URL[statusList.size()];
-		
-
-		for (int i = 0; i < statusList.size(); i++) {
-
-			/* If its Retweeted, Change text colour to GREEN */
-			if (statusList.get(i).isRetweetedByMe() == true) {
-				statusArr[i] = "<html><font color=green><b>"
-						+ statusList.get(i).getUser().getName() + ": " + "</b>"
-						+ statusList.get(i).getText() + "</font>  </html>";
-				profileimages[i] = new URL(statusList.get(i).getUser()
-						.getMiniProfileImageURL());
-				dlm.addElement(new ListEntry(statusArr[i], new ImageIcon(
-						profileimages[i])));
-			}
-			/* If its Favourited, Change text colour to ORANGE */
-			else if (statusList.get(i).isFavorited() == true) {
-				statusArr[i] = "<html><font color=orange><b>"
-						+ statusList.get(i).getUser().getName() + ": " + "</b>"
-						+ statusList.get(i).getText() + "</font>  </html>";
-				profileimages[i] = new URL(statusList.get(i).getUser()
-						.getMiniProfileImageURL());
-				dlm.addElement(new ListEntry(statusArr[i], new ImageIcon(
-						profileimages[i])));
-			}
-			/* If its Neither, Change text colour to BLACK */
-			else {
-				statusArr[i] = "<html><font color=black><b>"
-						+ statusList.get(i).getUser().getName() + ": " + "</b>"
-						+ statusList.get(i).getText() + "</font>  </html>";
-				profileimages[i] = new URL(statusList.get(i).getUser()
-						.getMiniProfileImageURL());
-				dlm.addElement(new ListEntry(statusArr[i], new ImageIcon(
-						profileimages[i])));
-
-			}
-		}
-		return null;
-	}
-	public Runnable TimelineGUI(){
+	public void TimelineGUI(){
 	
-
-
 		final JList<ListEntry> imagestatusList = new JList<ListEntry>(dlm);
 
 		/* Mouse Listener for ToolTip - Date and Time Posted */
@@ -342,10 +294,6 @@ public class Application extends LoginGUI implements Runnable {
 		setHomeTimeLine(scrollPane);
 
 		panel_Timeline.add(hometimeline, "home");
-		System.out.println("Timeline Thread: Done");
-		return null;
-		
-
 	}
 
 	/** Returns an ImageIcon, or null if the path was invalid. */
@@ -362,194 +310,9 @@ public class Application extends LoginGUI implements Runnable {
 
 	/* Displays Logged-in User Tweets */
 
-	public Runnable userTimeLine() throws IllegalStateException,
-			TwitterException {
-		twitter = getTwitter();
-		
-
-		final List<Status> statusList2 = twitter.getUserTimeline(new Paging()
-				.count(200));
-		String statusAr[] = new String[statusList2.size()];
-		final DefaultListModel<ListEntry> dlm2 = new DefaultListModel<ListEntry>();
-		for (int i = 0; i < statusList2.size(); i++) {
-			statusAr[i] = "<html><b>" + statusList2.get(i).getUser().getName()
-					+ ":</b> " + "" + statusList2.get(i).getText() + "</html>";
-			dlm2.addElement(new ListEntry(statusAr[i], new ImageIcon(
-					MiniProfilePic)));
-		}
-		final JList<ListEntry> userStatusJList = new JList<ListEntry>(dlm2);
-		userStatusJList.addMouseMotionListener(new MouseAdapter() {
-			public void mouseMoved(MouseEvent me) {
-				Point p = new Point(me.getX(), me.getY());
-				final SimpleDateFormat formatter = new SimpleDateFormat(
-						"dd/MM/yy HH:mm");
-				userStatusJList.setSelectedIndex(userStatusJList
-						.locationToIndex(p));
-
-				int index = userStatusJList.locationToIndex(p);
-				if (index > -1) {
-					userStatusJList.setToolTipText(null);
-					Date usertweetDate = statusList2.get(
-							userStatusJList.locationToIndex(p)).getCreatedAt();
-					String text = formatter.format(usertweetDate);
-					userStatusJList.setToolTipText(text);
-				}
-			}
-		});
-
-		userStatusJList.setCellRenderer(new ListEntryCellRenderer());
-		userStatusJList.setFont(new Font("SansSerif", Font.PLAIN, 11));
-		userStatusJList.setFixedCellHeight(27);
-		JScrollPane scrollPane2 = new JScrollPane(userStatusJList,
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, // vertical bar
-				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-		final JPopupMenu popupMenu = new JPopupMenu();
-		addPopup(userStatusJList, popupMenu);
-		/* Listener for Popup Menu and Get Selected row */
-
-		userStatusJList.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				if (SwingUtilities.isRightMouseButton(e)) {
-					row = userStatusJList.locationToIndex(e.getPoint());
-					userStatusJList.setSelectedIndex(row);
-				}
-			}
-
-		});
-		mntmGetInfo = new JMenuItem("Get Info");
-		mntmGetInfo.setIcon(new ImageIcon(Application.class
-				.getResource("/images/Note-Add_hover.png")));
-		popupMenu.add(mntmGetInfo);
-		mntmGetInfo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					new Info(statusList2.get(row));
-
-				} catch (TwitterException | MalformedURLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
-			}
-		});
-		mntmGetInfo.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				if (e.getSource() instanceof JMenuItem) {
-					mntmGetInfo = (JMenuItem) e.getSource();
-					if (mntmGetInfo.isSelected() || mntmDelete.isArmed()) {
-						mntmGetInfo.setIcon(new ImageIcon(Toolkit
-								.getDefaultToolkit().getImage(
-										Application.class
-												.getResource("/images/Note-Add.png"))));
-					} else {
-						mntmGetInfo.setIcon(new ImageIcon(
-								Toolkit.getDefaultToolkit()
-										.getImage(
-												Application.class
-														.getResource("/images/Note-Add_hover.png"))));
-					}
-				}
-			}
-		});
-
-		mntmDelete = new JMenuItem("Delete");
-		mntmDelete.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				long tweetid = statusList2.get(row).getId();
-
-				try {
-					twitter.destroyStatus(tweetid);
-					dlm2.remove(row);
-					statusList2.remove(row);
-
-				} catch (TwitterException e1) {
-					JOptionPane.showMessageDialog(frame,
-							"Eggs are not supposed to be green.",
-							"Inane warning", JOptionPane.WARNING_MESSAGE);
-					System.out.println("Could Not Delete Tweet");
-					e1.printStackTrace();
-				}
 
 
-				SoundController.playDeleteSound();
-			}
-		});
-		mntmDelete.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-				Application.class.getResource("/images/delete_normal.png"))));
-		popupMenu.add(mntmDelete);
 
-		mntmDelete.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				if (e.getSource() instanceof JMenuItem) {
-					mntmDelete = (JMenuItem) e.getSource();
-					if (mntmDelete.isSelected() || mntmDelete.isArmed()) {
-						mntmDelete.setIcon(new ImageIcon(Toolkit
-								.getDefaultToolkit().getImage(
-										Application.class
-												.getResource("/images/delete_on.png"))));
-					} else {
-						mntmDelete.setIcon(new ImageIcon(
-								Toolkit.getDefaultToolkit()
-										.getImage(
-												Application.class
-														.getResource("/images/delete_normal.png"))));
-					}
-				}
-			}
-		});
-
-		JMenuItem mntmClose = new JMenuItem("Close");
-		popupMenu.add(mntmClose);
-		mntmClose.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				popupMenu.setVisible(false);
-			}
-		});
-		setUserTimeLine(scrollPane2);
-		panel_Timeline.add(usertimeline, "user");
-		
-		System.out.println("Usertimeline Thread: Done");
-		return null;
-
-	}
-
-	public static Runnable Trending() {
-		try {
-			Twitter twitter = getTwitter();
-			DefaultListModel<String> model = new DefaultListModel<String>();
-			Trends trends = twitter.getPlaceTrends(23424975);
-			for (Trend trend : trends.getTrends()) {
-				model.addElement(trend.getName());
-			}
-			
-			final WebList trendingList = new WebList();
-			trendingList.setModel(model);
-			setTrendingList(trendingList);
-			trendingList.setFixedCellHeight(30);
-			trendingList.setOpaque(false);
-			trendingList.setCellRenderer(new JlistRenderer());
-			trendingList.setDecorateSelection(false);
-			
-
-			trendingList.addMouseMotionListener(new MouseAdapter() {
-				public void mouseMoved(MouseEvent me) {
-					Point p = new Point(me.getX(), me.getY());
-					trendingList.setSelectedIndex(trendingList
-							.locationToIndex(p));
-				}
-			});
-
-		} catch (TwitterException te) {
-			te.printStackTrace();
-			System.out.println("Failed to get current trends: "
-					+ te.getMessage());
-		}
-		
-		System.out.println("Trending Thread: Done");
-		return null;
-	}
 
 	public static void Posting() {
 		if (txtPostATweet.getText() != POST_MESSAGE
@@ -571,7 +334,7 @@ public class Application extends LoginGUI implements Runnable {
 		}
 	}
 
-	private static void setTrendingList(JList<String> trendingList) {
+	protected static void setTrendingList(JList<String> trendingList) {
 		trends = trendingList;
 
 	}
@@ -591,7 +354,7 @@ public class Application extends LoginGUI implements Runnable {
 
 	}
 
-	private static void setUserTimeLine(JScrollPane scrollPane2) {
+	protected static void setUserTimeLine(JScrollPane scrollPane2) {
 		usertimeline = scrollPane2;
 
 	}
@@ -599,18 +362,25 @@ public class Application extends LoginGUI implements Runnable {
 	public JPanel getTimeLinePanel() {
 		return panel_Timeline;
 	}
-	
-	static Thread thread_Timeline;
-	static Thread thread_UserTimeline;
-	static Thread thread_Trending;
-
 	/**
 	 * Create the frame.
 	 * 
 	 * @throws UnsupportedLookAndFeelException
 	 */
 	public void run() {
-		Trending();
+		try {
+			Trending.getTrending();
+			Timelines.getTimeLine();
+			TimelineGUI();
+			Timelines.getUserTimeLine();
+
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (TwitterException e) {
+			e.printStackTrace();
+		}
 		setTitle("MyTweetHub - Making Twitter, Simple");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -816,47 +586,33 @@ public class Application extends LoginGUI implements Runnable {
 		btnRefresh.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnRefresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					panel_Timeline.remove(hometimeline);
-					panel_Timeline.remove(usertimeline);
-					lblNewLabel.setIcon(new ImageIcon(getClass().getResource(
-							"/images/Statistics_panel_new.png")));
-					
-//					try {
-//						//thread_UserTimeline = new Thread(Application.userTimeLine());
-//						//thread_Timeline = new Thread(Application.TimeLine());
-//					} catch (TwitterException e) {
-//						e.printStackTrace();
-//					} catch (MalformedURLException e) {
-//						e.printStackTrace();
-//					}
-					try {
-						TimeLine();
-						userTimeLine();
-					} catch (MalformedURLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (TwitterException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-					thread_Timeline.start();
-					thread_UserTimeline.start();
-					while(!(thread_Timeline.isAlive() && thread_UserTimeline.isAlive())){
+				SwingUtilities.invokeLater(new Runnable(){
+					@Override
+					public void run() {
+						panel_Timeline.remove(hometimeline);
+						panel_Timeline.remove(usertimeline);
+						lblNewLabel.setIcon(new ImageIcon(getClass().getResource(
+								"/images/Statistics_panel_new.png")));
+						try {
+							
+							Timelines.getTimeLine();
+							TimelineGUI();
+							Timelines.getUserTimeLine();
+							
+						} catch (MalformedURLException e) {
+							e.printStackTrace();
+						} catch (TwitterException e) {
+							e.printStackTrace();
+						}
+						
 						panel_Timeline.updateUI();
 						panel_Statistics.updateUI();
+						
+						SoundController.playPopSound();
 					}
-
-				} catch (IllegalStateException e) {
-					e.printStackTrace();
-				}
-				panel_Timeline.updateUI();
-				panel_Statistics.updateUI();
-				SoundController.playPopSound();
-
+				});
 			}
-		});
+	});
 		btnRefresh.setUI(new BEButtonUI()
 				.setNormalColor(BEButtonUI.NormalColor.normal));
 		btnRefresh.setBounds(4, 160, 200, 23);
@@ -983,9 +739,9 @@ public class Application extends LoginGUI implements Runnable {
 		lblRightBg.setIcon(new ImageIcon(getClass().getResource("/images/BG.png")));
 		contentPane.add(lblRightBg);
 
-		//SoundController.playLoginSound();
+		Splash.frame.dispose();
+		SoundController.playLoginSound();
 		setVisible(true);
-
 	}
 
 	protected void btnLogoutActionPerformed(ActionEvent evt) {
@@ -993,7 +749,7 @@ public class Application extends LoginGUI implements Runnable {
 		new LoginGUI().setVisible(true);
 	}
 
-	private static void addPopup(Component component, final JPopupMenu popup) {
+	protected static void addPopup(Component component, final JPopupMenu popup) {
 		component.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				if (e.isPopupTrigger()) {

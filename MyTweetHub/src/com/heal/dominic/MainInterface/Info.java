@@ -16,6 +16,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
 
+import com.alee.laf.button.WebButton;
+
 
 import twitter4j.Status;
 import twitter4j.TwitterException;
@@ -121,7 +123,7 @@ public class Info  {
 		lblJoinedTwitter.setBounds(99, 97, 99, 14);
 		frame.getContentPane().add(lblJoinedTwitter);
 		
-		JButton btnClose = new JButton(new ImageIcon(Application.class.getResource("/images/close_button.png")));
+		WebButton btnClose = new WebButton(new ImageIcon(Application.class.getResource("/images/close_button.png")));
 		btnClose.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnClose.setBounds(362, 0, 30, 23);
         btnClose.addActionListener(new ActionListener() {
@@ -133,6 +135,7 @@ public class Info  {
         btnClose.setBorderPainted(false);
         btnClose.setBorder(BorderFactory.createEmptyBorder());
         btnClose.setContentAreaFilled(false);
+        btnClose.setUndecorated(true);
 		frame.getContentPane().add(btnClose);
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
 		JLabel lblJoinedTwitterAns = new JLabel(dateFormat.format(status.getCreatedAt()));

@@ -23,9 +23,6 @@ public class Splash extends Thread {
 	public static int splashCounter = 0;
 
 	// Thread created to display Splash page
-	/**
-	 * @wbp.parser.entryPoint
-	 */
 	public void run() {
 		frame = new JFrame();
 		frame.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/tweethub_icon.png")));
@@ -37,13 +34,11 @@ public class Splash extends Thread {
 		label.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/Splash.png"))));
 		label.setBounds(0, 0, 428, 212);
 		
-
         WebProgressBar stepProgress = new WebProgressBar();
         stepProgress.setIndeterminate(true);
         stepProgress.setStringPainted(true) ;
         stepProgress.setString ( "Please wait..." );
 		stepProgress.setBounds(135, 110, 211, 23);
-
 
 		loadingResourcelbl = new JLabel("Loading Resources...");
 		loadingResourcelbl.setFont(new Font("HelveticaNeue", Font.PLAIN, 10));
@@ -54,7 +49,7 @@ public class Splash extends Thread {
 		frame.getContentPane().add(stepProgress);
 		frame.getContentPane().add(label);
 		frame.setVisible(true);
-		frame.setLocationRelativeTo(null);	         
+		frame.setLocationRelativeTo(null);	     
 	}
 }
 

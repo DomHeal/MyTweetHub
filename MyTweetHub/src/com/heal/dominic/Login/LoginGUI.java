@@ -53,15 +53,7 @@ public class LoginGUI extends JFrame {
 	public static RequestToken requestToken;
 	protected static int TweetCnt;
 	protected static Twitter twitter;
-	protected static Thread x = new Splash();
-	public static Thread y = new Thread(new Application());
-	public static Thread thread_UserTimeline;
-	public static Thread thread_Timeline;
-	public static Thread thread_TimelineOther;
-
-	/**
-	 * Creates new form TwitterAppGui
-	 */
+	public Thread thread_splashscreen;
 	public AccessToken accessToken;
 	private JLabel BackgroundLbl, PinLbl;
 
@@ -237,17 +229,13 @@ public class LoginGUI extends JFrame {
 		} else if (btnLogin.getText() == "Login") {
 			this.setVisible(false);
 
-	        //x.start();
-
-			final Application x = new Application();
-		    y.start();
-
-			Thread thread_UserTimeline = new Thread(x.userTimeLine());
-			Thread thread_Timeline = new Thread(x.TimeLine());
-			thread_UserTimeline.start();
-			thread_Timeline.start();
-	        Thread thread_Timelineg = new Thread(x.TimelineGUI());
-	        thread_Timelineg.start();
+			Splash splashscreen = new Splash();
+			thread_splashscreen = new Thread(splashscreen);
+			thread_splashscreen.start();
+		    
+			Application mainscreen = new Application();
+			Thread thread_mainscreen = new Thread(mainscreen);
+			thread_mainscreen.start();
 
 			Access = false;
 		}
