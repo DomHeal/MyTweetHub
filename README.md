@@ -24,7 +24,6 @@ Known Issues
 <p align="center">
 <img src="http://i.imgur.com/6aRY6N9.png" /img>
 <img src="http://i.imgur.com/OCNqu6L.png" /img>
-<img src="http://i.imgur.com/vRGEwzM.png" /img>
 - MapMarker Update:
 <img src="http://i.imgur.com/WTLsFp4.png" /img>
 - Relation of Tweets
