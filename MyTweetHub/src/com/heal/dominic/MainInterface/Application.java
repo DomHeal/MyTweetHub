@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -34,6 +35,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.Timer;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.LineBorder;
@@ -43,15 +45,11 @@ import javax.swing.event.ChangeListener;
 
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
 
-import twitter4j.Paging;
 import twitter4j.RateLimitStatus;
 import twitter4j.Status;
-import twitter4j.Trend;
-import twitter4j.Trends;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
-import com.alee.laf.list.WebList;
 import com.heal.dominic.Login.LoginGUI;
 import com.heal.dominic.MapInterface.Map;
 import com.heal.dominic.ResourceManager.ImageController;
@@ -69,6 +67,8 @@ public class Application extends LoginGUI implements Runnable {
 	private static JList<String> trends = null;
 	private static JTextField txtPostATweet;
 	private JPanel panel_4;
+	private JButton BtnToggleTimeline;
+	protected static boolean UpdateFlag = false;
 	protected static JPanel panel_Timeline = new JPanel();
 	private static JPanel panel_Statistics = new JPanel();
 	//static ImageIcon[] profileimages;
@@ -91,12 +91,13 @@ public class Application extends LoginGUI implements Runnable {
 	static SimpleDateFormat formatter = new SimpleDateFormat(
 			"dd/MM/yy HH:mm");
 	static URL[] profileimages;
+	static int refresh_timer = 120;
 
 	/* Shows Public Timeline */
 
 
 	public void TimelineGUI(){
-	
+
 		final JList<ListEntry> imagestatusList = new JList<ListEntry>(dlm);
 
 		/* Mouse Listener for ToolTip - Date and Time Posted */
@@ -132,6 +133,9 @@ public class Application extends LoginGUI implements Runnable {
 		addPopup(imagestatusList, popupMenu);
 
 		mntmGetInfo = new JMenuItem("Get Info");
+		mntmGetInfo.setIcon(new ImageIcon(Toolkit
+				.getDefaultToolkit().getImage(Application.class
+						.getResource("/images/Note-Add_hover.png"))));
 		popupMenu.add(mntmGetInfo);
 		mntmGetInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -153,13 +157,13 @@ public class Application extends LoginGUI implements Runnable {
 						mntmGetInfo.setIcon(new ImageIcon(Toolkit
 								.getDefaultToolkit().getImage(
 										Application.class
-												.getResource("/images/Note-Add.png"))));
+										.getResource("/images/Note-Add.png"))));
 					} else {
 						mntmGetInfo.setIcon(new ImageIcon(
 								Toolkit.getDefaultToolkit()
-										.getImage(
-												Application.class
-														.getResource("/images/Note-Add_hover.png"))));
+								.getImage(
+										Application.class
+										.getResource("/images/Note-Add_hover.png"))));
 					}
 				}
 			}
@@ -189,13 +193,13 @@ public class Application extends LoginGUI implements Runnable {
 						mntmRetweet.setIcon(new ImageIcon(Toolkit
 								.getDefaultToolkit().getImage(
 										Application.class
-												.getResource("/images/retweet_on.png"))));
+										.getResource("/images/retweet_on.png"))));
 					} else {
 						mntmRetweet.setIcon(new ImageIcon(
 								Toolkit.getDefaultToolkit()
-										.getImage(
-												Application.class
-														.getResource("/images/retweet_hover.png"))));
+								.getImage(
+										Application.class
+										.getResource("/images/retweet_hover.png"))));
 					}
 				}
 			}
@@ -292,8 +296,7 @@ public class Application extends LoginGUI implements Runnable {
 				.getResource("/images/dialog_close.png")));
 		popupMenu.add(mntmClose);
 		setHomeTimeLine(scrollPane);
-
-		panel_Timeline.add(hometimeline, "home");
+		panel_Timeline.add(hometimeline);
 	}
 
 	/** Returns an ImageIcon, or null if the path was invalid. */
@@ -309,10 +312,6 @@ public class Application extends LoginGUI implements Runnable {
 	}
 
 	/* Displays Logged-in User Tweets */
-
-
-
-
 
 	public static void Posting() {
 		if (txtPostATweet.getText() != POST_MESSAGE
@@ -495,26 +494,17 @@ public class Application extends LoginGUI implements Runnable {
 		lblTweetsCount.setHorizontalAlignment(SwingConstants.LEFT);
 		lblTweetsCount.setFont(new Font("Segoe UI", Font.BOLD, 10));
 		lblTweetsCount
-				.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+		.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
 		lblTweetsCount.setForeground(Color.WHITE);
 		lblTweetsCount.setBounds(143, 125, 57, 14);
 		panel_Statistics.add(lblTweetsCount);
 
-		JLabel lblHomebutton = new JLabel();
+		final JLabel lblHomebutton = new JLabel();
 		lblHomebutton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		lblHomebutton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				CardLayout c1 = (CardLayout) (panel_Timeline.getLayout());
-				c1.next(panel_Timeline);
-				if (CardCounter % 2 == 0) {
-					lblNewLabel.setIcon(new ImageIcon(getClass().getResource(
-							"/images/Statistics_panel_friends.png")));
-				} else {
-					lblNewLabel.setIcon(new ImageIcon(getClass().getResource(
-							"/images/Statistics_panel_new.png")));
-				}
-				CardCounter++;
+				BtnToggleTimeline.doClick();
 			}
 		});
 		lblHomebutton.setBounds(174, 7, 30, 57);
@@ -582,45 +572,53 @@ public class Application extends LoginGUI implements Runnable {
 		label_10.setBounds(5, 30, 149, 134);
 		panel_2.add(label_10);
 
-		JButton btnRefresh = new JButton("Refresh");
+		final JButton btnRefresh = new JButton("Refresh");
 		btnRefresh.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnRefresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SwingUtilities.invokeLater(new Runnable(){
+				btnRefresh.setEnabled(true);
+				refresh_timer = 5;
+				new SwingWorker<Object, Object>(){
 					@Override
-					public void run() {
-						panel_Timeline.remove(hometimeline);
-						panel_Timeline.remove(usertimeline);
-						lblNewLabel.setIcon(new ImageIcon(getClass().getResource(
-								"/images/Statistics_panel_new.png")));
+					protected Object doInBackground() {
 						try {
+
+							panel_Timeline.remove(hometimeline);
+							panel_Timeline.remove(usertimeline);
 							
+							lblNewLabel.setIcon(new ImageIcon(getClass().getResource(
+									"/images/Statistics_panel_new.png")));
 							Timelines.getTimeLine();
 							TimelineGUI();
 							Timelines.getUserTimeLine();
 							
+							panel_Timeline.updateUI();
+							panel_Statistics.updateUI();
+
 						} catch (MalformedURLException e) {
 							e.printStackTrace();
 						} catch (TwitterException e) {
 							e.printStackTrace();
 						}
-						
-						panel_Timeline.updateUI();
-						panel_Statistics.updateUI();
-						
+
+						Disable_Btn(btnRefresh, 1000);
 						SoundController.playPopSound();
+						
+						return null;
 					}
-				});
+
+				}.execute();
+
 			}
-	});
+		});
 		btnRefresh.setUI(new BEButtonUI()
-				.setNormalColor(BEButtonUI.NormalColor.normal));
+		.setNormalColor(BEButtonUI.NormalColor.normal));
 		btnRefresh.setBounds(4, 160, 200, 23);
 		contentPane.add(btnRefresh);
 
 		JPanel panel_Trending = new JPanel();
 		panel_Trending
-				.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		panel_Trending.setForeground(new Color(255, 255, 255));
 		panel_Trending.setOpaque(false);
 		panel_Trending.setFont(new Font("Segoe UI", Font.BOLD, 12));
@@ -640,7 +638,7 @@ public class Application extends LoginGUI implements Runnable {
 		btnLogout.setBackground(new Color(255, 255, 255));
 		btnLogout.setBounds(6, 556, 199, 23);
 		btnLogout.setUI(new BEButtonUI()
-				.setNormalColor(BEButtonUI.NormalColor.red));
+		.setNormalColor(BEButtonUI.NormalColor.red));
 		contentPane.add(btnLogout);
 
 		panel_Timeline.setBounds(215, 55, 836, 524);
@@ -673,7 +671,7 @@ public class Application extends LoginGUI implements Runnable {
 		btnPost.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnPost.setFont(new Font("Tahoma", Font.PLAIN, 11));
 		btnPost.setUI(new BEButtonUI()
-				.setNormalColor(BEButtonUI.NormalColor.normal));
+		.setNormalColor(BEButtonUI.NormalColor.normal));
 		btnPost.setBounds(965, 30, 80, 23);
 		contentPane.add(btnPost);
 
@@ -689,7 +687,7 @@ public class Application extends LoginGUI implements Runnable {
 				"/images/Trending_panel.png")));
 		panel_4.add(lblTrendingBg);
 
-		JButton BtnToggleTimeline = new JButton("Switch Timeline");
+		BtnToggleTimeline = new JButton("Switch Timeline");
 		BtnToggleTimeline.setCursor(Cursor
 				.getPredefinedCursor(Cursor.HAND_CURSOR));
 		BtnToggleTimeline.setBorder(null);
@@ -707,11 +705,12 @@ public class Application extends LoginGUI implements Runnable {
 							"/images/Statistics_panel_new.png")));
 				}
 				CardCounter++;
+				Disable_Object(BtnToggleTimeline);
 			}
 		});
 		BtnToggleTimeline.setBounds(6, 504, 199, 23);
 		BtnToggleTimeline.setUI(new BEButtonUI()
-				.setNormalColor(BEButtonUI.NormalColor.green));
+		.setNormalColor(BEButtonUI.NormalColor.green));
 		contentPane.add(BtnToggleTimeline);
 
 		JButton btnNewButton = new JButton("Globe View");
@@ -719,7 +718,7 @@ public class Application extends LoginGUI implements Runnable {
 		btnNewButton.setBorder(null);
 		btnNewButton.setForeground(new Color(255, 255, 255));
 		btnNewButton.setUI(new BEButtonUI()
-				.setNormalColor(BEButtonUI.NormalColor.lightBlue));
+		.setNormalColor(BEButtonUI.NormalColor.lightBlue));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				new Map().setVisible(true);
@@ -744,6 +743,47 @@ public class Application extends LoginGUI implements Runnable {
 		setVisible(true);
 	}
 
+	/*
+	 * This method prevents users from spamming buttons
+	 */
+
+	private static void Disable_Object(final Object b) {
+		((Component) b).setEnabled(false);
+		new SwingWorker() {
+			@Override protected Object doInBackground() throws Exception {
+				Thread.sleep(500);
+				return null;
+			}
+			@Override protected void done() {
+				((Component) b).setEnabled(true);
+			}
+		}.execute();
+	}
+	
+	/*
+	 * This method sets the timer for the Refresh button to avoid exceeding
+	 * API call count.
+	 */
+	private static void Disable_Btn(final JButton b, final long ms) {
+		((Component) b).setEnabled(false);
+		new SwingWorker() {
+			@Override protected Object doInBackground() throws Exception {
+				while(refresh_timer != 0){
+				b.setText("Refreshing Enabled in: " + refresh_timer);
+				Thread.sleep(1000);
+				refresh_timer--;
+				
+				}
+				b.setEnabled(true);
+				b.setText("Refresh");
+				return null;
+			}
+			@Override protected void done() {
+				((Component) b).setEnabled(true);
+			}
+		}.execute();
+	}
+	
 	protected void btnLogoutActionPerformed(ActionEvent evt) {
 		this.dispose();
 		new LoginGUI().setVisible(true);

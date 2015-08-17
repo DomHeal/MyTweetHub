@@ -5,6 +5,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import twitter4j.GeoLocation;
 import twitter4j.Query;
@@ -55,19 +56,27 @@ public class MapInputWindows extends Map {
 	}
 	
 	public static void InputUsernameID() {
-		JTextField iD = new JTextField(15);
-		iD.setText("");
-		JPanel myPanel = new JPanel();
-		myPanel.add(new JLabel("Enter Username"));
-		myPanel.add(iD);
+		SwingUtilities.invokeLater(new Runnable(){
 
-		int result = JOptionPane.showConfirmDialog(null, myPanel,
-				"Please Enter the Tweet ID", JOptionPane.OK_CANCEL_OPTION);
-		if (result == JOptionPane.OK_OPTION) {
-			map().removeAllMapMarkers();
-			map().removeAllMapPolygons();
-			MapMarkers.usernameMarkers(iD.getText());
-		}
+			@Override
+			public void run() {
+				JTextField iD = new JTextField(15);
+				iD.setText("");
+				JPanel myPanel = new JPanel();
+				myPanel.add(new JLabel("Enter Username"));
+				myPanel.add(iD);
+
+				int result = JOptionPane.showConfirmDialog(null, myPanel,
+						"Please Enter the Tweet ID", JOptionPane.OK_CANCEL_OPTION);
+				if (result == JOptionPane.OK_OPTION) {
+					map().removeAllMapMarkers();
+					map().removeAllMapPolygons();
+					MapMarkers.usernameMarkers(iD.getText());
+
+				}
+			}
+
+		});
+
 	}
-	
 }

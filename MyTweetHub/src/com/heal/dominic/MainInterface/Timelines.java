@@ -227,6 +227,7 @@ public class Timelines extends Application {
 			}
 		});
 		setUserTimeLine(scrollPane2);
-		panel_Timeline.add(usertimeline, "user");
+
+		panel_Timeline.add(usertimeline);
 	}
 }
