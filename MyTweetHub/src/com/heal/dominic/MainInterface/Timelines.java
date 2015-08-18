@@ -24,6 +24,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import com.heal.dominic.Login.UserData;
 import com.heal.dominic.ResourceManager.SoundController;
 
 import twitter4j.Paging;
@@ -86,15 +87,14 @@ public class Timelines extends Application {
 		twitter = getTwitter();
 
 
-		final List<Status> statusList2 = twitter.getUserTimeline(new Paging()
-		.count(200));
+		final List<Status> statusList2 = twitter.getUserTimeline(new Paging().count(200));
 		String statusAr[] = new String[statusList2.size()];
 		final DefaultListModel<ListEntry> dlm2 = new DefaultListModel<ListEntry>();
 		for (int i = 0; i < statusList2.size(); i++) {
 			statusAr[i] = "<html><b>" + statusList2.get(i).getUser().getName()
 					+ ":</b> " + "" + statusList2.get(i).getText() + "</html>";
 			dlm2.addElement(new ListEntry(statusAr[i], new ImageIcon(
-					MiniProfilePic)));
+					UserData.getMiniProfilePic())));
 		}
 		final JList<ListEntry> userStatusJList = new JList<ListEntry>(dlm2);
 		userStatusJList.addMouseMotionListener(new MouseAdapter() {

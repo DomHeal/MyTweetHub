@@ -66,11 +66,7 @@ public class MapMenu {
 	    	    }
 	     });;
 	     
-	      menu.addItem(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-					Map.class.getResource("/images/search.png"))));
-	      menu.addItem(new ImageIcon(Toolkit.getDefaultToolkit().getImage(
-					Map.class.getResource("/images/search.png"))));
-	      
+	      menu.addItem(ImageController.Image_Database);
 	      menu.showMenu ( e.getComponent(), p);
 	}
 

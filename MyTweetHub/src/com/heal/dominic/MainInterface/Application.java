@@ -51,6 +51,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 import com.heal.dominic.Login.LoginGUI;
+import com.heal.dominic.Login.UserData;
 import com.heal.dominic.MapInterface.Map;
 import com.heal.dominic.ResourceManager.ImageController;
 import com.heal.dominic.ResourceManager.SoundController;
@@ -59,6 +60,11 @@ import com.heal.dominic.Splash.Splash;
 @SuppressWarnings("serial")
 public class Application extends LoginGUI implements Runnable {
 	public Application() {
+		setTitle("MyTweetHub - Making Twitter, Simple");
+		setResizable(false);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setBounds(100, 100, 1054, 590);
+		setLocationRelativeTo(null);
 	}
 
 	private static JPanel contentPane;
@@ -66,7 +72,6 @@ public class Application extends LoginGUI implements Runnable {
 	protected static JScrollPane usertimeline;
 	private static JList<String> trends = null;
 	private static JTextField txtPostATweet;
-	private JPanel panel_4;
 	private JButton BtnToggleTimeline;
 	protected static boolean UpdateFlag = false;
 	protected static JPanel panel_Timeline = new JPanel();
@@ -74,7 +79,7 @@ public class Application extends LoginGUI implements Runnable {
 	//static ImageIcon[] profileimages;
 	static String statusArr[];
 	static JFrame frame;
-	private static JLabel lblNewLabel;
+	private static JLabel lblStatisticsBackground;
 	private static int CardCounter = 0;
 	static int row = 0;
 	private static JMenuItem mntmRetweet;
@@ -299,40 +304,467 @@ public class Application extends LoginGUI implements Runnable {
 		panel_Timeline.add(hometimeline);
 	}
 
-	/** Returns an ImageIcon, or null if the path was invalid. */
 
-	protected static ImageIcon createImageIcon(URL path) {
-		java.net.URL imgURL = path;
-		if (imgURL != null) {
-			return new ImageIcon(imgURL);
-		} else {
-			System.err.println("Couldn't find file: " + path);
-			return null;
-		}
-	}
-
-	/* Displays Logged-in User Tweets */
+	/* Method Which Controls Posting a Tweet */
 
 	public static void Posting() {
-		if (txtPostATweet.getText() != POST_MESSAGE
-				&& txtPostATweet.getText() != "") {
+		if (txtPostATweet.getText() != POST_MESSAGE	&& txtPostATweet.getText() != "") {
 			try {
-				Twitter twitter = getTwitter();
+				
 				twitter.updateStatus(txtPostATweet.getText());
+				
 				txtPostATweet.setText("");
-				JOptionPane.showMessageDialog(null,
-						"You have successfully posted a tweet.");
+				
+				JOptionPane.showMessageDialog(null,	"You have successfully posted a tweet.");
 			} catch (TwitterException te) {
 				te.printStackTrace();
-				JOptionPane.showMessageDialog(null,
-						"Failed to post tweet, Try Again!");
+				JOptionPane.showMessageDialog(null,	"Failed to post tweet, Try Again!");
 			}
 		} else {
-			JOptionPane.showMessageDialog(null,
-					"Please enter text before sending a Tweet.");
+			JOptionPane.showMessageDialog(null,	"Please enter text before sending a Tweet.");
 		}
 	}
 
+	/* Create the frame.
+	 * 
+	 * @throws UnsupportedLookAndFeelException
+	 */
+	public void run() {
+		try {
+			Trending.getTrending();
+			Timelines.getTimeLine();
+			TimelineGUI();
+			Timelines.getUserTimeLine();
+
+		} catch (IllegalStateException e) {
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (TwitterException e) {
+			e.printStackTrace();
+		}
+
+		contentPane = new JPanel();
+		contentPane.setLayout(null);
+		setContentPane(contentPane);
+		
+		JButton btnClose = new JButton(ImageController.Image_Close);
+		btnClose.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnClose.setSize(16, 16);
+		btnClose.setLocation(1029, 3);
+		btnClose.setFocusPainted(false);
+		btnClose.setBorder(BorderFactory.createEmptyBorder());
+		btnClose.setBorderPainted(false);
+		btnClose.setContentAreaFilled(false);
+		btnClose.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
+
+		getContentPane().add(btnClose);
+
+		panel_Statistics.setBorder(null);
+		panel_Statistics.setBackground(new Color(102, 204, 255));
+		panel_Statistics.setBounds(0, 0, 208, 152);;
+		panel_Statistics.setLayout(null);
+		contentPane.add(panel_Statistics);
+
+		JLabel lblWelcome = new JLabel(UserData.getName());
+		lblWelcome.setFont(new Font("Myriad Pro", Font.PLAIN, 12));
+		lblWelcome.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+		lblWelcome.setBounds(68, 11, 96, 14);
+		lblWelcome.setForeground(new Color(255, 255, 255));
+		panel_Statistics.add(lblWelcome);
+
+		JLabel lblUsername = new JLabel("@" + UserData.getUsername());
+		lblUsername.setHorizontalAlignment(SwingConstants.TRAILING);
+		lblUsername.setFont(new Font("Myriad Pro", Font.ITALIC, 10));
+		lblUsername.setVerticalAlignment(SwingConstants.TOP);
+		lblUsername.setBounds(61, 30, 103, 21);
+		lblUsername.setForeground(new Color(255, 255, 255));
+		panel_Statistics.add(lblUsername);
+
+		final JLabel lblTweets = new JLabel("TOTAL TWEETS:");
+		lblTweets.setForeground(Color.WHITE);
+		lblTweets.setFont(new Font("Segoe UI", Font.BOLD, 10));
+		lblTweets.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+		lblTweets.setBounds(45, 125, 100, 14);
+		panel_Statistics.add(lblTweets);
+
+		JLabel lblFavourite = new JLabel("FAVOURITES");
+		lblFavourite.setHorizontalAlignment(SwingConstants.CENTER);
+		lblFavourite.setForeground(new Color(128, 128, 128));
+		lblFavourite.setFont(new Font("Segoe UI", Font.BOLD, 8));
+		lblFavourite.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+		lblFavourite.setBounds(136, 90, 67, 14);
+		panel_Statistics.add(lblFavourite);
+
+		JLabel lblFavouriteCount = new JLabel(Integer.toString(UserData.getFavouriteCn()));
+		lblFavouriteCount.setHorizontalAlignment(SwingConstants.CENTER);
+		lblFavouriteCount.setFont(new Font("Segoe UI", Font.BOLD, 12));
+		lblFavouriteCount.setCursor(Cursor
+				.getPredefinedCursor(Cursor.TEXT_CURSOR));
+		lblFavouriteCount.setForeground(new Color(0, 191, 255));
+		lblFavouriteCount.setBounds(135, 73, 68, 14);
+		panel_Statistics.add(lblFavouriteCount);
+
+		JLabel lblFollowers = new JLabel("FOLLOWERS");
+		lblFollowers.setHorizontalAlignment(SwingConstants.CENTER);
+		lblFollowers.setForeground(new Color(128, 128, 128));
+		lblFollowers.setFont(new Font("Segoe UI", Font.BOLD, 8));
+		lblFollowers.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+		lblFollowers.setBounds(0, 90, 70, 14);
+		panel_Statistics.add(lblFollowers);
+
+		JLabel lblFollowerCount = new JLabel(Integer.toString(UserData.getFollowerCnt()));
+		lblFollowerCount.setHorizontalAlignment(SwingConstants.CENTER);
+		lblFollowerCount.setFont(new Font("Segoe UI", Font.BOLD, 12));
+		lblFollowerCount.setCursor(Cursor
+				.getPredefinedCursor(Cursor.TEXT_CURSOR));
+		lblFollowerCount.setForeground(new Color(0, 191, 255));
+		lblFollowerCount.setBounds(4, 73, 65, 14);
+		panel_Statistics.add(lblFollowerCount);
+
+		JLabel lblFollowing = new JLabel("FOLLOWING");
+		lblFollowing.setHorizontalAlignment(SwingConstants.CENTER);
+		lblFollowing.setForeground(new Color(128, 128, 128));
+		lblFollowing.setFont(new Font("Segoe UI", Font.BOLD, 8));
+		lblFollowing.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+		lblFollowing.setBounds(71, 90, 64, 14);
+		panel_Statistics.add(lblFollowing);
+
+		JLabel lblFollowingCount = new JLabel(Integer.toString(UserData.getFollowingCnt()));
+		lblFollowingCount.setHorizontalAlignment(SwingConstants.CENTER);
+		lblFollowingCount.setFont(new Font("Segoe UI", Font.BOLD, 12));
+		lblFollowingCount.setCursor(Cursor
+				.getPredefinedCursor(Cursor.TEXT_CURSOR));
+		lblFollowingCount.setForeground(new Color(0, 191, 255));
+		lblFollowingCount.setBounds(71, 73, 63, 14);
+		panel_Statistics.add(lblFollowingCount);
+
+		JLabel lblTweetsCount = new JLabel(Integer.toString(UserData.getTweetCnt()));
+		lblTweetsCount.setHorizontalAlignment(SwingConstants.LEFT);
+		lblTweetsCount.setFont(new Font("Segoe UI", Font.BOLD, 10));
+		lblTweetsCount
+		.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
+		lblTweetsCount.setForeground(Color.WHITE);
+		lblTweetsCount.setBounds(143, 125, 57, 14);
+		panel_Statistics.add(lblTweetsCount);
+
+		final JLabel lblHomebutton = new JLabel();
+		lblHomebutton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		lblHomebutton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				BtnToggleTimeline.doClick();
+			}
+		});
+		lblHomebutton.setBounds(174, 7, 30, 57);
+		panel_Statistics.add(lblHomebutton);
+
+		JLabel lblDefault_Pic = new JLabel();
+		lblDefault_Pic.setBounds(10, 11, 48, 48);
+		lblDefault_Pic.setBorder(new LineBorder(Color.WHITE, 2, true));
+		lblDefault_Pic.setToolTipText("Its you!");
+		lblDefault_Pic.setIcon(new ImageIcon(UserData.getProfilePic()));
+		lblDefault_Pic.setIcon(new ImageIcon(UserData.getProfilePic()));
+		panel_Statistics.add(lblDefault_Pic);
+
+		lblStatisticsBackground = new JLabel();
+		lblStatisticsBackground.setBorder(null);
+		lblStatisticsBackground.setIcon(new ImageIcon(getClass().getResource(
+				"/images/Statistics_panel_new.png")));
+		lblStatisticsBackground.setBounds(0, 0, 208, 152);
+		panel_Statistics.add(lblStatisticsBackground);
+
+		final Panel panelStatistics = new Panel();
+		panelStatistics.setLayout(null);
+		panelStatistics.setBackground(new Color(102, 204, 255));
+
+		JLabel lblWelcomeTitle = new JLabel("Welcome:");
+		lblWelcomeTitle.setForeground(Color.WHITE);
+		lblWelcomeTitle.setBounds(5, 5, 149, 14);
+		panelStatistics.add(lblWelcomeTitle);
+
+		JLabel lblRealName = new JLabel((String) null);
+		lblRealName.setForeground(Color.WHITE);
+		lblRealName.setBounds(68, 5, 86, 14);
+		panelStatistics.add(lblRealName);
+
+		JLabel lblStatisticsTitle = new JLabel("Your Statistics:");
+		lblStatisticsTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		lblStatisticsTitle.setBounds(0, 91, 154, 14);
+		panelStatistics.add(lblStatisticsTitle);
+
+		JLabel lblFavouritesTitle = new JLabel("Favourites:");
+		lblFavouritesTitle.setBounds(5, 156, 70, 14);
+		panelStatistics.add(lblFavouritesTitle);
+
+		JLabel lblFavouritesValue = new JLabel("0");
+		lblFavouritesValue.setBounds(70, 156, 53, 14);
+		panelStatistics.add(lblFavouritesValue);
+
+		JLabel lblFollowersTitle = new JLabel("Followers:");
+		lblFollowersTitle.setBounds(5, 116, 70, 14);
+		panelStatistics.add(lblFollowersTitle);
+
+		JLabel lblFollowersValue = new JLabel("0");
+		lblFollowersValue.setBounds(70, 116, 46, 14);
+		panelStatistics.add(lblFollowersValue);
+
+		JLabel lblFollowingTitle = new JLabel("Following:");
+		lblFollowingTitle.setBounds(5, 136, 70, 14);
+		panelStatistics.add(lblFollowingTitle);
+
+		JLabel lblFollowingValue = new JLabel("0");
+		lblFollowingValue.setBounds(70, 136, 46, 14);
+		panelStatistics.add(lblFollowingValue);
+
+		JLabel lblTweetCount = new JLabel();
+		lblTweetCount.setBounds(5, 30, 149, 134);
+		panelStatistics.add(lblTweetCount);
+
+		final JButton btnRefresh = new JButton("Refresh");
+		btnRefresh.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnRefresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				btnRefresh.setEnabled(true);
+				refresh_timer = 5;
+				new SwingWorker<Object, Object>(){
+					@Override
+					protected Object doInBackground() {
+						try {
+
+							panel_Timeline.remove(hometimeline);
+							panel_Timeline.remove(usertimeline);
+							
+							lblStatisticsBackground.setIcon(new ImageIcon(getClass().getResource(
+									"/images/Statistics_panel_new.png")));
+							Timelines.getTimeLine();
+							TimelineGUI();
+							Timelines.getUserTimeLine();
+							
+							panel_Timeline.updateUI();
+							panel_Statistics.updateUI();
+
+						} catch (MalformedURLException e) {
+							e.printStackTrace();
+						} catch (TwitterException e) {
+							e.printStackTrace();
+						}
+
+						disableRefreshButton(btnRefresh);
+						SoundController.playPopSound();
+						
+						return null;
+					}
+				}.execute();
+			}
+		});
+		btnRefresh.setUI(new BEButtonUI()
+		.setNormalColor(BEButtonUI.NormalColor.normal));
+		btnRefresh.setBounds(4, 160, 200, 23);
+		contentPane.add(btnRefresh);
+
+		JPanel panelTrending = new JPanel();
+		panelTrending.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		panelTrending.setForeground(new Color(255, 255, 255));
+		panelTrending.setOpaque(false);
+		panelTrending.setFont(new Font("Segoe UI", Font.BOLD, 12));
+		panelTrending.setBackground(new Color(255, 255, 255));
+		panelTrending.setBounds(33, 219, 175, 278);
+		contentPane.add(panelTrending);
+
+		JButton btnLogout = new JButton("Logout");
+		btnLogout.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnLogout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				logoutButton(evt);
+			}
+		});
+
+		btnLogout.setForeground(new Color(255, 255, 255));
+		btnLogout.setBackground(new Color(255, 255, 255));
+		btnLogout.setBounds(6, 556, 199, 23);
+		btnLogout.setUI(new BEButtonUI()
+		.setNormalColor(BEButtonUI.NormalColor.red));
+		contentPane.add(btnLogout);
+
+		panel_Timeline.setBounds(215, 55, 836, 524);
+		contentPane.add(panel_Timeline);
+
+		trends.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		panelTrending.add(trends);
+		panelTrending.setLayout(new FlowLayout(FlowLayout.LEADING, 5, 5));
+
+		txtPostATweet = new JTextField(140);
+		txtPostATweet.setBorder(null);
+		txtPostATweet.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				txtPostATweet.setText("");
+			}
+		});
+		txtPostATweet.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		txtPostATweet.setText(POST_MESSAGE);
+		txtPostATweet.setBounds(215, 29, 740, 23);
+		txtPostATweet.setColumns(10);
+		contentPane.add(txtPostATweet);
+
+		JButton btnPost = new JButton("Post");
+		btnPost.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Posting();
+			}
+		});
+		btnPost.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnPost.setFont(new Font("Tahoma", Font.PLAIN, 11));
+		btnPost.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.normal));
+		btnPost.setBounds(965, 30, 80, 23);
+		contentPane.add(btnPost);
+
+		panelTrending = new JPanel();
+		panelTrending.setBackground(new Color(102, 204, 255));
+		panelTrending.setBounds(0, 194, 208, 303);
+		contentPane.add(panelTrending);
+		panelTrending.setLayout(null);
+
+		JLabel lblTrendingBg = new JLabel();
+		lblTrendingBg.setBounds(0, 0, 208, 303);
+		lblTrendingBg.setIcon(new ImageIcon(getClass().getResource(
+				"/images/Trending_panel.png")));
+		panelTrending.add(lblTrendingBg);
+
+		BtnToggleTimeline = new JButton("Switch Timeline");
+		BtnToggleTimeline.setCursor(Cursor
+				.getPredefinedCursor(Cursor.HAND_CURSOR));
+		BtnToggleTimeline.setBorder(null);
+		BtnToggleTimeline.setBackground(Color.WHITE);
+		BtnToggleTimeline.setForeground(new Color(255, 255, 255));
+		BtnToggleTimeline.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				CardLayout c1 = (CardLayout) (panel_Timeline.getLayout());
+				c1.next(panel_Timeline);
+				if (CardCounter % 2 == 0) {
+					lblStatisticsBackground.setIcon(new ImageIcon(getClass().getResource(
+							"/images/Statistics_panel_friends.png")));
+				} else {
+					lblStatisticsBackground.setIcon(new ImageIcon(getClass().getResource(
+							"/images/Statistics_panel_new.png")));
+				}
+				CardCounter++;
+				disableButton(BtnToggleTimeline);
+			}
+		});
+		BtnToggleTimeline.setBounds(6, 504, 199, 23);
+		BtnToggleTimeline.setUI(new BEButtonUI()
+		.setNormalColor(BEButtonUI.NormalColor.green));
+		contentPane.add(BtnToggleTimeline);
+
+		JButton btnGlobalView = new JButton("Globe View");
+		btnGlobalView.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnGlobalView.setBorder(null);
+		btnGlobalView.setForeground(new Color(255, 255, 255));
+		btnGlobalView.setUI(new BEButtonUI()
+		.setNormalColor(BEButtonUI.NormalColor.lightBlue));
+		btnGlobalView.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				new Map().setVisible(true);
+			}
+		});
+		btnGlobalView.setBounds(6, 531, 199, 23);
+		contentPane.add(btnGlobalView);
+
+		JLabel lblLeftBg = new JLabel("");
+		lblLeftBg.setBounds(0, 0, 208, 592);
+		lblLeftBg.setOpaque(true);
+		lblLeftBg.setBackground(new Color(0x0099c5));
+		contentPane.add(lblLeftBg);
+
+		JLabel lblRightBg = new JLabel("");
+		lblRightBg.setBounds(208, 0, 849, 593);
+		lblRightBg.setIcon(new ImageIcon(getClass().getResource("/images/BG.png")));
+		contentPane.add(lblRightBg);
+
+		Splash.frame.dispose();
+		SoundController.playLoginSound();
+		setVisible(true);
+	}
+
+	/*
+	 * This method prevents users from spamming buttons
+	 */
+
+	private static void disableButton(final JButton b) {
+		((Component) b).setEnabled(false);
+		new SwingWorker() {
+			@Override 
+			protected Object doInBackground() throws Exception {
+				Thread.sleep(500);
+				return null;
+			}
+			@Override
+			protected void done() {
+				 b.setEnabled(true);
+			}
+		}.execute();
+	}
+	
+	/*
+	 * This method sets the timer for the Refresh button to avoid exceeding
+	 * API call count.
+	 */
+	private static void disableRefreshButton(final JButton b) {
+		b.setEnabled(false);
+		
+		new SwingWorker() {
+			@Override protected Object doInBackground() throws Exception {
+				int refresh_timer = 120;
+				while(refresh_timer != 0){
+					b.setText("Refreshing Enabled in: " + refresh_timer);
+					Thread.sleep(1000);
+					refresh_timer--;
+				}
+				b.setEnabled(true);
+				b.setText("Refresh");
+				return null;
+			}
+			@Override protected void done() {
+				((Component) b).setEnabled(true);
+			}
+		}.execute();
+	}
+	
+	protected void logoutButton(ActionEvent evt) {
+		this.dispose();
+		new LoginGUI().setVisible(true);
+	}
+
+	/* 
+	 * Popup Listener for Timeline 
+	 */
+	protected static void addPopup(Component component, final JPopupMenu popup) {
+		component.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				if (e.isPopupTrigger()) {
+					showMenu(e);
+				}
+			}
+
+			public void mouseReleased(MouseEvent e) {
+				if (e.isPopupTrigger()) {
+					showMenu(e);
+				}
+			}
+
+			private void showMenu(MouseEvent e) {
+				popup.show(e.getComponent(), e.getX(), e.getY());
+			}
+		});
+	}
+	
+	
 	protected static void setTrendingList(JList<String> trendingList) {
 		trends = trendingList;
 
@@ -361,451 +793,5 @@ public class Application extends LoginGUI implements Runnable {
 	public JPanel getTimeLinePanel() {
 		return panel_Timeline;
 	}
-	/**
-	 * Create the frame.
-	 * 
-	 * @throws UnsupportedLookAndFeelException
-	 */
-	public void run() {
-		try {
-			Trending.getTrending();
-			Timelines.getTimeLine();
-			TimelineGUI();
-			Timelines.getUserTimeLine();
-
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (TwitterException e) {
-			e.printStackTrace();
-		}
-		setTitle("MyTweetHub - Making Twitter, Simple");
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1054, 590);
-		setLocationRelativeTo(null);
-
-		contentPane = new JPanel();
-		contentPane.setBackground(Color.WHITE);
-		contentPane.setBorder(new TitledBorder(null, "", TitledBorder.LEADING,
-				TitledBorder.TOP, null, null));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-
-
-		JButton btnClose = new JButton(ImageController.Image_Close);
-		btnClose.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnClose.setSize(16, 16);
-		btnClose.setLocation(1029, 3);
-		btnClose.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				System.exit(0);
-			}
-		});
-		btnClose.setFocusPainted(false);
-		btnClose.setBorder(BorderFactory.createEmptyBorder());
-		btnClose.setBorderPainted(false);
-		btnClose.setContentAreaFilled(false);
-
-
-		getContentPane().add(btnClose);
-
-		panel_Statistics.setBorder(null);
-		panel_Statistics.setBackground(new Color(102, 204, 255));
-		panel_Statistics.setBounds(0, 0, 208, 152);
-		contentPane.add(panel_Statistics);
-		panel_Statistics.setLayout(null);
-
-		JLabel lblWelcome = new JLabel(Name);
-		lblWelcome.setFont(new Font("Myriad Pro", Font.PLAIN, 12));
-		lblWelcome.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
-		lblWelcome.setBounds(68, 11, 96, 14);
-		lblWelcome.setForeground(new Color(255, 255, 255));
-		panel_Statistics.add(lblWelcome);
-
-		JLabel lblUsername = new JLabel("@" + Username);
-		lblUsername.setHorizontalAlignment(SwingConstants.TRAILING);
-		lblUsername.setFont(new Font("Myriad Pro", Font.ITALIC, 10));
-		lblUsername.setVerticalAlignment(SwingConstants.TOP);
-		lblUsername.setBounds(61, 30, 103, 21);
-		lblUsername.setForeground(new Color(255, 255, 255));
-		panel_Statistics.add(lblUsername);
-
-		final JLabel lblTweets = new JLabel("TOTAL TWEETS:");
-		lblTweets.setForeground(Color.WHITE);
-		lblTweets.setFont(new Font("Segoe UI", Font.BOLD, 10));
-		lblTweets.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
-		lblTweets.setBounds(45, 125, 100, 14);
-		panel_Statistics.add(lblTweets);
-
-		JLabel lblFavourite = new JLabel("FAVOURITES");
-		lblFavourite.setHorizontalAlignment(SwingConstants.CENTER);
-		lblFavourite.setForeground(new Color(128, 128, 128));
-		lblFavourite.setFont(new Font("Segoe UI", Font.BOLD, 8));
-		lblFavourite.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
-		lblFavourite.setBounds(136, 90, 67, 14);
-		panel_Statistics.add(lblFavourite);
-
-		JLabel lblFavouriteCount = new JLabel(Integer.toString(FavouriteCnt));
-		lblFavouriteCount.setHorizontalAlignment(SwingConstants.CENTER);
-		lblFavouriteCount.setFont(new Font("Segoe UI", Font.BOLD, 12));
-		lblFavouriteCount.setCursor(Cursor
-				.getPredefinedCursor(Cursor.TEXT_CURSOR));
-		lblFavouriteCount.setForeground(new Color(0, 191, 255));
-		lblFavouriteCount.setBounds(135, 73, 68, 14);
-		panel_Statistics.add(lblFavouriteCount);
-
-		JLabel lblFollowers = new JLabel("FOLLOWERS");
-		lblFollowers.setHorizontalAlignment(SwingConstants.CENTER);
-		lblFollowers.setForeground(new Color(128, 128, 128));
-		lblFollowers.setFont(new Font("Segoe UI", Font.BOLD, 8));
-		lblFollowers.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
-		lblFollowers.setBounds(0, 90, 70, 14);
-		panel_Statistics.add(lblFollowers);
-
-		JLabel lblFollowerCount = new JLabel(Integer.toString(FollowersCnt));
-		lblFollowerCount.setHorizontalAlignment(SwingConstants.CENTER);
-		lblFollowerCount.setFont(new Font("Segoe UI", Font.BOLD, 12));
-		lblFollowerCount.setCursor(Cursor
-				.getPredefinedCursor(Cursor.TEXT_CURSOR));
-		lblFollowerCount.setForeground(new Color(0, 191, 255));
-		lblFollowerCount.setBounds(4, 73, 65, 14);
-		panel_Statistics.add(lblFollowerCount);
-
-		JLabel lblFollowing = new JLabel("FOLLOWING");
-		lblFollowing.setHorizontalAlignment(SwingConstants.CENTER);
-		lblFollowing.setForeground(new Color(128, 128, 128));
-		lblFollowing.setFont(new Font("Segoe UI", Font.BOLD, 8));
-		lblFollowing.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
-		lblFollowing.setBounds(71, 90, 64, 14);
-		panel_Statistics.add(lblFollowing);
-
-		JLabel lblFollowingCount = new JLabel(Integer.toString(FollowingCnt));
-		lblFollowingCount.setHorizontalAlignment(SwingConstants.CENTER);
-		lblFollowingCount.setFont(new Font("Segoe UI", Font.BOLD, 12));
-		lblFollowingCount.setCursor(Cursor
-				.getPredefinedCursor(Cursor.TEXT_CURSOR));
-		lblFollowingCount.setForeground(new Color(0, 191, 255));
-		lblFollowingCount.setBounds(71, 73, 63, 14);
-		panel_Statistics.add(lblFollowingCount);
-
-		JLabel lblTweetsCount = new JLabel(Integer.toString(TweetCnt));
-		lblTweetsCount.setHorizontalAlignment(SwingConstants.LEFT);
-		lblTweetsCount.setFont(new Font("Segoe UI", Font.BOLD, 10));
-		lblTweetsCount
-		.setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
-		lblTweetsCount.setForeground(Color.WHITE);
-		lblTweetsCount.setBounds(143, 125, 57, 14);
-		panel_Statistics.add(lblTweetsCount);
-
-		final JLabel lblHomebutton = new JLabel();
-		lblHomebutton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		lblHomebutton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				BtnToggleTimeline.doClick();
-			}
-		});
-		lblHomebutton.setBounds(174, 7, 30, 57);
-		panel_Statistics.add(lblHomebutton);
-
-		JLabel lblDefault_Pic = new JLabel();
-		lblDefault_Pic.setBounds(10, 11, 48, 48);
-		panel_Statistics.add(lblDefault_Pic);
-		lblDefault_Pic.setBorder(new LineBorder(Color.WHITE, 2, true));
-		lblDefault_Pic.setToolTipText("Its you!");
-		lblDefault_Pic.setIcon(new ImageIcon(getProfilePic()));
-		lblDefault_Pic.setIcon(new ImageIcon(getProfilePic()));
-
-		lblNewLabel = new JLabel();
-		lblNewLabel.setBorder(null);
-		lblNewLabel.setIcon(new ImageIcon(getClass().getResource(
-				"/images/Statistics_panel_new.png")));
-		lblNewLabel.setBounds(0, 0, 208, 152);
-		panel_Statistics.add(lblNewLabel);
-
-		final Panel panel_2 = new Panel();
-		panel_2.setLayout(null);
-		panel_2.setBackground(new Color(102, 204, 255));
-
-		JLabel label_1 = new JLabel("Welcome:");
-		label_1.setForeground(Color.WHITE);
-		label_1.setBounds(5, 5, 149, 14);
-		panel_2.add(label_1);
-
-		JLabel label_2 = new JLabel((String) null);
-		label_2.setForeground(Color.WHITE);
-		label_2.setBounds(68, 5, 86, 14);
-		panel_2.add(label_2);
-
-		JLabel label_3 = new JLabel("Your Statistics:");
-		label_3.setHorizontalAlignment(SwingConstants.CENTER);
-		label_3.setBounds(0, 91, 154, 14);
-		panel_2.add(label_3);
-
-		JLabel label_4 = new JLabel("Favourites:");
-		label_4.setBounds(5, 156, 70, 14);
-		panel_2.add(label_4);
-
-		JLabel label_5 = new JLabel("0");
-		label_5.setBounds(70, 156, 53, 14);
-		panel_2.add(label_5);
-
-		JLabel label_6 = new JLabel("Followers:");
-		label_6.setBounds(5, 116, 70, 14);
-		panel_2.add(label_6);
-
-		JLabel label_7 = new JLabel("0");
-		label_7.setBounds(70, 116, 46, 14);
-		panel_2.add(label_7);
-
-		JLabel label_8 = new JLabel("Following:");
-		label_8.setBounds(5, 136, 70, 14);
-		panel_2.add(label_8);
-
-		JLabel label_9 = new JLabel("0");
-		label_9.setBounds(70, 136, 46, 14);
-		panel_2.add(label_9);
-
-		JLabel label_10 = new JLabel();
-		label_10.setBounds(5, 30, 149, 134);
-		panel_2.add(label_10);
-
-		final JButton btnRefresh = new JButton("Refresh");
-		btnRefresh.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnRefresh.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				btnRefresh.setEnabled(true);
-				refresh_timer = 5;
-				new SwingWorker<Object, Object>(){
-					@Override
-					protected Object doInBackground() {
-						try {
-
-							panel_Timeline.remove(hometimeline);
-							panel_Timeline.remove(usertimeline);
-							
-							lblNewLabel.setIcon(new ImageIcon(getClass().getResource(
-									"/images/Statistics_panel_new.png")));
-							Timelines.getTimeLine();
-							TimelineGUI();
-							Timelines.getUserTimeLine();
-							
-							panel_Timeline.updateUI();
-							panel_Statistics.updateUI();
-
-						} catch (MalformedURLException e) {
-							e.printStackTrace();
-						} catch (TwitterException e) {
-							e.printStackTrace();
-						}
-
-						Disable_Btn(btnRefresh, 1000);
-						SoundController.playPopSound();
-						
-						return null;
-					}
-
-				}.execute();
-
-			}
-		});
-		btnRefresh.setUI(new BEButtonUI()
-		.setNormalColor(BEButtonUI.NormalColor.normal));
-		btnRefresh.setBounds(4, 160, 200, 23);
-		contentPane.add(btnRefresh);
-
-		JPanel panel_Trending = new JPanel();
-		panel_Trending
-		.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		panel_Trending.setForeground(new Color(255, 255, 255));
-		panel_Trending.setOpaque(false);
-		panel_Trending.setFont(new Font("Segoe UI", Font.BOLD, 12));
-		panel_Trending.setBackground(new Color(255, 255, 255));
-		panel_Trending.setBounds(33, 219, 175, 278);
-		contentPane.add(panel_Trending);
-
-		JButton btnLogout = new JButton("Logout");
-		btnLogout.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnLogout.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				btnLogoutActionPerformed(evt);
-			}
-		});
-
-		btnLogout.setForeground(new Color(255, 255, 255));
-		btnLogout.setBackground(new Color(255, 255, 255));
-		btnLogout.setBounds(6, 556, 199, 23);
-		btnLogout.setUI(new BEButtonUI()
-		.setNormalColor(BEButtonUI.NormalColor.red));
-		contentPane.add(btnLogout);
-
-		panel_Timeline.setBounds(215, 55, 836, 524);
-		contentPane.add(panel_Timeline);
-
-		trends.setFont(new Font("SansSerif", Font.PLAIN, 11));
-		panel_Trending.add(trends);
-		panel_Trending.setLayout(new FlowLayout(FlowLayout.LEADING, 5, 5));
-
-		txtPostATweet = new JTextField(140);
-		txtPostATweet.setBorder(null);
-		txtPostATweet.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				txtPostATweet.setText("");
-			}
-		});
-		txtPostATweet.setFont(new Font("SansSerif", Font.PLAIN, 11));
-		txtPostATweet.setText(POST_MESSAGE);
-		txtPostATweet.setBounds(215, 29, 740, 23);
-		contentPane.add(txtPostATweet);
-		txtPostATweet.setColumns(10);
-
-		JButton btnPost = new JButton("Post");
-		btnPost.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				Posting();
-			}
-		});
-		btnPost.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnPost.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		btnPost.setUI(new BEButtonUI()
-		.setNormalColor(BEButtonUI.NormalColor.normal));
-		btnPost.setBounds(965, 30, 80, 23);
-		contentPane.add(btnPost);
-
-		panel_4 = new JPanel();
-		panel_4.setBackground(new Color(102, 204, 255));
-		panel_4.setBounds(0, 194, 208, 303);
-		contentPane.add(panel_4);
-		panel_4.setLayout(null);
-
-		JLabel lblTrendingBg = new JLabel();
-		lblTrendingBg.setBounds(0, 0, 208, 303);
-		lblTrendingBg.setIcon(new ImageIcon(getClass().getResource(
-				"/images/Trending_panel.png")));
-		panel_4.add(lblTrendingBg);
-
-		BtnToggleTimeline = new JButton("Switch Timeline");
-		BtnToggleTimeline.setCursor(Cursor
-				.getPredefinedCursor(Cursor.HAND_CURSOR));
-		BtnToggleTimeline.setBorder(null);
-		BtnToggleTimeline.setBackground(Color.WHITE);
-		BtnToggleTimeline.setForeground(new Color(255, 255, 255));
-		BtnToggleTimeline.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				CardLayout c1 = (CardLayout) (panel_Timeline.getLayout());
-				c1.next(panel_Timeline);
-				if (CardCounter % 2 == 0) {
-					lblNewLabel.setIcon(new ImageIcon(getClass().getResource(
-							"/images/Statistics_panel_friends.png")));
-				} else {
-					lblNewLabel.setIcon(new ImageIcon(getClass().getResource(
-							"/images/Statistics_panel_new.png")));
-				}
-				CardCounter++;
-				Disable_Object(BtnToggleTimeline);
-			}
-		});
-		BtnToggleTimeline.setBounds(6, 504, 199, 23);
-		BtnToggleTimeline.setUI(new BEButtonUI()
-		.setNormalColor(BEButtonUI.NormalColor.green));
-		contentPane.add(BtnToggleTimeline);
-
-		JButton btnNewButton = new JButton("Globe View");
-		btnNewButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnNewButton.setBorder(null);
-		btnNewButton.setForeground(new Color(255, 255, 255));
-		btnNewButton.setUI(new BEButtonUI()
-		.setNormalColor(BEButtonUI.NormalColor.lightBlue));
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				new Map().setVisible(true);
-			}
-		});
-		btnNewButton.setBounds(6, 531, 199, 23);
-		contentPane.add(btnNewButton);
-
-		JLabel lblLeftBg = new JLabel("");
-		lblLeftBg.setBounds(0, 0, 208, 592);
-		lblLeftBg.setOpaque(true);
-		lblLeftBg.setBackground(new Color(0x0099c5));
-		contentPane.add(lblLeftBg);
-
-		JLabel lblRightBg = new JLabel("");
-		lblRightBg.setBounds(208, 0, 849, 593);
-		lblRightBg.setIcon(new ImageIcon(getClass().getResource("/images/BG.png")));
-		contentPane.add(lblRightBg);
-
-		Splash.frame.dispose();
-		SoundController.playLoginSound();
-		setVisible(true);
-	}
-
-	/*
-	 * This method prevents users from spamming buttons
-	 */
-
-	private static void Disable_Object(final Object b) {
-		((Component) b).setEnabled(false);
-		new SwingWorker() {
-			@Override protected Object doInBackground() throws Exception {
-				Thread.sleep(500);
-				return null;
-			}
-			@Override protected void done() {
-				((Component) b).setEnabled(true);
-			}
-		}.execute();
-	}
 	
-	/*
-	 * This method sets the timer for the Refresh button to avoid exceeding
-	 * API call count.
-	 */
-	private static void Disable_Btn(final JButton b, final long ms) {
-		((Component) b).setEnabled(false);
-		new SwingWorker() {
-			@Override protected Object doInBackground() throws Exception {
-				while(refresh_timer != 0){
-				b.setText("Refreshing Enabled in: " + refresh_timer);
-				Thread.sleep(1000);
-				refresh_timer--;
-				
-				}
-				b.setEnabled(true);
-				b.setText("Refresh");
-				return null;
-			}
-			@Override protected void done() {
-				((Component) b).setEnabled(true);
-			}
-		}.execute();
-	}
-	
-	protected void btnLogoutActionPerformed(ActionEvent evt) {
-		this.dispose();
-		new LoginGUI().setVisible(true);
-	}
-
-	protected static void addPopup(Component component, final JPopupMenu popup) {
-		component.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					showMenu(e);
-				}
-			}
-
-			public void mouseReleased(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					showMenu(e);
-				}
-			}
-
-			private void showMenu(MouseEvent e) {
-				popup.show(e.getComponent(), e.getX(), e.getY());
-			}
-		});
-	}
 }

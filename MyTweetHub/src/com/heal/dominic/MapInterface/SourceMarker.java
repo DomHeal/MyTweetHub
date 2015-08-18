@@ -151,6 +151,7 @@ public class SourceMarker extends MapObjectImpl implements MapMarker {
     		e.printStackTrace();
     	}
     	g.drawImage(Image_Marker, position.x-15, position.y - 30,null); 
+    	
 
         if (getLayer() == null || getLayer().isVisibleTexts()) paintText(g, position);
     }

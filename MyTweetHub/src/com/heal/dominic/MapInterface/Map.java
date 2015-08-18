@@ -17,6 +17,7 @@ import com.heal.*;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -41,6 +42,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
 
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
 import org.openstreetmap.gui.jmapviewer.Coordinate;
@@ -77,7 +80,7 @@ import javax.swing.SwingConstants;
 public class Map extends JFrame implements JMapViewerEventListener {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private JLabel zoomLabel = null;
 	private JLabel zoomValue = null;
 	private JLabel lblMperName = null;
@@ -123,7 +126,7 @@ public class Map extends JFrame implements JMapViewerEventListener {
 
 		// Listen to the map viewer for user operations so components will
 		// receive events and update
-		 map().addJMVListener(this);
+		map().addJMVListener(this);
 
 		getContentPane().setLayout(new BorderLayout());
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -151,14 +154,14 @@ public class Map extends JFrame implements JMapViewerEventListener {
 				+ "left double click or mouse wheel to zoom.");
 		helpLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		helpPanel.add(helpLabel);
-		
+
 		final JLabel lblCoordinateValue = new JLabel("0");
 		lblCoordinateValue.setHorizontalAlignment(SwingConstants.CENTER);
 		helpPanel.add(lblCoordinateValue, BorderLayout.NORTH);
 		JButton button = new JButton("Fit Map Markers");
 		button.setForeground(new Color(255, 255, 255));
 		button.setUI(new BEButtonUI()
-				.setNormalColor(BEButtonUI.NormalColor.green));
+		.setNormalColor(BEButtonUI.NormalColor.green));
 		button.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -191,7 +194,7 @@ public class Map extends JFrame implements JMapViewerEventListener {
 		btnEnterCoordinates = new JButton("Enter Coordinates");
 		btnEnterCoordinates.setForeground(Color.WHITE);
 		btnEnterCoordinates.setUI(new BEButtonUI()
-				.setNormalColor(BEButtonUI.NormalColor.green));
+		.setNormalColor(BEButtonUI.NormalColor.green));
 		btnEnterCoordinates.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				MapInputWindows.InputCord();
@@ -201,7 +204,7 @@ public class Map extends JFrame implements JMapViewerEventListener {
 		btnID = new JButton("Enter Tweet ID");
 		btnID.setForeground(Color.WHITE);
 		btnID.setUI(new BEButtonUI()
-				.setNormalColor(BEButtonUI.NormalColor.green));
+		.setNormalColor(BEButtonUI.NormalColor.green));
 		btnID.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				MapInputWindows.InputID();
@@ -221,7 +224,7 @@ public class Map extends JFrame implements JMapViewerEventListener {
 			}
 		});
 		panelBottom.add(chckbxStatusVisible);
-		
+
 		showConnection = new JCheckBox("Show Connections");
 		showConnection.setBackground(Color.LIGHT_GRAY);
 		showConnection.addActionListener(new ActionListener() {
@@ -269,30 +272,30 @@ public class Map extends JFrame implements JMapViewerEventListener {
 				lblCoordinateValue.setText(map().getPosition(p).toString());
 			}
 		});
-		
+
 		map().addMouseListener(new MouseListener(){
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(e.getButton() == MouseEvent.BUTTON3)
-			    {
-				     Point p = e.getPoint();
-				     yField.setText(String.format("%s" ,(map().getPosition(p).getLon())));
-				     xField.setText(String.format("%s" ,(map().getPosition(p).getLat())));
-				     MapMenu.showMenu(e, p);
-			    }
+				{
+					Point p = e.getPoint();
+					yField.setText(String.format("%s" ,(map().getPosition(p).getLon())));
+					xField.setText(String.format("%s" ,(map().getPosition(p).getLat())));
+					MapMenu.showMenu(e, p);
+				}
 			}
 
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void mouseExited(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
@@ -307,15 +310,14 @@ public class Map extends JFrame implements JMapViewerEventListener {
 				if(e.getButton() == MouseEvent.BUTTON3){
 					setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 				}
-			
+
 			}
 		});
 
 		new DefaultMapController(map()) {
 
 			@Override
-			public void mouseMoved(MouseEvent e) {
-
+			public void mouseMoved(final MouseEvent e) {
 				Point p = e.getPoint();
 				int X = p.x + 3;
 				int Y = p.y + 3;
@@ -323,10 +325,9 @@ public class Map extends JFrame implements JMapViewerEventListener {
 				Iterator<MapMarker> i = ar.iterator();
 				while (i.hasNext()) {
 
-					MapMarker mapMarker = (MapMarker) i.next();
+					final Marker mapMarker = (Marker) i.next();
 
-					Point MarkerPosition = map.getMapPosition(
-							mapMarker.getLat(), mapMarker.getLon());
+					Point MarkerPosition = map.getMapPosition(mapMarker.getLat(), mapMarker.getLon());
 					if (MarkerPosition != null) {
 
 						int centerX = MarkerPosition.x;
@@ -335,55 +336,40 @@ public class Map extends JFrame implements JMapViewerEventListener {
 						// calculate the radius from the touch to the center of
 						// the dot
 						double radCircle = Math.sqrt((((centerX - X) * (centerX - X)) + (centerY - Y) * (centerY - Y)));
-
+						System.out.println(radCircle);
 						// if the radius is smaller then 23 (radius of a ball is
 						// 5), then it must be on the dot
-						if (radCircle < 8) {
-							// System.out.println(mapMarker.toString() +
-							// " is clicked");
+						if (radCircle < 20) {
+							System.out.println(mapMarker.toString() + " is clicked");
+
+
 							treeMap.getViewer().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-							WebLabel tip = new WebLabel(mapMarker.getName(), new ImageIcon(Toolkit.getDefaultToolkit().getImage(Map.class.getResource("/images/tweethub_icon.png"))));
-							TooltipManager.setTooltip ( tip, 
-									new ImageIcon(Toolkit.getDefaultToolkit().getImage(Map.class.getResource("/images/tweethub_icon.png"))), "Instant custom tooltip", TooltipWay.trailing, 0 );
-					        tip.setMargin(4);
-							map().setToolTipText(mapMarker.getName());
-							new MapPopUpInfo();
+							ToolTipManager.sharedInstance().setInitialDelay(0);
+							ToolTipManager.sharedInstance().setReshowDelay(0);
+							ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
 							
-//			                final WebPopOver popOver = new WebPopOver (p);
-//			                popOver.setCloseOnFocusLoss ( true );
-//			                popOver.setMargin ( 10 );
-//			                popOver.setLayout ( new VerticalFlowLayout () );
-//			                final WebImage icon = new WebImage ( WebLookAndFeel.getIcon ( 16 ) );
-//			                final WebLabel titleLabel = new WebLabel ( "Pop-over dialog", WebLabel.CENTER );
-//			                final WebButton closeButton = new WebButton (ImageController.Image_Close, new ActionListener ()
-//			                {
-//			                    @Override
-//			                    public void actionPerformed ( final ActionEvent e )
-//			                    {
-//			                        popOver.dispose ();
-//			                    }
-//			                } ).setUndecorated ( true );
-//			                //popOver.add ( new GroupPanel ( GroupingType.fillMiddle, 4, icon, titleLabel, ImageController.Image_Close).setMargin ( 0, 0, 10, 0 ) );
-//			                popOver.add ( new WebLabel ( "1. This is a custom detached pop-over dialog" ) );
-//			                popOver.add ( new WebLabel ( "2. You can move pop-over by dragging it" ) );
-//			                popOver.add ( new WebLabel ( "3. Pop-over will get closed if loses focus" ) );
-//			                popOver.add ( new WebLabel ( "4. Custom title added using standard components" ) );
-//			                popOver.show ( e.getComponent() );
-//							
-//							repaint();
-						} else if (radCircle > 8) {
+							String html = "<html><body><img src='" +
+									mapMarker.getPicture() +
+									"' width=48 height=48 align='middle'> " +
+									mapMarker.getName();
+							map().setToolTipText(html);
+
+						} else if (radCircle > 20) {
 							treeMap.getViewer().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 							repaint();
 							map().setToolTipText(null);
 						}
 					}
-
 				}
+
 			}
 		};
-
 	}
-	
+
+
+
+
+
 	public static void main (String[] args){
 		WebLookAndFeel.install();
 		new Map().setVisible(true);

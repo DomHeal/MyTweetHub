@@ -33,77 +33,9 @@ public class Marker extends MapObjectImpl implements MapMarker {
     private Coordinate coord;
     private double radius;
     private STYLE markerStyle;
+	private String picture;
 
-    /**
-     * Constructs a new {@code MapMarkerCircle}.
-     * @param coord Coordinates of the map marker
-     * @param radius Radius of the map marker position
-     */
-    public Marker(Coordinate coord, double radius) {
-        this(null, null, coord, radius);
-    }
-
-    /**
-     * Constructs a new {@code MapMarkerCircle}.
-     * @param name Name of the map marker
-     * @param coord Coordinates of the map marker
-     * @param radius Radius of the map marker position
-     */
-    public Marker(String name, Coordinate coord, double radius) {
-        this(null, name, coord, radius);
-    }
-
-    /**
-     * Constructs a new {@code MapMarkerCircle}.
-     * @param layer Layer of the map marker
-     * @param coord Coordinates of the map marker
-     * @param radius Radius of the map marker position
-     */
-    public Marker(Layer layer, Coordinate coord, double radius) {
-        this(layer, null, coord, radius);
-    }
-
-    /**
-     * Constructs a new {@code MapMarkerCircle}.
-     * @param lat Latitude of the map marker
-     * @param lon Longitude of the map marker
-     * @param radius Radius of the map marker position
-     */
-    public Marker(double lat, double lon, double radius) {
-        this(null, null, new Coordinate(lat, lon), radius);
-    }
-
-    /**
-     * Constructs a new {@code MapMarkerCircle}.
-     * @param layer Layer of the map marker
-     * @param lat Latitude of the map marker
-     * @param lon Longitude of the map marker
-     * @param radius Radius of the map marker position
-     */
-    public Marker(Layer layer, double lat, double lon, double radius) {
-        this(layer, null, new Coordinate(lat, lon), radius);
-    }
-
-    /**
-     * Constructs a new {@code MapMarkerCircle}.
-     * @param layer Layer of the map marker
-     * @param name Name of the map marker
-     * @param coord Coordinates of the map marker
-     * @param radius Radius of the map marker position
-     */
-    public Marker(Layer layer, String name, Coordinate coord, double radius) {
-        this(layer, name, coord, radius, STYLE.VARIABLE, getDefaultStyle());
-    }
-
-    /**
-     * Constructs a new {@code MapMarkerCircle}.
-     * @param layer Layer of the map marker
-     * @param name Name of the map marker
-     * @param coord Coordinates of the map marker
-     * @param radius Radius of the map marker position
-     * @param markerStyle Marker style (fixed or variable)
-     * @param style Graphical style
-     */
+ 
     public Marker(Layer layer, String name, Coordinate coord, double radius, STYLE markerStyle, Style style) {
         super(layer, name, style);
         this.markerStyle = markerStyle;
@@ -111,9 +43,10 @@ public class Marker extends MapObjectImpl implements MapMarker {
         this.radius = radius;
     }
 
-    public Marker(Layer layer, String name,Coordinate coord, Style style) {
+    public Marker(Layer layer, String name,Coordinate coord, Style style, String picture) {
     	  super(layer, name, style);
           this.coord = coord;
+          this.picture = picture;
 	}
 
 	@Override
@@ -126,7 +59,11 @@ public class Marker extends MapObjectImpl implements MapMarker {
         return coord.getLat();
     }
 
-    @Override
+    public String getPicture() {
+		return picture;
+	}
+
+	@Override
     public double getLon() {
         return coord.getLon();
     }
@@ -150,7 +87,7 @@ public class Marker extends MapObjectImpl implements MapMarker {
     	} catch (IOException e) {
     		e.printStackTrace();
     	}
-    	g.drawImage(Image_Marker, position.x-15, position.y - 30,null); 
+    	g.drawImage(Image_Marker, position.x-15, position.y - 20,null); 
 
         if (getLayer() == null || getLayer().isVisibleTexts()) paintText(g, position);
     }

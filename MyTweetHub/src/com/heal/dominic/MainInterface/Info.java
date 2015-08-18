@@ -1,7 +1,6 @@
 package com.heal.dominic.MainInterface;
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
@@ -11,16 +10,14 @@ import java.text.SimpleDateFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
 
-import com.alee.laf.button.WebButton;
-
-
 import twitter4j.Status;
 import twitter4j.TwitterException;
+
+import com.alee.laf.button.WebButton;
 
 
 public class Info  {
@@ -28,7 +25,7 @@ public class Info  {
 	private JFrame frame;
 
 	/**
-	 * Create the application.
+	 * Constructor which initializes GUI
 	 * @param status 
 	 * @throws MalformedURLException 
 	 */
@@ -83,10 +80,10 @@ public class Info  {
 		lblFollowing.setBounds(241, 159, 60, 14);
 		frame.getContentPane().add(lblFollowing);
 		
-		JLabel lblNameAns  = new JLabel(status.getUser().getName());
-		lblNameAns.setForeground(Color.WHITE);
-		lblNameAns.setBounds(204, 22, 178, 14);
-		frame.getContentPane().add(lblNameAns);
+		JLabel lblNameValue  = new JLabel(status.getUser().getName());
+		lblNameValue.setForeground(Color.WHITE);
+		lblNameValue.setBounds(204, 22, 178, 14);
+		frame.getContentPane().add(lblNameValue);
 		
 		JLabel lblScreenNameAns = new JLabel("@" + status.getUser().getScreenName());
 		lblScreenNameAns.setForeground(Color.WHITE);
@@ -137,24 +134,23 @@ public class Info  {
         btnClose.setContentAreaFilled(false);
         btnClose.setUndecorated(true);
 		frame.getContentPane().add(btnClose);
+		
 		DateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
 		JLabel lblJoinedTwitterAns = new JLabel(dateFormat.format(status.getCreatedAt()));
 		lblJoinedTwitterAns.setForeground(Color.WHITE);
 		lblJoinedTwitterAns.setBounds(204, 97, 178, 14);
 		frame.getContentPane().add(lblJoinedTwitterAns);
 		
-		JLabel lblNewLabel = new JLabel("Tweet ID:");
-		lblNewLabel.setForeground(Color.WHITE);
-		lblNewLabel.setBounds(99, 122, 83, 14);
-		frame.getContentPane().add(lblNewLabel);
+		JLabel lblTweetIDTitle = new JLabel("Tweet ID:");
+		lblTweetIDTitle.setForeground(Color.WHITE);
+		lblTweetIDTitle.setBounds(99, 122, 83, 14);
+		frame.getContentPane().add(lblTweetIDTitle);
 		
-		JLabel label = new JLabel(Long.toString(status.getId()));
-		label.setForeground(Color.WHITE);
-		label.setBounds(204, 122, 178, 14);
-		frame.getContentPane().add(label);
+		JLabel lblTweetIDValue = new JLabel(Long.toString(status.getId()));
+		lblTweetIDValue.setForeground(Color.WHITE);
+		lblTweetIDValue.setBounds(204, 122, 178, 14);
+		frame.getContentPane().add(lblTweetIDValue);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-		
-		
 	}
 }

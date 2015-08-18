@@ -1,11 +1,13 @@
 package com.heal.dominic.MapInterface;
 
 import java.awt.Color;
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
 import twitter4j.Status;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
@@ -22,6 +24,9 @@ public class MapMarkers extends Map{
 	private static final long serialVersionUID = -9196714448884139090L;
 
 	public static void locationMarkers() {
+		SwingUtilities.invokeLater(new Runnable() {
+		    public void run() {
+
 		try {
 			result = twitter.search(query);
 			for (int i = 0; result.getTweets().size() > i; i++) {
@@ -29,8 +34,9 @@ public class MapMarkers extends Map{
 				tweetCoordinate = new Coordinate(result.getTweets().get(i).getGeoLocation().getLatitude(),
 						result.getTweets().get(i).getGeoLocation().getLongitude());
 				Style style = new Style(Color.BLACK, Color.YELLOW, null, null);
-				 String TweetUsername = result.getTweets().get(i).getUser().getScreenName() + ": " + result.getTweets().get(i).getText();
-				map().addMapMarker(new Marker(layer, TweetUsername,tweetCoordinate, style));
+				String TweetUsername = result.getTweets().get(i).getUser().getScreenName() + ": " + result.getTweets().get(i).getText();
+				String picture = result.getTweets().get(i).getUser().getProfileImageURL();
+				map().addMapMarker(new Marker(layer, TweetUsername,tweetCoordinate, style, picture));
 				} catch(Exception e){}
 			}
 			layer.setVisibleTexts(chckbxStatusVisible.isSelected());
@@ -41,6 +47,8 @@ public class MapMarkers extends Map{
 			System.out.println("Error getting results");
 			e1.printStackTrace();
 		}
+		    }
+		});
 	}
 
 	public static void mentionsMarkers(long tweetID) {
@@ -65,9 +73,9 @@ public class MapMarkers extends Map{
 					tweetCoordinate = new Coordinate(mentions.get(i)
 							.getGeoLocation().getLatitude(), mentions.get(i)
 							.getGeoLocation().getLongitude());
-					Style style = new Style(Color.BLACK, Color.BLUE, null,
-							null);
-					map().addMapMarker(new Marker(layer, mentions.get(i).getUser().getScreenName()+ ": " + mentions.get(i).getText(),	tweetCoordinate, style));
+					Style style = new Style(Color.BLACK, Color.BLUE, null,null);
+					String picture = mentions.get(i).getUser().getProfileImageURL();
+					map().addMapMarker(new Marker(layer, mentions.get(i).getUser().getScreenName()+ ": " + mentions.get(i).getText(),	tweetCoordinate, style, picture));
 				}
 			}
 
@@ -103,7 +111,8 @@ public class MapMarkers extends Map{
 					
 				 if (status.getGeoLocation() != null){
 					 Coordinate tweetCoordinate = new Coordinate(status.getGeoLocation().getLatitude(), status.getGeoLocation().getLongitude());
-					 map().addMapMarker(new Marker(layer, status.getUser().getScreenName()+ ": " + status.getText(),	tweetCoordinate, null));
+					 String picture = status.getUser().getProfileImageURL();
+					 map().addMapMarker(new Marker(layer, status.getUser().getScreenName()+ ": " + status.getText(),	tweetCoordinate, null, picture));
 				 }
 		        }
 		} catch (TwitterException e) {

@@ -24,14 +24,12 @@ public class Trending extends Application {
 			}
 			
 			final WebList trendingList = new WebList();
-			trendingList.setModel(model);
-			setTrendingList(trendingList);
+			
+			trendingList.setModel(model);	
 			trendingList.setFixedCellHeight(30);
 			trendingList.setOpaque(false);
 			trendingList.setCellRenderer(new JlistRenderer());
 			trendingList.setDecorateSelection(false);
-			
-
 			trendingList.addMouseMotionListener(new MouseAdapter() {
 				public void mouseMoved(MouseEvent me) {
 					Point p = new Point(me.getX(), me.getY());
@@ -39,13 +37,11 @@ public class Trending extends Application {
 							.locationToIndex(p));
 				}
 			});
+			setTrendingList(trendingList);
 
 		} catch (TwitterException te) {
 			te.printStackTrace();
-			System.out.println("Failed to get current trends: "
-					+ te.getMessage());
+			System.out.println("Failed to get current trends: "+ te.getMessage());
 		}
-		
-		System.out.println("Trending Thread: Done");
 	}
 }

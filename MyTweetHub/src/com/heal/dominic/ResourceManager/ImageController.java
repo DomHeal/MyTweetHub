@@ -16,6 +16,7 @@ public class ImageController {
 	    public static final ImageIcon Image_Add = new ImageIcon(Toolkit.getDefaultToolkit().getImage(Map.class.getResource("/images/Add.png")));
 	    public static final ImageIcon Image_Search = new ImageIcon(Toolkit.getDefaultToolkit().getImage(Map.class.getResource("/images/search.png")));
 	    public static final ImageIcon Image_Cancel = new ImageIcon(Toolkit.getDefaultToolkit().getImage(Map.class.getResource("/images/Cancel.png")));
+	    public static final ImageIcon Image_Database = new ImageIcon(Toolkit.getDefaultToolkit().getImage(Map.class.getResource("/images/database.png")));
 	  
 		
 	    
