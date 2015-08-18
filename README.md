@@ -28,4 +28,5 @@ Known Issues
 <img src="http://i.imgur.com/WTLsFp4.png" /img>
 - Relation of Tweets
 <img src="http://i.imgur.com/nrre2Jw.png" /img>
+<img src="http://i.imgur.com/FVtUW1C.png/img>
 </p>
