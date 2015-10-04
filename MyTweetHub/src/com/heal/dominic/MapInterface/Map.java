@@ -99,6 +99,7 @@ public class Map extends JFrame implements JMapViewerEventListener {
 		// Listen to the map viewer for user operations so components will
 		// receive events and update
 		map().addJMVListener(this);
+	
 
 		getContentPane().setLayout(new BorderLayout());
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -151,7 +152,6 @@ public class Map extends JFrame implements JMapViewerEventListener {
 				map().setTileSource((TileSource) e.getItem());
 			}
 		});
-
 		panelTop.add(tileSourceSelector);
 
 		final JCheckBox showMapMarker = new JCheckBox("Map markers visible");
@@ -259,16 +259,10 @@ public class Map extends JFrame implements JMapViewerEventListener {
 			}
 
 			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
+			public void mouseEntered(MouseEvent e) {}
 
 			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
+			public void mouseExited(MouseEvent e) {}
 
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -282,7 +276,6 @@ public class Map extends JFrame implements JMapViewerEventListener {
 				if(e.getButton() == MouseEvent.BUTTON3){
 					setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 				}
-
 			}
 		});
 
