@@ -5,6 +5,9 @@ import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
@@ -35,6 +38,8 @@ import com.heal.dominic.MainInterface.Application;
 import com.heal.dominic.ResourceManager.ImageController;
 import com.heal.dominic.ResourceManager.SoundController;
 import com.heal.dominic.Splash.Splash;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class LoginGUI extends JFrame {
 	private static final long serialVersionUID = -6436102872206398435L;
@@ -52,6 +57,8 @@ public class LoginGUI extends JFrame {
 	public Thread thread_splashscreen;
 	public AccessToken accessToken;
 	private JLabel BackgroundLbl, PinLbl;
+
+	private static JLabel lblBrowser;
 
 	public LoginGUI() {
 		setUndecorated(true);
@@ -124,6 +131,23 @@ public class LoginGUI extends JFrame {
 		lblVerify.setIcon(new ImageIcon(getClass().getResource("/images/OK.png")));
 		lblVerify.setVisible(false);
 		getContentPane().add(lblVerify);
+		
+		lblBrowser = new JLabel();
+		lblBrowser.setIcon(new ImageIcon(getClass().getResource("/images/copylink.png")));
+		lblBrowser.setToolTipText("Copy Auth Link");
+		lblBrowser.setVisible(false);
+		lblBrowser.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		lblBrowser.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent mclicked) {
+				String myString = requestToken.getAuthorizationURL().toString();
+				StringSelection stringSelection = new StringSelection(myString);
+				Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
+				clpbrd.setContents(stringSelection, null);
+			}
+		});
+		lblBrowser.setBounds(99, 303, 16, 14);
+		getContentPane().add(lblBrowser);
 
 		BackgroundLbl = new JLabel();
 		BackgroundLbl.setIcon(new ImageIcon(getClass().getResource("/images/Twitte2r.png")));
@@ -151,9 +175,10 @@ public class LoginGUI extends JFrame {
 
 			try {
 				AccessToken accessToken = null;
-				final RequestToken requestToken = twitter.getOAuthRequestToken();
+				requestToken = twitter.getOAuthRequestToken();
 				/* Opens up the URL in default browser set be user */
 				try {
+					lblBrowser.setVisible(true);
 					Desktop.getDesktop().browse(new URL(requestToken.getAuthorizationURL()).toURI());
 				} catch (final Exception e) {
 				}
