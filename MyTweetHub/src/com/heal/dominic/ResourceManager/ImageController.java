@@ -1,9 +1,7 @@
 package com.heal.dominic.ResourceManager;
 
 import java.awt.Toolkit;
-import java.awt.image.BufferedImage;
 
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 import com.heal.dominic.MainInterface.Application;

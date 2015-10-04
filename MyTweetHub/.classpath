@@ -2,10 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="lib" path="E:/Downloads/beautyeye_lnf_v3.5_all_in_one/beautyeye_lnf_v3.5_all_in_one/dist/beautyeye_lnf.jar"/>
-	<classpathentry kind="lib" path="E:/Downloads/JMapViewer-1.04/JMapViewer.jar"/>
-	<classpathentry kind="lib" path="E:/Downloads/twitter4j-4.0.2/lib/twitter4j-core-4.0.2.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Dominic/Downloads/weblaf-complete-1.28.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Dominic/Downloads/jxmapviewer2-2.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Dominic/Downloads/twitter4j-4.0.4/lib/twitter4j-core-4.0.4.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/Users/Dominic/Downloads/twitter4j-4.0.4/twitter4j-core/javadoc/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/Dominic/Downloads/beautyeye_lnf_v3.5_all_in_one/beautyeye_lnf_v3.5_all_in_one/dist/beautyeye_lnf.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Dominic/Downloads/JMapViewer-1.10/JMapViewer.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

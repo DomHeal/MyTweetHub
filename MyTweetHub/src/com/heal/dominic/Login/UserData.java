@@ -1,9 +1,6 @@
 package com.heal.dominic.Login;
 
 import java.net.URL;
-
-import javax.swing.JTextField;
-
 import twitter4j.Twitter;
 
 public class UserData{

@@ -1,11 +1,8 @@
 // License: GPL. For details, see Readme.txt file.
 package com.heal.dominic.MapInterface;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -20,14 +17,6 @@ import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 
 import com.heal.dominic.MainInterface.Application;
 
-/**
- * A simple implementation of the {@link MapMarker} interface. Each map marker
- * is painted as a circle with a black border line and filled with a specified
- * color.
- *
- * @author Jan Peter Stotz
- *
- */
 public class SourceMarker extends MapObjectImpl implements MapMarker {
 
     private Coordinate coord;

@@ -5,17 +5,12 @@ package com.heal.dominic.Splash;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Toolkit;
-
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JProgressBar;
-import javax.swing.SwingUtilities;
 
-import com.alee.extended.progress.WebStepProgress;
 import com.alee.laf.progressbar.WebProgressBar;
-import com.heal.dominic.MainInterface.Application;
- 
+
 public class Splash extends Thread {
 	public static JLabel loadingResourcelbl = new JLabel("");
 	private final JLabel label = new JLabel("");

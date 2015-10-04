@@ -14,6 +14,9 @@ import twitter4j.TwitterException;
 import com.alee.laf.list.WebList;
 
 public class Trending extends Application {
+
+	private static final long serialVersionUID = 4885425671602620520L;
+
 	public static void getTrending() {
 		try {
 			Twitter twitter = getTwitter();

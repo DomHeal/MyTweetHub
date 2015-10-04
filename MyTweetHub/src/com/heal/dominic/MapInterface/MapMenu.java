@@ -1,12 +1,9 @@
 package com.heal.dominic.MapInterface;
 
 import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
-
-import javax.swing.ImageIcon;
 
 import com.alee.extended.menu.DynamicMenuType;
 import com.alee.extended.menu.WebDynamicMenu;

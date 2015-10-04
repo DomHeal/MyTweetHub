@@ -1,11 +1,8 @@
 // License: GPL. For details, see Readme.txt file.
 package com.heal.dominic.MapInterface;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.IOException;

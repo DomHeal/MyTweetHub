@@ -1,23 +1,8 @@
 package com.heal.dominic.MapInterface;
 import java.awt.BorderLayout;
-
-import com.alee.extended.image.WebImage;
-import com.alee.extended.layout.VerticalFlowLayout;
-import com.alee.extended.menu.DynamicMenuType;
-import com.alee.extended.menu.WebDynamicMenu;
-import com.alee.extended.panel.GroupPanel;
-import com.alee.extended.panel.GroupingType;
-import com.alee.extended.window.WebPopOver;
-import com.alee.laf.WebLookAndFeel;
-import com.alee.laf.button.WebButton;
-import com.alee.laf.label.WebLabel;
-import com.alee.managers.language.data.TooltipWay;
-import com.alee.managers.tooltip.TooltipManager;
-import com.heal.*;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -27,22 +12,18 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractButton;
-import javax.swing.Box;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
+import javax.swing.SwingConstants;
 import javax.swing.ToolTipManager;
 
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
@@ -51,9 +32,6 @@ import org.openstreetmap.gui.jmapviewer.DefaultMapController;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
 import org.openstreetmap.gui.jmapviewer.JMapViewerTree;
 import org.openstreetmap.gui.jmapviewer.Layer;
-import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
-import org.openstreetmap.gui.jmapviewer.MapPolygonImpl;
-import org.openstreetmap.gui.jmapviewer.Style;
 import org.openstreetmap.gui.jmapviewer.events.JMVCommandEvent;
 import org.openstreetmap.gui.jmapviewer.interfaces.JMapViewerEventListener;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
@@ -63,19 +41,14 @@ import org.openstreetmap.gui.jmapviewer.tilesources.MapQuestOpenAerialTileSource
 import org.openstreetmap.gui.jmapviewer.tilesources.MapQuestOsmTileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
-import twitter4j.GeoLocation;
-import twitter4j.Paging;
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.Status;
 import twitter4j.Twitter;
-import twitter4j.TwitterException;
 
+import com.alee.laf.WebLookAndFeel;
 import com.heal.dominic.Login.LoginGUI;
 import com.heal.dominic.MainInterface.Application;
-import com.heal.dominic.ResourceManager.ImageController;
-
-import javax.swing.SwingConstants;
 
 public class Map extends JFrame implements JMapViewerEventListener {
 
@@ -95,7 +68,6 @@ public class Map extends JFrame implements JMapViewerEventListener {
 	protected static JCheckBox showConnection;
 	static String Status;
 	static Twitter twitter = LoginGUI.getTwitter();
-	//static Twitter twitter= null;
 	protected static Query query;
 	protected static Coordinate tweetCoordinate;
 	protected static QueryResult result;
@@ -248,7 +220,7 @@ public class Map extends JFrame implements JMapViewerEventListener {
 
 		final JCheckBox showZoomControls = new JCheckBox("Show zoom controls");
 		showZoomControls.setBackground(Color.LIGHT_GRAY);
-		showZoomControls.setSelected(map().getZoomContolsVisible());
+		showZoomControls.setSelected(map().getZoomControlsVisible());
 		showZoomControls.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				map().setZoomContolsVisible(showZoomControls.isSelected());
@@ -366,10 +338,6 @@ public class Map extends JFrame implements JMapViewerEventListener {
 		};
 	}
 
-
-
-
-
 	public static void main (String[] args){
 		WebLookAndFeel.install();
 		new Map().setVisible(true);
@@ -402,6 +370,4 @@ public class Map extends JFrame implements JMapViewerEventListener {
 			updateZoomParameters();
 		}
 	}
-
-
 }

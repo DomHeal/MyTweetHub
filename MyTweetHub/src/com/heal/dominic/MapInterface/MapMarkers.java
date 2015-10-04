@@ -1,23 +1,21 @@
 package com.heal.dominic.MapInterface;
 
 import java.awt.Color;
-import java.net.URL;
 import java.util.Date;
 import java.util.List;
-import twitter4j.Status;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
-import org.openstreetmap.gui.jmapviewer.MapMarkerDot;
 import org.openstreetmap.gui.jmapviewer.MapPolygonImpl;
 import org.openstreetmap.gui.jmapviewer.Style;
 
-import com.heal.dominic.ResourceManager.SoundController;
-
 import twitter4j.Paging;
+import twitter4j.Status;
 import twitter4j.TwitterException;
+
+import com.heal.dominic.ResourceManager.SoundController;
 
 public class MapMarkers extends Map{
 

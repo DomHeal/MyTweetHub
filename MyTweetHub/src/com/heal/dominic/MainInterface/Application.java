@@ -18,8 +18,6 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
-import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -37,17 +35,12 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.LineBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
-
 import twitter4j.RateLimitStatus;
 import twitter4j.Status;
-import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 import com.heal.dominic.Login.LoginGUI;
@@ -698,7 +691,7 @@ public class Application extends LoginGUI implements Runnable {
 
 	private static void disableButton(final JButton b) {
 		((Component) b).setEnabled(false);
-		new SwingWorker() {
+		new SwingWorker<Object, Object>() {
 			@Override 
 			protected Object doInBackground() throws Exception {
 				Thread.sleep(500);
@@ -718,7 +711,7 @@ public class Application extends LoginGUI implements Runnable {
 	private static void disableRefreshButton(final JButton b) {
 		b.setEnabled(false);
 		
-		new SwingWorker() {
+		new SwingWorker<Object, Object>() {
 			@Override protected Object doInBackground() throws Exception {
 				int refresh_timer = 120;
 				while(refresh_timer != 0){
