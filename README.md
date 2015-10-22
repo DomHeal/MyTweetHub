@@ -7,7 +7,7 @@ Intructions
 - Accept permissions via automatic generated link in browser
 - Copy and paste code into myTweetHub
 - Click "Check" to validate code
-- if correct, proceed by using the Login button.
+- If correct, proceed by using the Login button.
 - Enjoy the application
 
 
