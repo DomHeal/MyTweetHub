@@ -3,6 +3,7 @@ Java, Twitter REST API, Twitter4j, JMapViewer, BeautyEye Library -This applicati
 
 Intructions
 -----------------------------------
+- Download <a href="https://github.com/DomHeal/MyTweetHub/releases">MyTweetHub.jar</a>
 - Open up MyTweethub.jar
 - Accept permissions via automatic generated link in browser
 - Copy and paste code into myTweetHub
@@ -21,6 +22,10 @@ Implemented Features
 - Username Search (Show recent Geotagged Tweets)
 - Geolocational Search (Search Recent Tweets in an Area)
 
+Development Logs
+------------------------------------
+<img src="http://www.nirmalhostel.com/images/arrow-27-xxl.png" height="16" width="16"/> Found <a href="https://github.com/DomHeal/MyTweetHub/tree/master/MyTweetHub/devlogs">Here</a>
+
 Future Plans
 ------------------------------------
 - Automatic Refreshing
@@ -30,6 +35,8 @@ Future Plans
 Known Issues
 ------------------------------------
 - If the user exceeds the API calls, it may cause the GUI to not display previous information
+- Slow map interaction / loading
+- Some alignment issues.
 
 <p align="center">
 <img src="http://i.imgur.com/6aRY6N9.png" /img>
