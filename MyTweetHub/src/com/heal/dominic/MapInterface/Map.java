@@ -141,7 +141,7 @@ public class Map extends JFrame implements JMapViewerEventListener {
 				map().setDisplayToFitMapMarkers();
 			}
 		});
-		JComboBox<TileSource> tileSourceSelector = new JComboBox<>(
+		JComboBox<TileSource> tileSourceSelector = new JComboBox<TileSource>(
 				new TileSource[] { new OsmTileSource.Mapnik(),
 						new OsmTileSource.CycleMap(),
 						new BingAerialTileSource(),
@@ -301,7 +301,7 @@ public class Map extends JFrame implements JMapViewerEventListener {
 						// calculate the radius from the touch to the center of
 						// the dot
 						double radCircle = Math.sqrt((((centerX - X) * (centerX - X)) + (centerY - Y) * (centerY - Y)));
-						System.out.println(radCircle);
+						//System.out.println(radCircle);
 						// if the radius is smaller then 23 (radius of a ball is
 						// 5), then it must be on the dot
 						if (radCircle < 20) {
@@ -340,9 +340,6 @@ public class Map extends JFrame implements JMapViewerEventListener {
 		return treeMap.getViewer();
 	}
 
-	/**
-	 * @param args
-	 */
 	private void updateZoomParameters() {
 		if (lblMperValue != null)
 			lblMperValue.setText(String.format("%s", map().getMeterPerPixel()));

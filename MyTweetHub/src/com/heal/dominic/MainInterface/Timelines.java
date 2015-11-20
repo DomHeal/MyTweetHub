@@ -124,9 +124,9 @@ public class Timelines extends Application {
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 		final JPopupMenu popupMenu = new JPopupMenu();
-		addPopup(userStatusJList, popupMenu);
-		/* Listener for Popup Menu and Get Selected row */
+		new PopUp().addPopup(userStatusJList, popupMenu);
 
+		/* Listener for Popup Menu and Get Selected row */
 		userStatusJList.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				if (SwingUtilities.isRightMouseButton(e)) {
@@ -145,7 +145,10 @@ public class Timelines extends Application {
 				try {
 					new Info(statusList2.get(row));
 
-				} catch (TwitterException | MalformedURLException e1) {
+				} catch (TwitterException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (MalformedURLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}

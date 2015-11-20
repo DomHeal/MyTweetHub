@@ -1,0 +1,14 @@
+---------------------------------------------
+Changes on 20-Nov-15
+---------------------------------------------
+
+- Login Authorisation is now more reliable, cleaner code and more efficient.
+    - No Longer uses infinite while loop until access token has been required.
+    - Now uses an Event Listener.
+    - Removed redundancies
+    - Fixed issues where users could not validate their PIN correctly.
+- Externalised certain methods into own classes.
+- lib folder containing all dependencies for this project.
+- build folder will have a runnable jar file for users to use MyTweetHub without compiling the code.
+- Removed eclipse project configuration files.
+- Getting ready for new Map Markers.

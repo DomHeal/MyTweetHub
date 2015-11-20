@@ -80,7 +80,7 @@ public class Marker extends MapObjectImpl implements MapMarker {
 
     	BufferedImage Image_Marker = null;
 		try {
-    		Image_Marker  = ImageIO.read(Application.class.getResource("/images/mapmarker.png"));
+    		Image_Marker  = ImageIO.read(Application.class.getResource("/images/map-pins.png"));
     	} catch (IOException e) {
     		e.printStackTrace();
     	}

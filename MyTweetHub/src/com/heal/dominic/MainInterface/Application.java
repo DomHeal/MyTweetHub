@@ -64,12 +64,10 @@ public class Application extends LoginGUI implements Runnable {
 	private static JScrollPane hometimeline;
 	protected static JScrollPane usertimeline;
 	private static JList<String> trends = null;
-	private static JTextField txtPostATweet;
+	protected static JTextField txtPostATweet;
 	private JButton BtnToggleTimeline;
-	protected static boolean UpdateFlag = false;
 	protected static JPanel panel_Timeline = new JPanel();
 	private static JPanel panel_Statistics = new JPanel();
-	//static ImageIcon[] profileimages;
 	static String statusArr[];
 	static JFrame frame;
 	private static JLabel lblStatisticsBackground;
@@ -80,9 +78,6 @@ public class Application extends LoginGUI implements Runnable {
 	private static JMenuItem mntmClose;
 	static JMenuItem mntmDelete;
 	protected static JMenuItem mntmGetInfo;
-	static java.util.Map<String, RateLimitStatus> rateLimitStatus;
-	static Timer timer;
-	static JLabel lblTimeCounter;
 	static String POST_MESSAGE = "POST A TWEET HERE...";
 	static List<Status> statusList;
 	static DefaultListModel<ListEntry> dlm = new DefaultListModel<ListEntry>();
@@ -128,7 +123,7 @@ public class Application extends LoginGUI implements Runnable {
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 		final JPopupMenu popupMenu = new JPopupMenu();
-		addPopup(imagestatusList, popupMenu);
+		new PopUp().addPopup(imagestatusList, popupMenu);
 
 		mntmGetInfo = new JMenuItem("Get Info");
 		mntmGetInfo.setIcon(new ImageIcon(Toolkit
@@ -140,7 +135,10 @@ public class Application extends LoginGUI implements Runnable {
 				try {
 					new Info(statusList.get(row));
 
-				} catch (TwitterException | MalformedURLException e1) {
+				} catch (TwitterException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (MalformedURLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
@@ -297,26 +295,6 @@ public class Application extends LoginGUI implements Runnable {
 		panel_Timeline.add(hometimeline);
 	}
 
-
-	/* Method Which Controls Posting a Tweet */
-
-	public static void Posting() {
-		if (txtPostATweet.getText() != POST_MESSAGE	&& txtPostATweet.getText() != "") {
-			try {
-				
-				twitter.updateStatus(txtPostATweet.getText());
-				
-				txtPostATweet.setText("");
-				
-				JOptionPane.showMessageDialog(null,	"You have successfully posted a tweet.");
-			} catch (TwitterException te) {
-				te.printStackTrace();
-				JOptionPane.showMessageDialog(null,	"Failed to post tweet, Try Again!");
-			}
-		} else {
-			JOptionPane.showMessageDialog(null,	"Please enter text before sending a Tweet.");
-		}
-	}
 
 	/* Create the frame.
 	 * 
@@ -608,7 +586,7 @@ public class Application extends LoginGUI implements Runnable {
 		JButton btnPost = new JButton("Post");
 		btnPost.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Posting();
+				new Posting();
 			}
 		});
 		btnPost.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -692,7 +670,7 @@ public class Application extends LoginGUI implements Runnable {
 	private static void disableButton(final JButton b) {
 		((Component) b).setEnabled(false);
 		new SwingWorker<Object, Object>() {
-			@Override 
+			@Override
 			protected Object doInBackground() throws Exception {
 				Thread.sleep(500);
 				return null;
@@ -703,14 +681,14 @@ public class Application extends LoginGUI implements Runnable {
 			}
 		}.execute();
 	}
-	
+
 	/*
 	 * This method sets the timer for the Refresh button to avoid exceeding
 	 * API call count.
 	 */
 	private static void disableRefreshButton(final JButton b) {
 		b.setEnabled(false);
-		
+
 		new SwingWorker<Object, Object>() {
 			@Override protected Object doInBackground() throws Exception {
 				int refresh_timer = 120;
@@ -734,42 +712,9 @@ public class Application extends LoginGUI implements Runnable {
 		new LoginGUI().setVisible(true);
 	}
 
-	/* 
-	 * Popup Listener for Timeline 
-	 */
-	protected static void addPopup(Component component, final JPopupMenu popup) {
-		component.addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					showMenu(e);
-				}
-			}
 
-			public void mouseReleased(MouseEvent e) {
-				if (e.isPopupTrigger()) {
-					showMenu(e);
-				}
-			}
-
-			private void showMenu(MouseEvent e) {
-				popup.show(e.getComponent(), e.getX(), e.getY());
-			}
-		});
-	}
-	
-	
 	protected static void setTrendingList(JList<String> trendingList) {
 		trends = trendingList;
-
-	}
-
-	public static boolean setLocalRetweeted(Status status) {
-		return true;
-
-	}
-
-	public static boolean isLocalRetweeted(Status status) {
-		return true;
 
 	}
 
@@ -782,9 +727,4 @@ public class Application extends LoginGUI implements Runnable {
 		usertimeline = scrollPane2;
 
 	}
-
-	public JPanel getTimeLinePanel() {
-		return panel_Timeline;
-	}
-	
 }

@@ -38,266 +38,217 @@ import com.heal.dominic.MainInterface.Application;
 import com.heal.dominic.ResourceManager.ImageController;
 import com.heal.dominic.ResourceManager.SoundController;
 import com.heal.dominic.Splash.Splash;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class LoginGUI extends JFrame {
-	private static final long serialVersionUID = -6436102872206398435L;
-	
-	protected static boolean buttonAccess;
-	protected static JButton btnLogin;
-	protected static String Error, Name, token, tokenSecret, Username;
-	protected static int FavouriteCnt, FollowersCnt, FollowingCnt;
-	protected static JLabel lblVerify;
-	protected static URL MiniProfilePic, ProfilePic;
-	public static JTextField Pintxtbox;
-	public static RequestToken requestToken;
-	protected static int TweetCnt;
-	protected static Twitter twitter;
-	public Thread thread_splashscreen;
-	public AccessToken accessToken;
-	private JLabel BackgroundLbl, PinLbl;
+    private static final long serialVersionUID = -6436102872206398435L;
 
-	private static JLabel lblBrowser;
+    private static JButton btnLogin;
+    protected static String token, tokenSecret;
+    private static JLabel lblVerify;
+    public static JTextField textboxPin;
+    public static RequestToken requestToken;
+    protected static Twitter twitter;
+    public Thread splashScreenThread;
+    public AccessToken accessToken;
+    private JLabel PinLbl;
 
-	public LoginGUI() {
-		setUndecorated(true);
-		setTitle("MyTweetHub - Making Twitter Simple");
-		setIconImage(new ImageIcon(getClass().getResource("/images/tweethub_icon.png")).getImage());
-		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		setBounds(new Rectangle(0, 0, 0, 0));
-		setMinimumSize(new Dimension(330, 450));
-		setResizable(false);
-		getContentPane().setLayout(null);
-		initComponents();
-		setLocationRelativeTo(null);
-		pack();
-	}
+    private static JLabel lblBrowser;
 
-	/**
-	 * Drawing GUI
-	 */
-	public void initComponents() {
+    public LoginGUI() {
+        setUndecorated(true);
+        setTitle("MyTweetHub - Making Twitter Simple");
+        setIconImage(new ImageIcon(getClass().getResource("/images/tweethub_icon.png")).getImage());
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setBounds(new Rectangle(0, 0, 0, 0));
+        setMinimumSize(new Dimension(330, 450));
+        setResizable(false);
+        getContentPane().setLayout(null);
+        initComponents();
+        setLocationRelativeTo(null);
+        pack();
+    }
 
-		Pintxtbox = new JTextField(5);
-		Pintxtbox.setHorizontalAlignment(SwingConstants.CENTER);
-		Pintxtbox.setBounds(120, 300, 90, 20);
-		getContentPane().add(Pintxtbox);
+    /**
+     * Drawing GUI
+     */
+    public void initComponents() {
 
-		PinLbl = new JLabel();
-		PinLbl.setForeground(new Color(255, 255, 255));
-		PinLbl.setText("Enter PIN:");
-		PinLbl.setBounds(140, 270, 70, 14);
-		getContentPane().add(PinLbl);
+        textboxPin = new JTextField(5);
+        textboxPin.setHorizontalAlignment(SwingConstants.CENTER);
+        textboxPin.setBounds(120, 300, 90, 20);
+        getContentPane().add(textboxPin);
 
-		btnLogin = new JButton();
-		btnLogin.setEnabled(true);
-		btnLogin.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnLogin.setText("Check");
-		btnLogin.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.normal));
-		btnLogin.setFocusPainted(false);
-		btnLogin.setBounds(120, 340, 90, 20);
-		btnLogin.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent evt) {
-				try {
-					loginButtonPressed(evt);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		getContentPane().add(btnLogin);
+        PinLbl = new JLabel();
+        PinLbl.setForeground(new Color(255, 255, 255));
+        PinLbl.setText("Enter PIN:");
+        PinLbl.setBounds(140, 270, 70, 14);
+        getContentPane().add(PinLbl);
 
-		JButton btnClose = new JButton(ImageController.Image_Close);
-		btnClose.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnClose.setFocusPainted(false);
-		btnClose.setBorderPainted(false);
-		btnClose.setBorder(BorderFactory.createEmptyBorder());
-		btnClose.setContentAreaFilled(false);
-		btnClose.setSize(16,16);
-		btnClose.setBounds(305, 0, 25, 25);
-		((WebButtonUI)btnClose.getUI()).setUndecorated(true);
-		btnClose.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(final ActionEvent arg0) {
-				System.exit(0);
-			}
-		});
-		getContentPane().add(btnClose);
-		
-		lblVerify = new JLabel();
-		lblVerify.setBounds(227, 303, 46, 14);
-		lblVerify.setIcon(new ImageIcon(getClass().getResource("/images/OK.png")));
-		lblVerify.setVisible(false);
-		getContentPane().add(lblVerify);
-		
-		lblBrowser = new JLabel();
-		lblBrowser.setIcon(new ImageIcon(getClass().getResource("/images/copylink.png")));
-		lblBrowser.setToolTipText("Copy Auth Link");
-		lblBrowser.setVisible(false);
-		lblBrowser.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		lblBrowser.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent mclicked) {
-				String myString = requestToken.getAuthorizationURL().toString();
-				StringSelection stringSelection = new StringSelection(myString);
-				Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
-				clpbrd.setContents(stringSelection, null);
-			}
-		});
-		lblBrowser.setBounds(99, 303, 16, 14);
-		getContentPane().add(lblBrowser);
+        btnLogin = new JButton();
+        btnLogin.setEnabled(true);
+        btnLogin.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnLogin.setText("Check");
+        btnLogin.setUI(new BEButtonUI().setNormalColor(BEButtonUI.NormalColor.normal));
+        btnLogin.setFocusPainted(false);
+        btnLogin.setBounds(120, 340, 90, 20);
+        btnLogin.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent evt) {
+                try {
+                    loginButtonPressed(evt);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        getContentPane().add(btnLogin);
 
-		BackgroundLbl = new JLabel();
-		BackgroundLbl.setIcon(new ImageIcon(getClass().getResource("/images/Twitte2r.png")));
-		BackgroundLbl.setText("");
-		BackgroundLbl.setBounds(0, 0, 330, 450);
-		getContentPane().add(BackgroundLbl);
-	}
-	
-	public void login() {
-		final ConfigurationBuilder cb = new ConfigurationBuilder();
-		cb.setDebugEnabled(true)
-		.setOAuthConsumerKey("KxXwgeXCdJyUpVJNDPFsxdube")
-		.setOAuthConsumerSecret("XNbXtgxMcFArRo0Hej0nmduGaroU21PRbQbiW76rqA6nHGsmB0");
+        JButton btnClose = new JButton(ImageController.Image_Close);
+        btnClose.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btnClose.setFocusPainted(false);
+        btnClose.setBorderPainted(false);
+        btnClose.setBorder(BorderFactory.createEmptyBorder());
+        btnClose.setContentAreaFilled(false);
+        btnClose.setSize(16, 16);
+        btnClose.setBounds(305, 0, 25, 25);
+        ((WebButtonUI) btnClose.getUI()).setUndecorated(true);
+        btnClose.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent arg0) {
+                System.exit(0);
+            }
+        });
+        getContentPane().add(btnClose);
 
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				new LoginGUI().setVisible(true);
-			}
-		});
+        lblVerify = new JLabel();
+        lblVerify.setBounds(227, 303, 46, 14);
+        lblVerify.setIcon(new ImageIcon(getClass().getResource("/images/OK.png")));
+        lblVerify.setVisible(false);
+        getContentPane().add(lblVerify);
 
-		try {
-			final TwitterFactory tf = new TwitterFactory(cb.build());
-			twitter = tf.getInstance();
+        lblBrowser = new JLabel();
+        lblBrowser.setIcon(new ImageIcon(getClass().getResource("/images/copylink.png")));
+        lblBrowser.setToolTipText("Copy Auth Link");
+        lblBrowser.setVisible(false);
+        lblBrowser.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        lblBrowser.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent mclicked) {
+                String myString = requestToken.getAuthorizationURL().toString();
+                StringSelection stringSelection = new StringSelection(myString);
+                Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
+                clpbrd.setContents(stringSelection, null);
+            }
+        });
+        lblBrowser.setBounds(99, 303, 16, 14);
+        getContentPane().add(lblBrowser);
 
-			try {
-				AccessToken accessToken = null;
-				requestToken = twitter.getOAuthRequestToken();
-				/* Opens up the URL in default browser set be user */
-				try {
-					lblBrowser.setVisible(true);
-					Desktop.getDesktop().browse(new URL(requestToken.getAuthorizationURL()).toURI());
-				} catch (final Exception e) {
-				}
+        JLabel lblBackground = new JLabel();
+        lblBackground.setIcon(new ImageIcon(getClass().getResource("/images/Twitte2r.png")));
+        lblBackground.setText("");
+        lblBackground.setBounds(0, 0, 330, 450);
+        getContentPane().add(lblBackground);
+    }
 
-				while (accessToken == null) {
-					if (buttonAccess == true) {
-						String pin = getPintxtbox().getText();
-						try{
-							accessToken = twitter.getOAuthAccessToken(requestToken, pin);
-						} catch (final TwitterException te) {
-							buttonAccess = false;
-							JOptionPane.showMessageDialog(null,	te);
-						}
-					}
-				}
-				btnLogin.setText("Login");
+    public void login() {
+        final ConfigurationBuilder cb = new ConfigurationBuilder();
+        cb.setDebugEnabled(true)
+                .setOAuthConsumerKey("KxXwgeXCdJyUpVJNDPFsxdube")
+                .setOAuthConsumerSecret("XNbXtgxMcFArRo0Hej0nmduGaroU21PRbQbiW76rqA6nHGsmB0");
 
-				storeAccessToken(twitter.verifyCredentials().getId(),accessToken);
-				printDeveloperTests(accessToken.getToken(), accessToken.getTokenSecret());
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new LoginGUI().setVisible(true);
+            }
+        });
 
-			} catch (final IllegalStateException ie) {
-				// access token is already available, or consumer key/secret
-				// is not set.
-				if (!twitter.getAuthorization().isEnabled()) {
-					System.out.println("OAuth consumer key/secret is not set.");
-				}
-			}
-			
-			final User user = twitter.showUser(twitter.getId());
-			
-			UserData storeuser = new UserData();
-			storeuser.setTwitter(twitter);
-			storeuser.setName(user.getName());
-			storeuser.setUsername(twitter.getScreenName());
-			storeuser.setFavouriteCnt(user.getFavouritesCount());
-			storeuser.setFollowersCnt(user.getFollowersCount());
-			storeuser.setFollowingCnt(user.getFriendsCount());
-			storeuser.setProfilePic(new URL(user.getProfileImageURL()));
-			storeuser.setMiniProfilePic(new URL(user.getMiniProfileImageURL()));
-			storeuser.setTweetCount(user.getStatusesCount());
-			
-			setAccess(true);
-			
-			lblVerify.setVisible(true);
-			SoundController.playTickSound();
+        try {
+            final TwitterFactory tf = new TwitterFactory(cb.build());
+            twitter = tf.getInstance();
 
-		} catch (TwitterException te) {
-			te.printStackTrace();;
-			System.exit(-1);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+            accessToken = null;
+            requestToken = twitter.getOAuthRequestToken();
+                /* Opens up the URL in default browser set be user */
+            try {
+                lblBrowser.setVisible(true);
+                Desktop.getDesktop().browse(new URL(requestToken.getAuthorizationURL()).toURI());
+            } catch (final Exception e) {
+                //TO-DO
+            }
+        } catch (TwitterException te) {
+            te.printStackTrace();
+        }
+    }
 
-	private void printDeveloperTests(String token, String tokenSecret) {
-		System.out.println("Access token: "	+ token);
-		System.out.println("Access token secret: " + tokenSecret);
-		
-	}
+    private void storeUserDetails() {
+        final User user;
+        try {
+            user = twitter.showUser(twitter.getId());
 
-	private void loginButtonPressed(final ActionEvent evt)	throws Exception {
-		if (btnLogin.getText() == "Check") {
-			buttonAccess = true;
-		} else if (btnLogin.getText() == "Login") {
-			this.setVisible(false);
+            UserData storeuser = new UserData();
+            storeuser.setTwitter(twitter);
+            storeuser.setName(user.getName());
+            storeuser.setUsername(twitter.getScreenName());
+            storeuser.setFavouriteCnt(user.getFavouritesCount());
+            storeuser.setFollowersCnt(user.getFollowersCount());
+            storeuser.setFollowingCnt(user.getFriendsCount());
+            storeuser.setProfilePic(new URL(user.getProfileImageURL()));
+            storeuser.setMiniProfilePic(new URL(user.getMiniProfileImageURL()));
+            storeuser.setTweetCount(user.getStatusesCount());
 
-			thread_splashscreen = new Thread(new Splash());
-			thread_splashscreen.start();
-		    
-			Thread thread_mainscreen = new Thread(new Application());
-			thread_mainscreen.start();
+        } catch (TwitterException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        lblVerify.setVisible(true);
+        SoundController.playTickSound();
+    }
 
-			buttonAccess = false;
-		}
-	}
+    private void printDeveloperTests(String token, String tokenSecret) {
+        System.out.println("Access token: " + token);
+        System.out.println("Access token secret: " + tokenSecret);
 
-	private void setAccess(final boolean i) {
-		buttonAccess = i;
-	}
-	
-	public void setPinLbl(final JLabel pinLbl) {
-		PinLbl = pinLbl;
-	}
+    }
 
-	public static boolean getAccess() {
-		return buttonAccess;
-	}
+    private void loginButtonPressed(final ActionEvent evt) throws Exception {
+        if (accessToken == null) {
+            try {
+                String pin = getTextboxPin().getText();
+                accessToken = twitter.getOAuthAccessToken(requestToken, pin);
+                btnLogin.setText("Login");
 
+                storeAccessToken(twitter.verifyCredentials().getId(), accessToken);
+                printDeveloperTests(accessToken.getToken(), accessToken.getTokenSecret());
+                storeUserDetails();
+            } catch (final TwitterException te) {
+                JOptionPane.showMessageDialog(null, te);
+            }
+        } else {
+            this.setVisible(false);
 
-	public static Twitter getTwitter() {
-		return twitter;
-	}
+            splashScreenThread = new Thread(new Splash());
+            splashScreenThread.start();
 
+            Thread thread_mainscreen = new Thread(new Application());
+            thread_mainscreen.start();
+        }
+    }
 
-	public static AccessToken loadAccessToken(long useId) {
-		return new AccessToken(token, tokenSecret);
-	}
+    public static Twitter getTwitter() {
+        return twitter;
+    }
 
-	public static void setPintxtbox(JTextField pintxtbox) {
-		Pintxtbox = pintxtbox;
-	}
-	
-	public static JTextField getPintxtbox() {
-		return Pintxtbox;
-	}
+    public static JTextField getTextboxPin() {
+        return textboxPin;
+    }
 
-	/*
-	 * This method is use to configure the Access Tokens for each user.
-	 */	
-
-	public static void storeAccessToken(long useId, final AccessToken accessToken) {
-		token = accessToken.getToken();
-		tokenSecret = accessToken.getTokenSecret();
-	}
-
-	public JLabel getPinLbl() {
-		return PinLbl;
-	}
+    public static void storeAccessToken(long useId, final AccessToken accessToken) {
+        token = accessToken.getToken();
+        tokenSecret = accessToken.getTokenSecret();
+    }
 }
