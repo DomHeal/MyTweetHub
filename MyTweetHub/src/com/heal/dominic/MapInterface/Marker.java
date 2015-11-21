@@ -27,6 +27,8 @@ import com.heal.dominic.MainInterface.Application;
  */
 public class Marker extends MapObjectImpl implements MapMarker {
 
+    private String name;
+    private int count = 0;
     private Coordinate coord;
     private double radius;
     private STYLE markerStyle;
@@ -40,13 +42,20 @@ public class Marker extends MapObjectImpl implements MapMarker {
         this.radius = radius;
     }
 
-    public Marker(Layer layer, String name,Coordinate coord, Style style, String picture) {
-    	  super(layer, name, style);
+    public Marker(Layer layer, String name,Coordinate coord, int count, String picture) {
+    	  super(layer, name, null);
+          this.count = count;
           this.coord = coord;
+          this.name = name;
           this.picture = picture;
 	}
+    public Marker(Layer layer, String name,Coordinate coord, Style style, String picture) {
+        super(layer, name, style);
+        this.coord = coord;
+        this.picture = picture;
+    }
 
-	@Override
+    @Override
     public Coordinate getCoordinate() {
         return coord;
     }
@@ -80,11 +89,15 @@ public class Marker extends MapObjectImpl implements MapMarker {
 
     	BufferedImage Image_Marker = null;
 		try {
-    		Image_Marker  = ImageIO.read(Application.class.getResource("/images/map-pins.png"));
+    		Image_Marker  = ImageIO.read(Application.class.getResource("/images/map-pins-empty-blue.png"));
     	} catch (IOException e) {
     		e.printStackTrace();
     	}
-    	g.drawImage(Image_Marker, position.x-15, position.y - 20,null); 
+    	g.drawImage(Image_Marker, position.x-15, position.y - 20,null);
+        g.setColor(Color.WHITE);
+        if (count != -1) {
+            g.drawString(String.valueOf(count), position.x, position.y);
+        }
 
         if (getLayer() == null || getLayer().isVisibleTexts()) paintText(g, position);
     }

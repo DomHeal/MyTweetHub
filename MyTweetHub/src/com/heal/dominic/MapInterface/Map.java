@@ -15,16 +15,7 @@ import java.awt.event.MouseListener;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.AbstractButton;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.ToolTipManager;
+import javax.swing.*;
 
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
 import org.openstreetmap.gui.jmapviewer.Coordinate;
@@ -60,9 +51,6 @@ public class Map extends JFrame implements JMapViewerEventListener {
 	private JLabel lblMperValue = null;
 
 	private static JMapViewerTree treeMap = null;
-	static Double lat;
-	static Double lon;
-	String jlabels[];
 	private JButton btnEnterCoordinates;
 	private JButton btnID;
 	protected static JCheckBox showConnection;
@@ -148,7 +136,7 @@ public class Map extends JFrame implements JMapViewerEventListener {
 						new MapQuestOsmTileSource(),
 						new MapQuestOpenAerialTileSource() });
 		tileSourceSelector.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
+			public void itemStateChanged(final ItemEvent e) {
 				map().setTileSource((TileSource) e.getItem());
 			}
 		});
@@ -317,6 +305,7 @@ public class Map extends JFrame implements JMapViewerEventListener {
 									mapMarker.getPicture() +
 									"' width=48 height=48 align='middle'> " +
 									mapMarker.getName();
+
 							map().setToolTipText(html);
 
 						} else if (radCircle > 20) {

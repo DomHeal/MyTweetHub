@@ -135,7 +135,7 @@ public class SourceMarker extends MapObjectImpl implements MapMarker {
 
     	BufferedImage Image_Marker = null;
 		try {
-    		Image_Marker  = ImageIO.read(Application.class.getResource("/images/mapmarkersource.png"));
+    		Image_Marker  = ImageIO.read(Application.class.getResource("/images/map-pins-source.png"));
     	} catch (IOException e) {
     		e.printStackTrace();
     	}

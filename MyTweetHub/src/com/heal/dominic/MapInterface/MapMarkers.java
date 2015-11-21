@@ -31,10 +31,10 @@ public class MapMarkers extends Map{
 				try{
 				tweetCoordinate = new Coordinate(result.getTweets().get(i).getGeoLocation().getLatitude(),
 						result.getTweets().get(i).getGeoLocation().getLongitude());
-				Style style = new Style(Color.BLACK, Color.YELLOW, null, null);
 				String TweetUsername = result.getTweets().get(i).getUser().getScreenName() + ": " + result.getTweets().get(i).getText();
 				String picture = result.getTweets().get(i).getUser().getProfileImageURL();
-				map().addMapMarker(new Marker(layer, TweetUsername,tweetCoordinate, style, picture));
+				int counts = result.getTweets().get(i).getFavoriteCount();
+				map().addMapMarker(new Marker(layer, TweetUsername, tweetCoordinate, counts, picture));
 				} catch(Exception e){}
 			}
 			layer.setVisibleTexts(chckbxStatusVisible.isSelected());
@@ -58,7 +58,7 @@ public class MapMarkers extends Map{
 					.showStatus(tweetID).getGeoLocation().getLongitude());
 			Style style = new Style(Color.BLACK, Color.RED, null, null);
 			map().addMapMarker(
-					new SourceMarker(null, "Source", sourceCoordinate, style));
+					new SourceMarker(null, null, sourceCoordinate, style));
 		} catch (TwitterException e1) {
 			JOptionPane.showMessageDialog(null, "Twitter Exception",
 					"Opps! An Error has occurred!", JOptionPane.INFORMATION_MESSAGE);
@@ -71,9 +71,9 @@ public class MapMarkers extends Map{
 					tweetCoordinate = new Coordinate(mentions.get(i)
 							.getGeoLocation().getLatitude(), mentions.get(i)
 							.getGeoLocation().getLongitude());
-					Style style = new Style(Color.BLACK, Color.BLUE, null,null);
 					String picture = mentions.get(i).getUser().getProfileImageURL();
-					map().addMapMarker(new Marker(layer, mentions.get(i).getUser().getScreenName()+ ": " + mentions.get(i).getText(),	tweetCoordinate, style, picture));
+					int counts = -1;
+					map().addMapMarker(new Marker(layer, mentions.get(i).getUser().getScreenName()+ ": " + mentions.get(i).getText(),	tweetCoordinate, counts, picture));
 				}
 			}
 
@@ -110,7 +110,7 @@ public class MapMarkers extends Map{
 				 if (status.getGeoLocation() != null){
 					 Coordinate tweetCoordinate = new Coordinate(status.getGeoLocation().getLatitude(), status.getGeoLocation().getLongitude());
 					 String picture = status.getUser().getProfileImageURL();
-					 map().addMapMarker(new Marker(layer, status.getUser().getScreenName()+ ": " + status.getText(),	tweetCoordinate, null, picture));
+					 map().addMapMarker(new Marker(layer, status.getUser().getScreenName()+ ": " + status.getText(),tweetCoordinate, null, picture));
 				 }
 		        }
 		} catch (TwitterException e) {
