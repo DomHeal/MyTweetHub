@@ -42,8 +42,8 @@ Known Issues
 <img src="http://i.imgur.com/6aRY6N9.png" /img>
 <img src="http://i.imgur.com/OCNqu6L.png" /img>
 - MapMarker Update:
-<img src="http://i.imgur.com/WTLsFp4.png" /img>
+<img src="http://i.imgur.com/DpLuIc4.png" /img>
 - Relation of Tweets
-<img src="http://i.imgur.com/nrre2Jw.png" /img>
-<img src="http://i.imgur.com/FVtUW1C.png" /img>
+<img src="http://i.imgur.com/ugcpYjM.png" /img>
+<img src="http://i.imgur.com/HEkeVAE.png" /img>
 </p>
