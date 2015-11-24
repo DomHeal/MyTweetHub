@@ -44,6 +44,6 @@ Known Issues
 - MapMarker Update:
 <img src="http://i.imgur.com/DpLuIc4.png" /img>
 - Relation of Tweets
-<img src="http://i.imgur.com/ugcpYjM.png" /img>
+<img src="http://i.imgur.com/b5KtvlZ.png" /img>
 <img src="http://i.imgur.com/HEkeVAE.png" /img>
 </p>
