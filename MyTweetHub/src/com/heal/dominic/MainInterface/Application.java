@@ -570,7 +570,6 @@ public class Application extends LoginGUI implements Runnable {
 		panelTrending.setLayout(new FlowLayout(FlowLayout.LEADING, 5, 5));
 
 		txtPostATweet = new JTextField(140);
-		txtPostATweet.setBorder(null);
 		txtPostATweet.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
