@@ -34,7 +34,8 @@ public class MapMarkers extends Map{
 				String TweetUsername = result.getTweets().get(i).getUser().getScreenName() + ": " + result.getTweets().get(i).getText();
 				String picture = result.getTweets().get(i).getUser().getProfileImageURL();
 				int counts = result.getTweets().get(i).getFavoriteCount();
-				map().addMapMarker(new Marker(layer, TweetUsername, tweetCoordinate, counts, picture));
+				map().addMapMarker(new Marker(layer, TweetUsername, tweetCoordinate, counts, picture,map()));
+
 				} catch(Exception e){}
 			}
 			layer.setVisibleTexts(chckbxStatusVisible.isSelected());
@@ -66,7 +67,7 @@ public class MapMarkers extends Map{
 		try {
 			mentions = twitter.getMentionsTimeline(new Paging().count(100));
 			for (int i = 0; mentions.size() > i; i++) {
-				if (mentions.get(i).getCreatedAt().after(tweetDate) == true
+				if (mentions.get(i).getCreatedAt().after(tweetDate)
 						&& mentions.get(i).getGeoLocation() != null) {
 					tweetCoordinate = new Coordinate(mentions.get(i)
 							.getGeoLocation().getLatitude(), mentions.get(i)

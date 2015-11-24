@@ -272,47 +272,44 @@ public class Map extends JFrame implements JMapViewerEventListener {
 			@Override
 			public void mouseMoved(final MouseEvent e) {
 				Point p = e.getPoint();
-				int X = p.x + 3;
-				int Y = p.y + 3;
+				int X = p.x;
+				int Y = p.y;
 				List<MapMarker> ar = map.getMapMarkerList();
 				Iterator<MapMarker> i = ar.iterator();
 				while (i.hasNext()) {
+					try {
+						final Marker mapMarker = (Marker) i.next();
 
-					final Marker mapMarker = (Marker) i.next();
+						Point MarkerPosition = map.getMapPosition(mapMarker.getLat(), mapMarker.getLon());
+						if (MarkerPosition != null) {
 
-					Point MarkerPosition = map.getMapPosition(mapMarker.getLat(), mapMarker.getLon());
-					if (MarkerPosition != null) {
+							int centerX = MarkerPosition.x;
+							int centerY = MarkerPosition.y;
 
-						int centerX = MarkerPosition.x;
-						int centerY = MarkerPosition.y;
+							double radCircle = Math.sqrt((((centerX - X) * (centerX - X)) + (centerY - Y) * (centerY - Y)));
 
-						// calculate the radius from the touch to the center of
-						// the dot
-						double radCircle = Math.sqrt((((centerX - X) * (centerX - X)) + (centerY - Y) * (centerY - Y)));
-						//System.out.println(radCircle);
-						// if the radius is smaller then 23 (radius of a ball is
-						// 5), then it must be on the dot
-						if (radCircle < 20) {
-							System.out.println(mapMarker.toString() + " is clicked");
+							if (radCircle < 20) {
 
+								treeMap.getViewer().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+								ToolTipManager.sharedInstance().setInitialDelay(0);
+								ToolTipManager.sharedInstance().setReshowDelay(0);
+								ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
 
-							treeMap.getViewer().setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-							ToolTipManager.sharedInstance().setInitialDelay(0);
-							ToolTipManager.sharedInstance().setReshowDelay(0);
-							ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
-							
-							String html = "<html><body><img src='" +
-									mapMarker.getPicture() +
-									"' width=48 height=48 align='middle'> " +
-									mapMarker.getName();
+								String html = "<html><body><img src='" +
+										mapMarker.getPicture() +
+										"' width=48 height=48 align='middle'> " +
+										mapMarker.getName();
 
-							map().setToolTipText(html);
+								map().setToolTipText(html);
 
-						} else if (radCircle > 20) {
-							treeMap.getViewer().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-							repaint();
-							map().setToolTipText(null);
+							} else if (radCircle > 20) {
+								treeMap.getViewer().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+								//repaint();
+								map().setToolTipText(null);
+							}
 						}
+					} catch (Exception ex){
+						// Do Nothing
 					}
 				}
 

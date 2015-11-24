@@ -9,38 +9,20 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import org.openstreetmap.gui.jmapviewer.Coordinate;
-import org.openstreetmap.gui.jmapviewer.Layer;
-import org.openstreetmap.gui.jmapviewer.MapObjectImpl;
-import org.openstreetmap.gui.jmapviewer.Style;
+import org.openstreetmap.gui.jmapviewer.*;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 
 import com.heal.dominic.MainInterface.Application;
 
-/**
- * A simple implementation of the {@link MapMarker} interface. Each map marker
- * is painted as a circle with a black border line and filled with a specified
- * color.
- *
- * @author Jan Peter Stotz
- *
- */
 public class Marker extends MapObjectImpl implements MapMarker {
 
+    private JMapViewer map = null;
     private String name;
     private int count = 0;
     private Coordinate coord;
     private double radius;
     private STYLE markerStyle;
 	private String picture;
-
- 
-    public Marker(Layer layer, String name, Coordinate coord, double radius, STYLE markerStyle, Style style) {
-        super(layer, name, style);
-        this.markerStyle = markerStyle;
-        this.coord = coord;
-        this.radius = radius;
-    }
 
     public Marker(Layer layer, String name,Coordinate coord, int count, String picture) {
     	  super(layer, name, null);
@@ -50,9 +32,18 @@ public class Marker extends MapObjectImpl implements MapMarker {
           this.picture = picture;
 	}
     public Marker(Layer layer, String name,Coordinate coord, Style style, String picture) {
-        super(layer, name, style);
+        super(layer, name, null);
         this.coord = coord;
         this.picture = picture;
+    }
+
+    public Marker(Layer layer, String name, Coordinate coord, int count, String picture, JMapViewer map) {
+        super(layer, name, null);
+        this.count = count;
+        this.coord = coord;
+        this.name = name;
+        this.picture = picture;
+        this.map = map;
     }
 
     @Override
@@ -93,12 +84,29 @@ public class Marker extends MapObjectImpl implements MapMarker {
     	} catch (IOException e) {
     		e.printStackTrace();
     	}
-    	g.drawImage(Image_Marker, position.x-15, position.y - 20,null);
+    	g.drawImage(Image_Marker, position.x-15, position.y-35, null);
         g.setColor(Color.WHITE);
+        int count = this.count;
         if (count != -1) {
-            g.drawString(String.valueOf(count), position.x, position.y);
+            int length = String.valueOf(count).length();
+            switch (length) {
+                case 1:
+                    g.drawString(String.valueOf(count), position.x, position.y - 12);
+                    break;
+                case 2:
+                    g.drawString(String.valueOf(count), position.x - 3, position.y - 12);
+                    break;
+                case 3:
+                    g.drawString(String.valueOf(count), position.x - 5, position.y - 12);
+                    break;
+                case 4:
+                    g.drawString(String.valueOf(count), position.x - 7, position.y - 12);
+                    break;
+                case 5:
+                    g.drawString(String.valueOf(count), position.x - 10, position.y - 12);
+                    break;
+            }
         }
-
         if (getLayer() == null || getLayer().isVisibleTexts()) paintText(g, position);
     }
 
