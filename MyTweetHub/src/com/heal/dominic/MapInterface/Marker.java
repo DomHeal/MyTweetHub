@@ -78,16 +78,18 @@ public class Marker extends MapObjectImpl implements MapMarker {
     @Override
     public void paint(Graphics g, Point position, int radius) {
 
-    	BufferedImage Image_Marker = null;
-		try {
-    		Image_Marker  = ImageIO.read(Application.class.getResource("/images/map-pins-empty-blue.png"));
-    	} catch (IOException e) {
-    		e.printStackTrace();
-    	}
-    	g.drawImage(Image_Marker, position.x-15, position.y-35, null);
-        g.setColor(Color.WHITE);
+
         int count = this.count;
         if (count != -1) {
+            BufferedImage Image_Marker = null;
+            try {
+                Image_Marker  = ImageIO.read(Application.class.getResource("/images/map-pins-empty-blue.png"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            g.drawImage(Image_Marker, position.x-15, position.y-35, null);
+            g.setColor(Color.WHITE);
+
             int length = String.valueOf(count).length();
             switch (length) {
                 case 1:
@@ -106,6 +108,15 @@ public class Marker extends MapObjectImpl implements MapMarker {
                     g.drawString(String.valueOf(count), position.x - 10, position.y - 12);
                     break;
             }
+        } else {
+            BufferedImage Image_Marker = null;
+            try {
+                Image_Marker  = ImageIO.read(Application.class.getResource("/images/map-pins-bird.png"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            g.drawImage(Image_Marker, position.x-15, position.y-35, null);
+            g.setColor(Color.WHITE);
         }
         if (getLayer() == null || getLayer().isVisibleTexts()) paintText(g, position);
     }
