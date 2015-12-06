@@ -86,9 +86,8 @@ public class Application extends LoginGUI implements Runnable {
 	static URL[] profileimages;
 	static int refresh_timer = 120;
 
+
 	/* Shows Public Timeline */
-
-
 	public void TimelineGUI(){
 
 		final JList<ListEntry> imagestatusList = new JList<ListEntry>(dlm);
@@ -135,9 +134,6 @@ public class Application extends LoginGUI implements Runnable {
 				try {
 					new Info(statusList.get(row));
 
-				} catch (TwitterException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
 				} catch (MalformedURLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -310,8 +306,6 @@ public class Application extends LoginGUI implements Runnable {
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (TwitterException e) {
 			e.printStackTrace();
 		}
 
@@ -520,8 +514,6 @@ public class Application extends LoginGUI implements Runnable {
 							panel_Statistics.updateUI();
 
 						} catch (MalformedURLException e) {
-							e.printStackTrace();
-						} catch (TwitterException e) {
 							e.printStackTrace();
 						}
 

@@ -29,9 +29,8 @@ public class Info  {
 	 * @param status 
 	 * @throws MalformedURLException 
 	 */
-	public Info(Status status) throws TwitterException, MalformedURLException {
+	public Info(Status status) throws MalformedURLException {
 		initialize(status);
-
 	}
 
 	/**

@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.DefaultListModel;
+import javax.swing.*;
 
 import twitter4j.Trend;
 import twitter4j.Trends;
@@ -43,8 +43,9 @@ public class Trending extends Application {
 			setTrendingList(trendingList);
 
 		} catch (TwitterException te) {
-			te.printStackTrace();
-			System.out.println("Failed to get current trends: "+ te.getMessage());
+			JOptionPane.showMessageDialog(frame,
+					"Request Limit Reached! Try Again in " + te.getRateLimitStatus().getSecondsUntilReset(),
+					"Twitter Exception", JOptionPane.WARNING_MESSAGE);
 		}
 	}
 }
