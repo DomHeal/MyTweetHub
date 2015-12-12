@@ -1,10 +1,11 @@
 package com.heal.dominic.MapSwingXInterface;
 
 import com.heal.dominic.MainInterface.Application;
-import com.heal.dominic.MapInterface.MapInputWindows;
+import com.heal.dominic.MapInterface.*;
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
 import org.jdesktop.swingx.JXMapViewer;
 import org.jdesktop.swingx.OSMTileFactoryInfo;
+import org.jdesktop.swingx.VirtualEarthTileFactoryInfo;
 import org.jdesktop.swingx.input.*;
 import org.jdesktop.swingx.mapviewer.*;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
@@ -50,7 +51,7 @@ public class Map2 extends JFrame{
         GeoPosition offenbach = new GeoPosition(50, 6, 0, 8, 46, 0);
 
         // Set the focus
-        mapViewer.setZoom(10);
+        mapViewer.setZoom(7);
         mapViewer.setAddressLocation(frankfurt);
 
         // Add interactions
@@ -60,6 +61,41 @@ public class Map2 extends JFrame{
         mapViewer.addMouseListener(new CenterMapListener(mapViewer));
         mapViewer.addMouseWheelListener(new ZoomMouseWheelListenerCenter(mapViewer));
         mapViewer.addKeyListener(new PanKeyListener(mapViewer));
+
+        mapViewer.addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    Point p = e.getPoint();
+                    MapMenu.showMenu(e, p);
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                }
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
 
         // Create waypoints from the geo-positions
         Set<SwingWaypoint> waypoints = new HashSet<SwingWaypoint>(Arrays.asList(
@@ -78,21 +114,7 @@ public class Map2 extends JFrame{
         for (SwingWaypoint w : waypoints) {
             mapViewer.add(w.getButton());
         }
-
-        // Display the viewer in a JFrame
-
-        setVisible(true);
-        setPreferredSize(new Dimension(1000, 800));
-        setMinimumSize(new Dimension(600, 600));
-        setSize(new Dimension(667, 649));
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setTitle("MyTweetHub - Making Twitter Simple");
-        setIconImage(Toolkit.getDefaultToolkit().getImage(
-                Application.class.getResource("/images/tweethub_icon.png")));
-
         buildGUI();
-
     }
 
     public void buildGUI(){
@@ -105,8 +127,8 @@ public class Map2 extends JFrame{
         JPanel panelBottom = new JPanel();
         panelBottom.setBackground(Color.LIGHT_GRAY);
         JPanel helpPanel = new JPanel();
-        JLabel lblMperName = new JLabel("Meters/Pixels: ");
-        JLabel lblMperValue = new JLabel(String.format("%s", 2233));
+        JLabel lblMperName = new JLabel("Threads Running: ");
+        final JLabel lblMperValue = new JLabel();
 
         JLabel zoomLabel = new JLabel("Zoom: ");
         JLabel zoomValue = new JLabel(String.format("%s", mapViewer.getZoom()));
@@ -117,7 +139,7 @@ public class Map2 extends JFrame{
         panel.add(panelTop, BorderLayout.NORTH);
         panel.add(panelBottom, BorderLayout.SOUTH);
         helpPanel.setLayout(new BorderLayout(0, 0));
-        JLabel helpLabel = new JLabel("Use right mouse button to move,\n "
+        JLabel helpLabel = new JLabel("Use left mouse button to move,\n "
                 + "left double click or mouse wheel to zoom.");
         helpLabel.setHorizontalAlignment(SwingConstants.CENTER);
         helpPanel.add(helpLabel);
@@ -132,18 +154,19 @@ public class Map2 extends JFrame{
         button.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-//                mapViewer.setDisplayToFitMapMarkers();
             }
         });
-        JComboBox<TileSource> tileSourceSelector = new JComboBox<TileSource>(
-                new TileSource[] { new OsmTileSource.Mapnik(),
-                        new OsmTileSource.CycleMap(),
-                        new BingAerialTileSource(),
-                        new MapQuestOsmTileSource(),
-                        new MapQuestOpenAerialTileSource() });
+
+        TileFactoryInfo osmInfo = new OSMTileFactoryInfo();
+        TileFactoryInfo veInfo = new VirtualEarthTileFactoryInfo(VirtualEarthTileFactoryInfo.MAP);
+        JComboBox<DefaultTileFactory> tileSourceSelector = new JComboBox<DefaultTileFactory>(
+                new DefaultTileFactory[] {
+                        new DefaultTileFactory(osmInfo),
+                        new DefaultTileFactory(veInfo)
+                });
         tileSourceSelector.addItemListener(new ItemListener() {
             public void itemStateChanged(final ItemEvent e) {
-//                mapViewer.setTileSource((TileSource) e.getItem());
+                mapViewer.setTileFactory((DefaultTileFactory) e.getItem());
             }
         });
         panelTop.add(tileSourceSelector);
@@ -153,7 +176,8 @@ public class Map2 extends JFrame{
 //        showMapMarker.setSelected(mapViewer.getMapMarkersVisible());
             showMapMarker.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-//                map().setMapMarkerVisible(showMapMarker.isSelected());
+
+//                mapViewer.setMapMarkerVisible(showMapMarker.isSelected());
             }
         });
 
@@ -180,17 +204,6 @@ public class Map2 extends JFrame{
         panelBottom.add(btnID);
         panelBottom.add(btnEnterCoordinates);
 
-        JCheckBox chckbxStatusVisible = new JCheckBox("Status visible");
-        chckbxStatusVisible.setBackground(Color.LIGHT_GRAY);
-        chckbxStatusVisible.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-//                if (map().getZoom() > 14){
-////                    layer.setVisibleTexts(chckbxStatusVisible.isSelected());
-//                }
-            }
-        });
-        panelBottom.add(chckbxStatusVisible);
-
         JCheckBox showConnection = new JCheckBox("Show Connections");
         showConnection.setBackground(Color.LIGHT_GRAY);
         showConnection.addActionListener(new ActionListener() {
@@ -202,26 +215,6 @@ public class Map2 extends JFrame{
 
         panelBottom.add(showConnection);
         panelBottom.add(showMapMarker);
-
-        final JCheckBox showToolTip = new JCheckBox("ToolTip visible");
-        showToolTip.setBackground(Color.LIGHT_GRAY);
-        showToolTip.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-//                map().setToolTipText(null);
-            }
-        });
-        panelBottom.add(showToolTip);
-
-        final JCheckBox showZoomControls = new JCheckBox("Show zoom controls");
-        showZoomControls.setBackground(Color.LIGHT_GRAY);
-//        showZoomControls.setSelected(map().getZoomControlsVisible());
-        showZoomControls.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-//                map().setZoomContolsVisible(showZoomControls.isSelected());
-            }
-        });
-        panelBottom.add(showZoomControls);
-
         panelBottom.add(button);
 
         panelTop.add(zoomLabel);
@@ -230,14 +223,38 @@ public class Map2 extends JFrame{
         panelTop.add(lblMperValue);
 
         getContentPane().add(mapViewer, BorderLayout.CENTER);
-//
-//        map().addMouseMotionListener(new MouseAdapter() {
-//            @Override
-//            public void mouseMoved(MouseEvent e) {
-//                Point p = e.getPoint();
-//                lblCoordinateValue.setText(map().getPosition(p).toString());
-//            }
-//        });
+
+        mapViewer.addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                Point p = e.getPoint();
+                lblCoordinateValue.setText(mapViewer.convertPointToGeoPosition(p).toString());
+            }
+        });
+
+        // Display the viewer in a JFrame
+        setVisible(true);
+        setPreferredSize(new Dimension(1000, 800));
+        setMinimumSize(new Dimension(600, 600));
+        setSize(new Dimension(667, 649));
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setTitle("MyTweetHub - Making Twitter Simple");
+        setIconImage(Toolkit.getDefaultToolkit().getImage(
+                Application.class.getResource("/images/tweethub_icon.png")));
+
+        Timer t = new Timer(500, new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                Set<Thread> threads = Thread.getAllStackTraces().keySet();
+                lblMperValue.setText("Threads: " + threads.size());
+            }
+        });
+
+        t.start();
+
     }
 
     public static void main(String[] args) {
