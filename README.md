@@ -34,7 +34,6 @@ Future Plans
 
 Known Issues
 ------------------------------------
-- If the user exceeds the API calls, it may cause the GUI to not display previous information
 - Slow map interaction / loading
 - Some alignment issues.
 
