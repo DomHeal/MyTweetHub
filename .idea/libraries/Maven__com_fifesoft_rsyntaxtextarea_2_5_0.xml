@@ -3,7 +3,6 @@
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/com/fifesoft/rsyntaxtextarea/2.5.0/rsyntaxtextarea-2.5.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/MyTweetHub/lib/beautyeye_lnf.jar!/" />
-      <root url="jar://$PROJECT_DIR$/MyTweetHub/lib/JMapViewer.jar!/" />
       <root url="jar://$PROJECT_DIR$/MyTweetHub/lib/weblaf-complete-1.28.jar!/" />
     </CLASSES>
     <JAVADOC>
