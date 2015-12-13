@@ -5,8 +5,6 @@ import twitter4j.GeoLocation;
 import twitter4j.Query;
 
 import javax.swing.*;
-import java.util.HashSet;
-import java.util.Set;
 
 public class MapInputWindows extends Map2 {
 
@@ -27,9 +25,6 @@ public class MapInputWindows extends Map2 {
 				"Please Enter Latitude and Longitude Values",
 				JOptionPane.OK_CANCEL_OPTION);
 		if (result == JOptionPane.OK_OPTION) {
-//			mapViewer.getAddressLocation().;
-//			map().removeAllMapPolygons();
-
 			query = new Query().geoCode(new GeoLocation((Double.parseDouble(xField
 					.getText())), Double.parseDouble(yField
 					.getText())), res, resUnit);
@@ -48,9 +43,9 @@ public class MapInputWindows extends Map2 {
 		int result = JOptionPane.showConfirmDialog(null, myPanel,
 				"Please Enter the Tweet ID", JOptionPane.OK_CANCEL_OPTION);
 		if (result == JOptionPane.OK_OPTION) {
-//			map().removeAllMapMarkers();
-//			map().removeAllMapPolygons();
-			MapMarkers.mentionsMarkers(Long.parseLong(iD.getText()));
+			mapViewer.removeAll();
+			mapViewer.repaint();
+			MapMarkerCreator.mentionsMarkers(Long.parseLong(iD.getText()));
 		}
 	}
 	
@@ -68,8 +63,6 @@ public class MapInputWindows extends Map2 {
 				int result = JOptionPane.showConfirmDialog(null, myPanel,
 						"Please Enter the Tweet ID", JOptionPane.OK_CANCEL_OPTION);
 				if (result == JOptionPane.OK_OPTION) {
-//					map().removeAllMapMarkers();
-//					map().removeAllMapPolygons();
 					MapMarkers.usernameMarkers(iD.getText());
 
 				}

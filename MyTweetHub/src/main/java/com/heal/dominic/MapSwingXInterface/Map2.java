@@ -1,5 +1,6 @@
 package com.heal.dominic.MapSwingXInterface;
 
+import com.alee.laf.WebLookAndFeel;
 import com.heal.dominic.Login.LoginGUI;
 import com.heal.dominic.MainInterface.Application;
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
@@ -17,6 +18,8 @@ import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -29,6 +32,8 @@ public class Map2 extends JFrame{
     protected static JTextField xField = new JTextField(15);
     static Twitter twitter = LoginGUI.getTwitter();
     protected static Query query;
+    private final Set<SwingWaypoint> waypoints;
+    private JLabel zoomValue;
 
     public Map2 (){
         // Create a TileFactoryInfo for OSM
@@ -99,30 +104,49 @@ public class Map2 extends JFrame{
             }
         });
 
-        // Create waypoints from the geo-positions
-//        Set<SwingWaypoint> waypoints = new HashSet<SwingWaypoint>(Arrays.asList(
-//                new SwingWaypoint("Frankfurt", frankfurt, null),
+//        Create waypoints from the geo-positions
+        waypoints = new HashSet<SwingWaypoint>(Arrays.asList(
+                new SwingWaypoint(frankfurt, "Frankfurt", null, null, "Normal")));
 //                new SwingWaypoint("Wiesbaden", wiesbaden, null),
 //                new SwingWaypoint("Mainz", mainz, null),
 //                new SwingWaypoint("Darmstadt", darmstadt, null),
-//                new SwingWaypoint("Offenbach", offenbach, null)));
+//                new SwingWaypoint("Offenbach", offenbach, null))
 
-//        // Set the overlay painter
-//        WaypointPainter<SwingWaypoint> swingWaypointPainter = new SwingWaypointOverlayPainter();
-//        swingWaypointPainter.setWaypoints(waypoints);
-//        mapViewer.setOverlayPainter(swingWaypointPainter);
-//
-//        // Add the JButtons to the map viewer
-//        for (SwingWaypoint w : waypoints) {
-//            mapViewer.add(w.getButton());
-//        }
+
+        // Set the overlay painter
+        WaypointPainter<SwingWaypoint> swingWaypointPainter = new SwingWaypointOverlayPainter();
+        swingWaypointPainter.setWaypoints(waypoints);
+        mapViewer.setOverlayPainter(swingWaypointPainter);
+
+        // Add the JButtons to the map viewer
+        for (SwingWaypoint w : waypoints) {
+            mapViewer.add(w.getButton());
+        }
+
+//        testMarkers();
         buildGUI();
+    }
+
+    public void testMarkers(){
+        Set<SwingWaypoint> waypoints = new HashSet<SwingWaypoint>();
+        for (int i = 10; i < 600 ; i++) {
+            waypoints.add(new SwingWaypoint(new GeoPosition(i,i), "" , null, null, "Normal"));
+            System.out.print(i);
+        }
+
+        WaypointPainter<SwingWaypoint> swingWaypointPainter = new SwingWaypointOverlayPainter();
+        swingWaypointPainter.setWaypoints(waypoints);
+        mapViewer.setOverlayPainter(swingWaypointPainter);
+
+        // Add the JButtons to the map viewer
+        for (SwingWaypoint w : waypoints) {
+            mapViewer.add(w.getButton());
+        }
     }
 
     public void buildGUI(){
 
         getContentPane().setLayout(new BorderLayout());
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
         JPanel panel = new JPanel();
         JPanel panelTop = new JPanel();
         panelTop.setBackground(new Color(102, 204, 255));
@@ -130,10 +154,11 @@ public class Map2 extends JFrame{
         panelBottom.setBackground(Color.LIGHT_GRAY);
         JPanel helpPanel = new JPanel();
         JLabel lblMperName = new JLabel("Threads Running: ");
+        zoomValue = new JLabel(String.format("%s", mapViewer.getZoom()));
         final JLabel lblMperValue = new JLabel();
 
         JLabel zoomLabel = new JLabel("Zoom: ");
-        JLabel zoomValue = new JLabel(String.format("%s", mapViewer.getZoom()));
+        zoomValue = new JLabel(String.format("%s", mapViewer.getZoom()));
 
         getContentPane().add(panel, BorderLayout.NORTH);
         getContentPane().add(helpPanel, BorderLayout.SOUTH);
@@ -154,7 +179,6 @@ public class Map2 extends JFrame{
         button.setUI(new BEButtonUI()
                 .setNormalColor(BEButtonUI.NormalColor.green));
         button.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
             }
         });
@@ -206,6 +230,19 @@ public class Map2 extends JFrame{
         panelBottom.add(btnID);
         panelBottom.add(btnEnterCoordinates);
 
+        JButton clearMapMarkers = new JButton("Clear MapMarkers");
+        clearMapMarkers.setForeground(Color.WHITE);
+        clearMapMarkers.setUI(new BEButtonUI()
+                .setNormalColor(BEButtonUI.NormalColor.red));
+        clearMapMarkers.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                mapViewer.removeAll();
+                mapViewer.repaint();
+            }
+        });
+        clearMapMarkers.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        panelBottom.add(clearMapMarkers);
+
         JCheckBox showConnection = new JCheckBox("Show Connections");
         showConnection.setBackground(Color.LIGHT_GRAY);
         showConnection.addActionListener(new ActionListener() {
@@ -243,6 +280,7 @@ public class Map2 extends JFrame{
         setTitle("MyTweetHub - Making Twitter Simple");
         setIconImage(Toolkit.getDefaultToolkit().getImage(
                 Application.class.getResource("/images/tweethub_icon.png")));
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         Timer t = new Timer(500, new ActionListener()
         {
@@ -259,6 +297,7 @@ public class Map2 extends JFrame{
     }
 
     public static void main(String[] args) {
+        WebLookAndFeel.install();
         new Map2();
     }
 }
