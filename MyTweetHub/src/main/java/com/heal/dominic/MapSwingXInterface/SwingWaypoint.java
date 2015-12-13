@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.net.URL;
 
 /**
  * A waypoint that is represented by a button on the map.
@@ -15,15 +16,20 @@ import java.awt.event.MouseListener;
  */
 public class SwingWaypoint extends DefaultWaypoint {
     private final JButton button;
-    private final String text;
+    private final String username;
+    private final String msg;
+    private final String profilePicture;
 
-    public SwingWaypoint(String text, GeoPosition coord) {
+    public SwingWaypoint(GeoPosition coord, String username, String msg , String profilePicture) {
         super(coord);
-        this.text = text;
+        this.username = username;
+        this.msg = msg;
+        this.profilePicture = profilePicture;
+
         button = new JButton();
         button.addMouseListener(new SwingWaypointMouseListener());
         button.setVisible(true);
-        ImageIcon cup = new ImageIcon(SwingWaypoint.class.getResource("/images/map-pins-bird.png"));
+        ImageIcon cup = new ImageIcon(SwingWaypoint.class.getResource("/images/map-pins-empty-blue.png"));
         button.setIcon(cup);
         button.setBorder(BorderFactory.createEmptyBorder());
         button.setContentAreaFilled(false);
@@ -38,7 +44,7 @@ public class SwingWaypoint extends DefaultWaypoint {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            JOptionPane.showMessageDialog(button, "You clicked on " + text);
+            JOptionPane.showMessageDialog(button, "@" + username + ": " + msg);
         }
 
         @Override
@@ -50,7 +56,7 @@ public class SwingWaypoint extends DefaultWaypoint {
         }
 
         @Override
-        public void mouseEntered(MouseEvent e) {JOptionPane.showMessageDialog(button, "You clicked on " + text);
+        public void mouseEntered(MouseEvent e) { button.setToolTipText("@" + username + ": " + msg);
         }
 
         @Override

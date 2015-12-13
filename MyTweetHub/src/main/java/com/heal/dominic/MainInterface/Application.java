@@ -36,6 +36,8 @@ import javax.swing.SwingWorker;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import com.heal.dominic.MapSwingXInterface.Map2;
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
 import twitter4j.Status;
 import twitter4j.TwitterException;
@@ -629,7 +631,7 @@ public class Application extends LoginGUI implements Runnable {
 		.setNormalColor(BEButtonUI.NormalColor.lightBlue));
 		btnGlobalView.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				new Map().setVisible(true);
+				new Map2().setVisible(true);
 			}
 		});
 		btnGlobalView.setBounds(6, 531, 199, 23);

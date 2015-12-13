@@ -1,26 +1,22 @@
 package com.heal.dominic.MapSwingXInterface;
 
+import com.heal.dominic.Login.LoginGUI;
 import com.heal.dominic.MainInterface.Application;
-import com.heal.dominic.MapInterface.*;
 import org.jb2011.lnf.beautyeye.ch3_button.BEButtonUI;
 import org.jdesktop.swingx.JXMapViewer;
 import org.jdesktop.swingx.OSMTileFactoryInfo;
 import org.jdesktop.swingx.VirtualEarthTileFactoryInfo;
 import org.jdesktop.swingx.input.*;
 import org.jdesktop.swingx.mapviewer.*;
-import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
-import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
-import org.openstreetmap.gui.jmapviewer.tilesources.MapQuestOpenAerialTileSource;
-import org.openstreetmap.gui.jmapviewer.tilesources.MapQuestOsmTileSource;
-import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
+import twitter4j.Query;
+import twitter4j.Twitter;
+
 
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -28,7 +24,11 @@ import java.util.Set;
  */
 public class Map2 extends JFrame{
 
-    private final JXMapViewer mapViewer;
+    protected static JXMapViewer mapViewer;
+    protected static JTextField yField = new JTextField(15);
+    protected static JTextField xField = new JTextField(15);
+    static Twitter twitter = LoginGUI.getTwitter();
+    protected static Query query;
 
     public Map2 (){
         // Create a TileFactoryInfo for OSM
@@ -68,6 +68,8 @@ public class Map2 extends JFrame{
             public void mouseClicked(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON3) {
                     Point p = e.getPoint();
+                    yField.setText(String.format("%s" ,(mapViewer.convertPointToGeoPosition(p).getLongitude())));
+                    xField.setText(String.format("%s" ,(mapViewer.convertPointToGeoPosition(p).getLatitude())));
                     MapMenu.showMenu(e, p);
                 }
             }
@@ -98,22 +100,22 @@ public class Map2 extends JFrame{
         });
 
         // Create waypoints from the geo-positions
-        Set<SwingWaypoint> waypoints = new HashSet<SwingWaypoint>(Arrays.asList(
-                new SwingWaypoint("Frankfurt", frankfurt),
-                new SwingWaypoint("Wiesbaden", wiesbaden),
-                new SwingWaypoint("Mainz", mainz),
-                new SwingWaypoint("Darmstadt", darmstadt),
-                new SwingWaypoint("Offenbach", offenbach)));
+//        Set<SwingWaypoint> waypoints = new HashSet<SwingWaypoint>(Arrays.asList(
+//                new SwingWaypoint("Frankfurt", frankfurt, null),
+//                new SwingWaypoint("Wiesbaden", wiesbaden, null),
+//                new SwingWaypoint("Mainz", mainz, null),
+//                new SwingWaypoint("Darmstadt", darmstadt, null),
+//                new SwingWaypoint("Offenbach", offenbach, null)));
 
-        // Set the overlay painter
-        WaypointPainter<SwingWaypoint> swingWaypointPainter = new SwingWaypointOverlayPainter();
-        swingWaypointPainter.setWaypoints(waypoints);
-        mapViewer.setOverlayPainter(swingWaypointPainter);
-
-        // Add the JButtons to the map viewer
-        for (SwingWaypoint w : waypoints) {
-            mapViewer.add(w.getButton());
-        }
+//        // Set the overlay painter
+//        WaypointPainter<SwingWaypoint> swingWaypointPainter = new SwingWaypointOverlayPainter();
+//        swingWaypointPainter.setWaypoints(waypoints);
+//        mapViewer.setOverlayPainter(swingWaypointPainter);
+//
+//        // Add the JButtons to the map viewer
+//        for (SwingWaypoint w : waypoints) {
+//            mapViewer.add(w.getButton());
+//        }
         buildGUI();
     }
 
@@ -209,7 +211,6 @@ public class Map2 extends JFrame{
         showConnection.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 //                map().setMapPolygonsVisible(showConnection.isSelected());
-
             }
         });
 
