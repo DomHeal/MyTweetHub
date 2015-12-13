@@ -26,6 +26,11 @@ Development Logs
 ------------------------------------
 <img src="http://www.nirmalhostel.com/images/arrow-27-xxl.png" height="16" width="16"/> Found <a href="https://github.com/DomHeal/MyTweetHub/tree/master/MyTweetHub/devlogs">Here</a>
 
+In Progress
+------------------------------------
+- Switching from JMapviewer to JXMapviewer 2
+- - This will improve performance (Multi-threading, Clickable MapMarkers)
+
 Future Plans
 ------------------------------------
 - Automatic Refreshing
