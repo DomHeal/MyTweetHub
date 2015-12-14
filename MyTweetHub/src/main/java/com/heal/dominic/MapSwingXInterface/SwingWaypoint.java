@@ -1,16 +1,20 @@
 package com.heal.dominic.MapSwingXInterface;
 
 import com.alee.laf.WebLookAndFeel;
+import com.vdurmont.emoji.Emoji;
+import com.vdurmont.emoji.EmojiParser;
 import net.java.balloontip.BalloonTip;
 import net.java.balloontip.styles.BalloonTipStyle;
 import net.java.balloontip.styles.MinimalBalloonStyle;
 import org.jdesktop.swingx.mapviewer.DefaultWaypoint;
 import org.jdesktop.swingx.mapviewer.GeoPosition;
+import twitter4j.Status;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -19,17 +23,19 @@ import java.net.URL;
  * @author Daniel Stahr
  */
 public class SwingWaypoint extends DefaultWaypoint {
+    private final Status user;
     private JButton button = null;
     private final String username;
     private final String msg;
     private final String profilePicture;
     private final String tweetType;
 
-    public SwingWaypoint(GeoPosition coord, String username, String msg, String profilePicture, String tweetType) {
+    public SwingWaypoint(GeoPosition coord, Status user, String tweetType) {
         super(coord);
-        this.username = username;
-        this.msg = msg;
-        this.profilePicture = profilePicture;
+        this.user = user;
+        this.username = user.getUser().getScreenName();
+        this.msg = user.getText();
+        this.profilePicture = user.getUser().getProfileImageURL();
         this.tweetType = tweetType;
 
         try {
@@ -65,7 +71,12 @@ public class SwingWaypoint extends DefaultWaypoint {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            JOptionPane.showMessageDialog(button, "@" + username + ": " + msg);
+            try {
+                String msg_without_emoji = EmojiParser.removeAllEmojis(msg);
+                JOptionPane.showMessageDialog(button, "@" + username + ": " + msg_without_emoji, "@"+username ,JOptionPane.PLAIN_MESSAGE, new ImageIcon(new URL(profilePicture)));
+            } catch (MalformedURLException e1) {
+                e1.printStackTrace();
+            }
         }
 
         @Override
@@ -82,10 +93,14 @@ public class SwingWaypoint extends DefaultWaypoint {
             ToolTipManager.sharedInstance().setReshowDelay(0);
             ToolTipManager.sharedInstance().setDismissDelay(Integer.MAX_VALUE);
 
-            String html = "<html><body><img style='border-radius:50%;' src='" +
-                    profilePicture +
-                    "' width=48 height=48 align='middle'> " +
-                    username + ": " + msg;
+            String msg_without_emoji = EmojiParser.removeAllEmojis(msg);
+            String html = "<html><body style='background-color: #2C3E50; color: white; margin: 0px auto; font-family: Calibri'>" +
+                    "<div><img src='" + profilePicture + "' align='middle'> " + username + ": " +
+                    msg_without_emoji + "</div><div style='text-align:right;'> <img src='" +
+                    getClass().getResource("/images/like.png") +"' height='16'; width='14'/>" + user.getFavoriteCount() +
+                    " - <img src='" + getClass().getResource("/images/retweet.png") + "' height='16' width='14'/>" +
+                    user.getRetweetCount() + "</div> " +
+                    "<div style='font-size: 8px;'> Created On " + user.getCreatedAt() + "</div>";
 
             button.setToolTipText(html);
         }

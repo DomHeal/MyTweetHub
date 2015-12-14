@@ -28,14 +28,13 @@ public class MapMarkerCreator extends Map2 {
                         try {
                             GeoPosition tweetCoordinate = new GeoPosition(result.getTweets().get(i).getGeoLocation().getLatitude(),
                                     result.getTweets().get(i).getGeoLocation().getLongitude());
-                            String username = result.getTweets().get(i).getUser().getScreenName();
-                            String msg = result.getTweets().get(i).getText();
-                            String picture = result.getTweets().get(i).getUser().getProfileImageURL();
 
-                            int counts = result.getTweets().get(i).getFavoriteCount();
-                            waypoints.add(new SwingWaypoint(tweetCoordinate, username, msg, picture, "Normal"));
+                            Status user = result.getTweets().get(i);
+                            waypoints.add(new SwingWaypoint(tweetCoordinate, user,"Normal"));
 
                         } catch (Exception e) {
+                            System.out.println("error");
+                            e.printStackTrace();
                         }
                     }
                 } catch (TwitterException e1) {
@@ -56,11 +55,9 @@ public class MapMarkerCreator extends Map2 {
             tweetDate = sourceTweet.getCreatedAt();
             GeoPosition sourceCoordinate = new GeoPosition(sourceTweet
                     .getGeoLocation().getLatitude(), sourceTweet.getGeoLocation().getLongitude());
-            String username = sourceTweet.getUser().getScreenName();
-            String msg = sourceTweet.getText();
-            String picture = sourceTweet.getUser().getProfileImageURL();
-            waypoints.add(new SwingWaypoint(sourceCoordinate, username, msg, picture, "Source"));
-            // add
+
+            Status user = sourceTweet;
+            waypoints.add(new SwingWaypoint(sourceCoordinate, user, "Source"));
         } catch (TwitterException e1) {
             JOptionPane.showMessageDialog(null, "Twitter Exception",
                     "Opps! An Error has occurred!", JOptionPane.INFORMATION_MESSAGE);
@@ -73,11 +70,9 @@ public class MapMarkerCreator extends Map2 {
                             .getGeoLocation().getLatitude(), mentions.get(i)
                             .getGeoLocation().getLongitude());
 
-                    String username = mentions.get(i).getUser().getScreenName();
-                    String msg = mentions.get(i).getText();
-                    String picture = mentions.get(i).getUser().getProfileImageURL();
 
-                    waypoints.add(new SwingWaypoint(tweetCoordinate, username, msg, picture, "Normal"));
+                    Status user = mentions.get(i);
+                    waypoints.add(new SwingWaypoint(tweetCoordinate, user, "Normal"));
                 }
             }
         } catch (TwitterException e) {

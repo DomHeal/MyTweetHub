@@ -32,8 +32,9 @@ public class Map2 extends JFrame{
     protected static JTextField xField = new JTextField(15);
     static Twitter twitter = LoginGUI.getTwitter();
     protected static Query query;
-    private final Set<SwingWaypoint> waypoints;
+//    private final Set<SwingWaypoint> waypoints;
     private JLabel zoomValue;
+    static boolean dataMiningRunning = true;
 
     public Map2 (){
         // Create a TileFactoryInfo for OSM
@@ -105,8 +106,8 @@ public class Map2 extends JFrame{
         });
 
 //        Create waypoints from the geo-positions
-        waypoints = new HashSet<SwingWaypoint>(Arrays.asList(
-                new SwingWaypoint(frankfurt, "Frankfurt", null, null, "Normal")));
+//        waypoints = new HashSet<SwingWaypoint>(Arrays.asList(
+//                new SwingWaypoint(frankfurt, "Frankfurt", null, null, "Normal")));
 //                new SwingWaypoint("Wiesbaden", wiesbaden, null),
 //                new SwingWaypoint("Mainz", mainz, null),
 //                new SwingWaypoint("Darmstadt", darmstadt, null),
@@ -114,35 +115,35 @@ public class Map2 extends JFrame{
 
 
         // Set the overlay painter
-        WaypointPainter<SwingWaypoint> swingWaypointPainter = new SwingWaypointOverlayPainter();
-        swingWaypointPainter.setWaypoints(waypoints);
-        mapViewer.setOverlayPainter(swingWaypointPainter);
-
-        // Add the JButtons to the map viewer
-        for (SwingWaypoint w : waypoints) {
-            mapViewer.add(w.getButton());
-        }
+//        WaypointPainter<SwingWaypoint> swingWaypointPainter = new SwingWaypointOverlayPainter();
+//        swingWaypointPainter.setWaypoints(waypoints);
+//        mapViewer.setOverlayPainter(swingWaypointPainter);
+//
+//        // Add the JButtons to the map viewer
+//        for (SwingWaypoint w : waypoints) {
+//            mapViewer.add(w.getButton());
+//        }
 
 //        testMarkers();
         buildGUI();
     }
-
-    public void testMarkers(){
-        Set<SwingWaypoint> waypoints = new HashSet<SwingWaypoint>();
-        for (int i = 10; i < 600 ; i++) {
-            waypoints.add(new SwingWaypoint(new GeoPosition(i,i), "" , null, null, "Normal"));
-            System.out.print(i);
-        }
-
-        WaypointPainter<SwingWaypoint> swingWaypointPainter = new SwingWaypointOverlayPainter();
-        swingWaypointPainter.setWaypoints(waypoints);
-        mapViewer.setOverlayPainter(swingWaypointPainter);
-
-        // Add the JButtons to the map viewer
-        for (SwingWaypoint w : waypoints) {
-            mapViewer.add(w.getButton());
-        }
-    }
+//
+//    public void testMarkers(){
+//        Set<SwingWaypoint> waypoints = new HashSet<SwingWaypoint>();
+//        for (int i = 10; i < 600 ; i++) {
+//            waypoints.add(new SwingWaypoint(new GeoPosition(i,i), "" , null, null, "Normal"));
+//            System.out.print(i);
+//        }
+//
+//        WaypointPainter<SwingWaypoint> swingWaypointPainter = new SwingWaypointOverlayPainter();
+//        swingWaypointPainter.setWaypoints(waypoints);
+//        mapViewer.setOverlayPainter(swingWaypointPainter);
+//
+//        // Add the JButtons to the map viewer
+//        for (SwingWaypoint w : waypoints) {
+//            mapViewer.add(w.getButton());
+//        }
+//    }
 
     public void buildGUI(){
 
@@ -174,12 +175,24 @@ public class Map2 extends JFrame{
         final JLabel lblCoordinateValue = new JLabel("0");
         lblCoordinateValue.setHorizontalAlignment(SwingConstants.CENTER);
         helpPanel.add(lblCoordinateValue, BorderLayout.NORTH);
-        JButton button = new JButton("Fit Map Markers");
-        button.setForeground(new Color(255, 255, 255));
-        button.setUI(new BEButtonUI()
-                .setNormalColor(BEButtonUI.NormalColor.green));
-        button.addActionListener(new ActionListener() {
+
+        final JButton dataMiningBtn = new JButton("Data Mining : OFF");
+        dataMiningBtn.setForeground(new Color(255, 255, 255));
+        dataMiningBtn.setUI(new BEButtonUI()
+                .setNormalColor(BEButtonUI.NormalColor.red));
+        dataMiningBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                if(dataMiningRunning) {
+                    dataMiningBtn.setUI(new BEButtonUI()
+                            .setNormalColor(BEButtonUI.NormalColor.green));
+                    dataMiningBtn.setText("Data Mining : ON");
+                    dataMiningRunning = false;
+                } else {
+                    dataMiningBtn.setUI(new BEButtonUI()
+                            .setNormalColor(BEButtonUI.NormalColor.red));
+                    dataMiningBtn.setText("Data Mining : OFF");
+                    dataMiningRunning = true;
+                }
             }
         });
 
@@ -253,7 +266,7 @@ public class Map2 extends JFrame{
 
         panelBottom.add(showConnection);
         panelBottom.add(showMapMarker);
-        panelBottom.add(button);
+        panelBottom.add(dataMiningBtn);
 
         panelTop.add(zoomLabel);
         panelTop.add(zoomValue);
