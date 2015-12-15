@@ -18,9 +18,11 @@ Implemented Features
 - Top Trends (Currently Set to UK)
 - Twitter Statistics (Followers, Following, Tweets)
 - Global Visualisation on Geotagged Tweets
-- Relational Tweet Map
+- Relational Tweet Map <i>(Disabled in new Development</i>
 - Username Search (Show recent Geotagged Tweets)
 - Geolocational Search (Search Recent Tweets in an Area)
+- Hashtag Search (Show recent Geotagged Tweets with the following Hashtag)
+- Clickable MapMarkers
 
 Development Logs
 ------------------------------------
@@ -49,5 +51,8 @@ Known Issues
 <img src="http://i.imgur.com/DpLuIc4.png" /img>
 - Relation of Tweets
 <img src="http://i.imgur.com/b5KtvlZ.png" /img>
-<img src="http://i.imgur.com/HEkeVAE.png" /img>
+- Developement Screenshots
+<img src="http://i.imgur.com/mnvFupm.png" /img>
+Tweets in the UK talking about UFC
+<img src="http://i.imgur.com/2sKXi80.png" /img>
 </p>
