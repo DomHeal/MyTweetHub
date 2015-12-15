@@ -49,5 +49,5 @@ Known Issues
 <img src="http://i.imgur.com/DpLuIc4.png" /img>
 - Relation of Tweets
 <img src="http://i.imgur.com/b5KtvlZ.png" /img>
-<img src="http://i.imgur.com/HEkeVAE.png" /img>
+<img src="http://i.imgur.com/mnvFupm.png" /img>
 </p>
