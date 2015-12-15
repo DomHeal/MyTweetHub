@@ -52,5 +52,5 @@ Known Issues
 - Developement Screenshots
 <img src="http://i.imgur.com/mnvFupm.png" /img>
 Tweets in the UK talking about UFC
-<img src="http://i.imgur.com/O8I4YKj.png" /img>
+<img src="http://i.imgur.com/2sKXi80.png" /img>
 </p>
