@@ -18,9 +18,11 @@ Implemented Features
 - Top Trends (Currently Set to UK)
 - Twitter Statistics (Followers, Following, Tweets)
 - Global Visualisation on Geotagged Tweets
-- Relational Tweet Map
+- Relational Tweet Map <i>(Disabled in new Development</i>
 - Username Search (Show recent Geotagged Tweets)
 - Geolocational Search (Search Recent Tweets in an Area)
+- Hashtag Search (Show recent Geotagged Tweets with the following Hashtag)
+- Clickable MapMarkers
 
 Development Logs
 ------------------------------------
