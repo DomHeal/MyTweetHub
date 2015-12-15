@@ -10,28 +10,29 @@ import twitter4j.*;
 import javax.swing.*;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
  * Created by Dominic on 13-Dec-15.
  */
 public class MapMarkerCreator extends Map2 {
-    static Set<SwingWaypoint> waypoints = new HashSet<SwingWaypoint>();
 
     public static void locationMarkers() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-
                 try {
                     QueryResult result = twitter.search(query);
+                    latestTweetID = result.getMaxId();
                     for (int i = 0; result.getTweets().size() > i; i++) {
                         try {
-                            GeoPosition tweetCoordinate = new GeoPosition(result.getTweets().get(i).getGeoLocation().getLatitude(),
-                                    result.getTweets().get(i).getGeoLocation().getLongitude());
+                            if (result.getTweets().get(i).getGeoLocation() !=null) {
+                                GeoPosition tweetCoordinate = new GeoPosition(result.getTweets().get(i).getGeoLocation().getLatitude(),
+                                        result.getTweets().get(i).getGeoLocation().getLongitude());
 
-                            Status user = result.getTweets().get(i);
-                            waypoints.add(new SwingWaypoint(tweetCoordinate, user,"Normal"));
-
+                                Status user = result.getTweets().get(i);
+                                waypoints.add(new SwingWaypoint(tweetCoordinate, user, "Normal"));
+                            }
                         } catch (Exception e) {
                             System.out.println("error");
                             e.printStackTrace();
@@ -43,6 +44,20 @@ public class MapMarkerCreator extends Map2 {
                 }
                 drawMarkers(waypoints);
 
+                // FOR TESTING PURPOSES - TESTS RATELIMIT
+//                try {
+//                    Map<String ,RateLimitStatus> rateLimitStatus = twitter.getRateLimitStatus();
+//                    for (String endpoint : rateLimitStatus.keySet()) {
+//                        RateLimitStatus status = rateLimitStatus.get(endpoint);
+//                        System.out.println("Endpoint: " + endpoint);
+//                        System.out.println(" Limit: " + status.getLimit());
+//                        System.out.println(" Remaining: " + status.getRemaining());
+//                        System.out.println(" ResetTimeInSeconds: " + status.getResetTimeInSeconds());
+//                        System.out.println(" SecondsUntilReset: " + status.getSecondsUntilReset());
+//                    }
+//                } catch (TwitterException e) {
+//                    e.printStackTrace();
+//                }
             }
         });
 
@@ -69,7 +84,6 @@ public class MapMarkerCreator extends Map2 {
                     GeoPosition tweetCoordinate = new GeoPosition(mentions.get(i)
                             .getGeoLocation().getLatitude(), mentions.get(i)
                             .getGeoLocation().getLongitude());
-
 
                     Status user = mentions.get(i);
                     waypoints.add(new SwingWaypoint(tweetCoordinate, user, "Normal"));

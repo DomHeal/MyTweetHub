@@ -18,7 +18,6 @@ import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -32,9 +31,10 @@ public class Map2 extends JFrame{
     protected static JTextField xField = new JTextField(15);
     static Twitter twitter = LoginGUI.getTwitter();
     protected static Query query;
-//    private final Set<SwingWaypoint> waypoints;
+    static Set<SwingWaypoint> waypoints = new HashSet<SwingWaypoint>();
     private JLabel zoomValue;
     static boolean dataMiningRunning = true;
+    protected static long latestTweetID;
 
     public Map2 (){
         // Create a TileFactoryInfo for OSM
@@ -50,15 +50,11 @@ public class Map2 extends JFrame{
         mapViewer = new JXMapViewer();
         mapViewer.setTileFactory(tileFactory);
 
-        GeoPosition frankfurt = new GeoPosition(50, 7, 0, 8, 41, 0);
-        GeoPosition wiesbaden = new GeoPosition(50, 5, 0, 8, 14, 0);
-        GeoPosition mainz = new GeoPosition(50, 0, 0, 8, 16, 0);
-        GeoPosition darmstadt = new GeoPosition(49, 52, 0, 8, 39, 0);
-        GeoPosition offenbach = new GeoPosition(50, 6, 0, 8, 46, 0);
+        GeoPosition UK = new GeoPosition(52.40912125231122, -2.0269775390625);
 
         // Set the focus
-        mapViewer.setZoom(7);
-        mapViewer.setAddressLocation(frankfurt);
+        mapViewer.setZoom(15);
+        mapViewer.setAddressLocation(UK);
 
         // Add interactions
         MouseInputListener mia = new PanMouseInputListener(mapViewer);
@@ -105,45 +101,9 @@ public class Map2 extends JFrame{
             }
         });
 
-//        Create waypoints from the geo-positions
-//        waypoints = new HashSet<SwingWaypoint>(Arrays.asList(
-//                new SwingWaypoint(frankfurt, "Frankfurt", null, null, "Normal")));
-//                new SwingWaypoint("Wiesbaden", wiesbaden, null),
-//                new SwingWaypoint("Mainz", mainz, null),
-//                new SwingWaypoint("Darmstadt", darmstadt, null),
-//                new SwingWaypoint("Offenbach", offenbach, null))
-
-
-        // Set the overlay painter
-//        WaypointPainter<SwingWaypoint> swingWaypointPainter = new SwingWaypointOverlayPainter();
-//        swingWaypointPainter.setWaypoints(waypoints);
-//        mapViewer.setOverlayPainter(swingWaypointPainter);
-//
-//        // Add the JButtons to the map viewer
-//        for (SwingWaypoint w : waypoints) {
-//            mapViewer.add(w.getButton());
-//        }
-
-//        testMarkers();
         buildGUI();
     }
-//
-//    public void testMarkers(){
-//        Set<SwingWaypoint> waypoints = new HashSet<SwingWaypoint>();
-//        for (int i = 10; i < 600 ; i++) {
-//            waypoints.add(new SwingWaypoint(new GeoPosition(i,i), "" , null, null, "Normal"));
-//            System.out.print(i);
-//        }
-//
-//        WaypointPainter<SwingWaypoint> swingWaypointPainter = new SwingWaypointOverlayPainter();
-//        swingWaypointPainter.setWaypoints(waypoints);
-//        mapViewer.setOverlayPainter(swingWaypointPainter);
-//
-//        // Add the JButtons to the map viewer
-//        for (SwingWaypoint w : waypoints) {
-//            mapViewer.add(w.getButton());
-//        }
-//    }
+
 
     public void buildGUI(){
 
@@ -154,8 +114,9 @@ public class Map2 extends JFrame{
         JPanel panelBottom = new JPanel();
         panelBottom.setBackground(Color.LIGHT_GRAY);
         JPanel helpPanel = new JPanel();
+        JLabel lblMarkers = new JLabel("MapMarkers Diaplayed: ");
+        final JLabel lblMarkersValue = new JLabel("MapMarkers: ");
         JLabel lblMperName = new JLabel("Threads Running: ");
-        zoomValue = new JLabel(String.format("%s", mapViewer.getZoom()));
         final JLabel lblMperValue = new JLabel();
 
         JLabel zoomLabel = new JLabel("Zoom: ");
@@ -172,6 +133,9 @@ public class Map2 extends JFrame{
         helpLabel.setHorizontalAlignment(SwingConstants.CENTER);
         helpPanel.add(helpLabel);
 
+        panelTop.add(lblMarkers);
+        panelTop.add(lblMarkersValue);
+
         final JLabel lblCoordinateValue = new JLabel("0");
         lblCoordinateValue.setHorizontalAlignment(SwingConstants.CENTER);
         helpPanel.add(lblCoordinateValue, BorderLayout.NORTH);
@@ -187,6 +151,7 @@ public class Map2 extends JFrame{
                             .setNormalColor(BEButtonUI.NormalColor.green));
                     dataMiningBtn.setText("Data Mining : ON");
                     dataMiningRunning = false;
+                    MapInputWindows.dataMine();
                 } else {
                     dataMiningBtn.setUI(new BEButtonUI()
                             .setNormalColor(BEButtonUI.NormalColor.red));
@@ -229,8 +194,9 @@ public class Map2 extends JFrame{
                 MapInputWindows.InputCord();
             }
         });
+        panelBottom.add(btnEnterCoordinates);
 
-        JButton btnID = new JButton("Enter Tweet ID");
+        JButton btnID = new JButton("Search Tweet ID");
         btnID.setForeground(Color.WHITE);
         btnID.setUI(new BEButtonUI()
                 .setNormalColor(BEButtonUI.NormalColor.green));
@@ -241,7 +207,19 @@ public class Map2 extends JFrame{
         });
         btnID.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         panelBottom.add(btnID);
-        panelBottom.add(btnEnterCoordinates);
+
+        JButton hashtagBtn = new JButton("Search Hashtag");
+        hashtagBtn.setForeground(Color.WHITE);
+        hashtagBtn.setUI(new BEButtonUI()
+                .setNormalColor(BEButtonUI.NormalColor.green));
+        hashtagBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                MapInputWindows.InputHashtag();
+            }
+        });
+        hashtagBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        panelBottom.add(hashtagBtn);
+
 
         JButton clearMapMarkers = new JButton("Clear MapMarkers");
         clearMapMarkers.setForeground(Color.WHITE);
@@ -251,6 +229,8 @@ public class Map2 extends JFrame{
             public void actionPerformed(ActionEvent arg0) {
                 mapViewer.removeAll();
                 mapViewer.repaint();
+                waypoints.clear();
+                System.out.println(waypoints.size());
             }
         });
         clearMapMarkers.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -302,16 +282,14 @@ public class Map2 extends JFrame{
             {
                 Set<Thread> threads = Thread.getAllStackTraces().keySet();
                 lblMperValue.setText("Threads: " + threads.size());
+                zoomValue.setText(String.format("%s", mapViewer.getZoom()));
+                lblMarkersValue.setText(String.valueOf(waypoints.size()));
+
             }
         });
 
         t.start();
 
-    }
-
-    public static void main(String[] args) {
-        WebLookAndFeel.install();
-        new Map2();
     }
 }
 
