@@ -12,7 +12,6 @@ import java.util.Set;
 public class MapInputWindows extends Map2 {
 
 	private static final long serialVersionUID = 1L;
-	private static Timer dataMine;
 
 	public static void InputCord() {
 		double res = 5;

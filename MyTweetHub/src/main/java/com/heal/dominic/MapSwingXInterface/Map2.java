@@ -35,6 +35,7 @@ public class Map2 extends JFrame{
     private JLabel zoomValue;
     static boolean dataMiningRunning = true;
     protected static long latestTweetID;
+    protected static Timer dataMine;
 
     public Map2 (){
         // Create a TileFactoryInfo for OSM
@@ -157,6 +158,7 @@ public class Map2 extends JFrame{
                             .setNormalColor(BEButtonUI.NormalColor.red));
                     dataMiningBtn.setText("Data Mining : OFF");
                     dataMiningRunning = true;
+                    dataMine.stop();
                 }
             }
         });
