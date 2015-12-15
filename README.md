@@ -49,5 +49,8 @@ Known Issues
 <img src="http://i.imgur.com/DpLuIc4.png" /img>
 - Relation of Tweets
 <img src="http://i.imgur.com/b5KtvlZ.png" /img>
+- Developement Screenshots
 <img src="http://i.imgur.com/mnvFupm.png" /img>
+Tweets in the UK talking about UFC
+<img src="http://i.imgur.com/O8I4YKj.png" /img>
 </p>
