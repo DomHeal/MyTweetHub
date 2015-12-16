@@ -115,9 +115,7 @@ public class Map2 extends JFrame{
         JPanel panelBottom = new JPanel();
         panelBottom.setBackground(Color.LIGHT_GRAY);
         JPanel helpPanel = new JPanel();
-        JLabel lblMarkers = new JLabel("MapMarkers Diaplayed: ");
-        final JLabel lblMarkersValue = new JLabel("MapMarkers: ");
-        JLabel lblMperName = new JLabel("Threads Running: ");
+        final JLabel lblMarkers = new JLabel("MapMarkers: ");
         final JLabel lblMperValue = new JLabel();
 
         JLabel zoomLabel = new JLabel("Zoom: ");
@@ -135,7 +133,6 @@ public class Map2 extends JFrame{
         helpPanel.add(helpLabel);
 
         panelTop.add(lblMarkers);
-        panelTop.add(lblMarkersValue);
 
         final JLabel lblCoordinateValue = new JLabel("0");
         lblCoordinateValue.setHorizontalAlignment(SwingConstants.CENTER);
@@ -252,7 +249,6 @@ public class Map2 extends JFrame{
 
         panelTop.add(zoomLabel);
         panelTop.add(zoomValue);
-        panelTop.add(lblMperName);
         panelTop.add(lblMperValue);
 
         getContentPane().add(mapViewer, BorderLayout.CENTER);
@@ -284,8 +280,8 @@ public class Map2 extends JFrame{
             {
                 Set<Thread> threads = Thread.getAllStackTraces().keySet();
                 lblMperValue.setText("Threads: " + threads.size());
-                zoomValue.setText(String.format("%s", mapViewer.getZoom()));
-                lblMarkersValue.setText(String.valueOf(waypoints.size()));
+                zoomValue.setText(String.format("MapMarkers: %s", mapViewer.getZoom()));
+                lblMarkers.setText(String.valueOf(waypoints.size()));
 
             }
         });
