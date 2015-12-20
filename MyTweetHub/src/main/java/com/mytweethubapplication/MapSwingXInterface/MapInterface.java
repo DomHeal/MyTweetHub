@@ -115,9 +115,8 @@ public class MapInterface extends JFrame{
         panelBottom.setBackground(Color.LIGHT_GRAY);
         JPanel helpPanel = new JPanel();
         final JLabel lblMarkers = new JLabel("MapMarkers: ");
-        final JLabel lblMperValue = new JLabel();
+        final JLabel lblThreads = new JLabel();
 
-        JLabel zoomLabel = new JLabel("Zoom: ");
         zoomValue = new JLabel(String.format("%s", mapViewer.getZoom()));
 
         getContentPane().add(panel, BorderLayout.NORTH);
@@ -159,16 +158,20 @@ public class MapInterface extends JFrame{
             }
         });
 
-        TileFactoryInfo osmInfo = new OSMTileFactoryInfo();
-        TileFactoryInfo veInfo = new VirtualEarthTileFactoryInfo(VirtualEarthTileFactoryInfo.MAP);
-        JComboBox<DefaultTileFactory> tileSourceSelector = new JComboBox<DefaultTileFactory>(
-                new DefaultTileFactory[] {
-                        new DefaultTileFactory(osmInfo),
-                        new DefaultTileFactory(veInfo)
-                });
+        final TileFactoryInfo osmInfo = new OSMTileFactoryInfo();
+        final TileFactoryInfo veInfo = new VirtualEarthTileFactoryInfo(VirtualEarthTileFactoryInfo.MAP);
+        String[] mapList = { "Open Street Maps", "VirtualEarthTile"};
+        JComboBox<String> tileSourceSelector = new JComboBox<String>(mapList);
+
         tileSourceSelector.addItemListener(new ItemListener() {
             public void itemStateChanged(final ItemEvent e) {
-                mapViewer.setTileFactory((DefaultTileFactory) e.getItem());
+                String s = e.getItem().toString();
+                if (s.equals("Open Street Maps")) {
+                    mapViewer.setTileFactory(new DefaultTileFactory(osmInfo));
+
+                } else if (s.equals("VirtualEarthTile")) {
+                    mapViewer.setTileFactory(new DefaultTileFactory(veInfo));
+                }
             }
         });
         panelTop.add(tileSourceSelector);
@@ -179,7 +182,6 @@ public class MapInterface extends JFrame{
             showMapMarker.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
-//                mapViewer.setMapMarkerVisible(showMapMarker.isSelected());
             }
         });
 
@@ -246,9 +248,8 @@ public class MapInterface extends JFrame{
         panelBottom.add(showMapMarker);
         panelBottom.add(dataMiningBtn);
 
-        panelTop.add(zoomLabel);
         panelTop.add(zoomValue);
-        panelTop.add(lblMperValue);
+        panelTop.add(lblThreads);
 
         getContentPane().add(mapViewer, BorderLayout.CENTER);
 
@@ -278,15 +279,13 @@ public class MapInterface extends JFrame{
             public void actionPerformed(ActionEvent e)
             {
                 Set<Thread> threads = Thread.getAllStackTraces().keySet();
-                lblMperValue.setText("Threads: " + threads.size());
-                zoomValue.setText(String.format("MapMarkers: %s", mapViewer.getZoom()));
-                lblMarkers.setText(String.valueOf(waypoints.size()));
+                lblThreads.setText("Threads: " + threads.size());
+                zoomValue.setText(String.format("Zoom: %s", mapViewer.getZoom()));
+                lblMarkers.setText("MapMarkers: " + String.valueOf(waypoints.size()));
 
             }
         });
-
         t.start();
-
     }
 }
 

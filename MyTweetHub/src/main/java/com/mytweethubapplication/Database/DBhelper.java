@@ -60,19 +60,6 @@ public class DBhelper {
         System.out.println("Records created successfully");
     }
 
-    public void print(){
-        ResultSet rs = null;
-        try {
-            rs = stmt.executeQuery("select * from TWEETS;");
-            while (rs.next()) {
-                System.out.println("name = " + rs.getString("name"));
-                System.out.println("job = " + rs.getString("occupation"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-    }
 
     public void test() {
         try {
