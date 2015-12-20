@@ -1,6 +1,5 @@
 package com.mytweethubapplication.MapSwingXInterface;
 
-import com.mytweethubapplication.MapInterface.MapMarkers;
 import twitter4j.GeoLocation;
 import twitter4j.Query;
 
@@ -8,7 +7,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class MapInputWindows extends Map2 {
+public class MapInputWindows extends MapInterface {
 
 	private static final long serialVersionUID = 1L;
 
@@ -64,7 +63,7 @@ public class MapInputWindows extends Map2 {
 				int result = JOptionPane.showConfirmDialog(null, myPanel,
 						"Please Enter the Tweet ID", JOptionPane.OK_CANCEL_OPTION);
 				if (result == JOptionPane.OK_OPTION) {
-					MapMarkers.usernameMarkers(iD.getText());
+//					MapMarkers.usernameMarkers(iD.getText());
 
 				}
 			}
@@ -87,7 +86,6 @@ public class MapInputWindows extends Map2 {
 				int result = JOptionPane.showConfirmDialog(null, myPanel,
 						"Please Enter the Tweet ID", JOptionPane.OK_CANCEL_OPTION);
 				if (result == JOptionPane.OK_OPTION) {
-					MapMarkers.hashtagMarkers(iD.getText());
 					query = new Query();
 					query.setQuery(iD.getText());
 //					query.setGeoCode(new GeoLocation((Double.parseDouble(xField

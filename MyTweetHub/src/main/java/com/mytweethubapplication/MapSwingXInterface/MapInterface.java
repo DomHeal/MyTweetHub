@@ -23,7 +23,7 @@ import java.util.Set;
 /**
  * Created by Dominic on 12-Dec-15.
  */
-public class Map2 extends JFrame{
+public class MapInterface extends JFrame{
 
     protected static JXMapViewer mapViewer;
     protected static JTextField yField = new JTextField(15);
@@ -36,7 +36,7 @@ public class Map2 extends JFrame{
     protected static long latestTweetID;
     protected static Timer dataMine;
 
-    public Map2 (){
+    public MapInterface(){
         // Create a TileFactoryInfo for OSM
         TileFactoryInfo info = new OSMTileFactoryInfo();
         DefaultTileFactory tileFactory = new DefaultTileFactory(info);

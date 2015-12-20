@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * Created by Dominic on 13-Dec-15.
  */
-public class MapMarkerCreator extends Map2 {
+public class MapMarkerCreator extends MapInterface {
 
     public static void locationMarkers() {
         SwingUtilities.invokeLater(new Runnable() {

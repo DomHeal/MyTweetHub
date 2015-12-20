@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="3223881320">
-    <data-source source="LOCAL" name="MyTweetHub - SQLlite" uuid="f39c7139-d6bf-4326-96bb-01e356a5b196">
+  <component name="DataSourceManagerImpl" format="xml" hash="425861779">
+    <data-source source="LOCAL" name="SQLite -" uuid="de95c9f0-01aa-4264-88c8-2e60229b6b53">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:</jdbc-url>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/data.db</jdbc-url>
       <libraries />
     </data-source>
   </component>

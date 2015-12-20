@@ -68,5 +68,6 @@
     <orderEntry type="library" name="Maven: com.vdurmont:emoji-java:2.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.json:json:20140107" level="project" />
     <orderEntry type="library" name="Maven: org.twitter4j:twitter4j-stream:4.0.4" level="project" />
+    <orderEntry type="library" name="Maven: org.xerial:sqlite-jdbc:3.7.2" level="project" />
   </component>
 </module>
