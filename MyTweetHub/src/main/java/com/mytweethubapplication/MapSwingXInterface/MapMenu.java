@@ -9,6 +9,7 @@ import com.alee.extended.time.WebClock;
 import com.alee.managers.notification.NotificationIcon;
 import com.alee.managers.notification.NotificationManager;
 import com.alee.managers.notification.WebNotificationPopup;
+import com.mytweethubapplication.Database.DBhelper;
 import com.mytweethubapplication.ResourceManager.ImageController;
 import com.mytweethubapplication.ResourceManager.SoundController;
 
@@ -17,7 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 
-public class MapMenu {
+public class MapMenu extends MapInterface{
 
     public static void showMenu(MouseEvent e, Point p) {
         final WebDynamicMenu menu = new WebDynamicMenu();
@@ -65,21 +66,21 @@ public class MapMenu {
         menu.addItem(ImageController.Image_Db_add, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                DBhelper.insert(waypoints);
             }
         });
 
         menu.addItem(ImageController.Image_Db_Download, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                DBhelper.read();
             }
         });
 
         menu.addItem(ImageController.Image_Db_Remove, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                DBhelper.delete();
             }
         });
 

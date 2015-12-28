@@ -24,7 +24,16 @@ public class SwingWaypoint extends DefaultWaypoint {
     private final String username;
     private final String msg;
     private final String profilePicture;
+
+    public String getTweetType() {
+        return tweetType;
+    }
+
     private final String tweetType;
+
+    public Status getUser() {
+        return user;
+    }
 
     public SwingWaypoint(GeoPosition coord, Status user, String tweetType) {
         super(coord);
