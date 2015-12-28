@@ -10,38 +10,40 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Arc2D;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/**
- * A waypoint that is represented by a button on the map.
- *
- * @author Daniel Stahr
- */
 public class SwingWaypoint extends DefaultWaypoint {
-    private final Status user;
+    private String retweetCount;
+    private String likeCount;
+    private String createdAt;
+    private Status user = null;
     private JButton button = null;
-    private final String username;
-    private final String msg;
-    private final String profilePicture;
+    private String username = null;
+    private String msg = null;
+    private String profilePicture = null;
+    private String tweetType = null;
+    private DatabaseUser databaseUser = null;
+
 
     public String getTweetType() {
         return tweetType;
     }
 
-    private final String tweetType;
-
     public Status getUser() {
         return user;
     }
-
-    public SwingWaypoint(GeoPosition coord, Status user, String tweetType) {
-        super(coord);
-        this.user = user;
-        this.username = user.getUser().getScreenName();
+    public SwingWaypoint(DatabaseUser user){
+        super(Double.parseDouble(user.getLatitude()), Double.parseDouble(user.getLongitude()));
+        this.databaseUser = user;
+        this.tweetType = user.getTweetType();
         this.msg = user.getText();
-        this.profilePicture = user.getUser().getProfileImageURL();
-        this.tweetType = tweetType;
+        this.profilePicture = user.getPictureURL();
+        this.likeCount = user.getLikes();
+        this.retweetCount = user.getRetweets();
+        this.createdAt = String.valueOf(user.getCreatedAt());
+        this.username = user.getScreenName();
 
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
@@ -68,7 +70,43 @@ public class SwingWaypoint extends DefaultWaypoint {
         }
     }
 
-    JButton getButton() {
+    public SwingWaypoint(GeoPosition coord, Status user, String tweetType) {
+        super(coord);
+        this.user = user;
+        this.username = user.getUser().getScreenName();
+        this.msg = user.getText();
+        this.profilePicture = user.getUser().getProfileImageURL();
+        this.tweetType = tweetType;
+        this.likeCount = String.valueOf(user.getFavoriteCount());
+        this.retweetCount = String.valueOf(user.getRetweetCount());
+        this.createdAt = String.valueOf(user.getCreatedAt());
+
+        try {
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+
+            button = new JButton();
+            button.addMouseListener(new SwingWaypointMouseListener());
+            ImageIcon cup = null;
+            if (tweetType.equals("Source")) {
+                cup = new ImageIcon(SwingWaypoint.class.getResource("/images/map-pins-source.png"));
+            } else if (tweetType.equals("Normal")) {
+                cup = new ImageIcon(SwingWaypoint.class.getResource("/images/map-pins-bird.png"));
+            }
+
+            button.setIcon(cup);
+            button.setBorder(BorderFactory.createEmptyBorder());
+            button.setContentAreaFilled(false);
+            button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            button.setBorderPainted(false);
+            button.setFocusPainted(false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            WebLookAndFeel.install();
+        }
+    }
+
+    public JButton getButton() {
         return button;
     }
 
@@ -100,12 +138,12 @@ public class SwingWaypoint extends DefaultWaypoint {
 
             String msg_without_emoji = EmojiParser.removeAllEmojis(msg);
             String html = "<html><body style='background-color: #2C3E50; color: white; margin: 0px auto; font-family: Calibri'>" +
-                    "<div><img src='" + profilePicture + "' align='middle'> " + username + ": " +
+                    "<div><img src='" + profilePicture + "' height='64'align='middle'> " + username + ": " +
                     msg_without_emoji + "</div><div style='text-align:right;'> <img src='" +
-                    getClass().getResource("/images/like.png") +"' height='16'; width='14'/>" + user.getFavoriteCount() +
+                    getClass().getResource("/images/like.png") +"' height='16'; width='14'/>" + likeCount +
                     " - <img src='" + getClass().getResource("/images/retweet.png") + "' height='16' width='14'/>" +
-                    user.getRetweetCount() + "</div> " +
-                    "<div style='font-size: 8px;'> Created On " + user.getCreatedAt() + "</div>";
+                    retweetCount + "</div> " +
+                    "<div style='font-size: 8px;'> Created On " + createdAt + "</div>";
 
             button.setToolTipText(html);
         }

@@ -67,6 +67,19 @@ public class MapMenu extends MapInterface{
             @Override
             public void actionPerformed(ActionEvent e) {
                 DBhelper.insert(waypoints);
+                final WebNotificationPopup notificationPopup = new WebNotificationPopup();
+                notificationPopup.setIcon(NotificationIcon.clock);
+                notificationPopup.setDisplayTime(5000);
+
+                final WebClock clock = new WebClock();
+                clock.setClockType(ClockType.timer);
+                clock.setTimeLeft(6000);
+                clock.setTimePattern("'Saved Tweets into Database'");
+                notificationPopup.setContent(new GroupPanel(clock));
+
+                NotificationManager.showNotification(notificationPopup);
+                clock.start();
+                SoundController.playTickSound();
             }
         });
 
@@ -74,6 +87,19 @@ public class MapMenu extends MapInterface{
             @Override
             public void actionPerformed(ActionEvent e) {
                 DBhelper.read();
+                final WebNotificationPopup notificationPopup = new WebNotificationPopup();
+                notificationPopup.setIcon(NotificationIcon.clock);
+                notificationPopup.setDisplayTime(5000);
+
+                final WebClock clock = new WebClock();
+                clock.setClockType(ClockType.timer);
+                clock.setTimeLeft(6000);
+                clock.setTimePattern("'Loaded Tweets from Database'");
+                notificationPopup.setContent(new GroupPanel(clock));
+
+                NotificationManager.showNotification(notificationPopup);
+                clock.start();
+                SoundController.playTickSound();
             }
         });
 

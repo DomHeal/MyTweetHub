@@ -30,7 +30,7 @@ public class MapInterface extends JFrame{
     protected static JTextField xField = new JTextField(15);
     static Twitter twitter = LoginGUI.getTwitter();
     protected static Query query;
-    static Set<SwingWaypoint> waypoints = new HashSet<SwingWaypoint>();
+    public static Set<SwingWaypoint> waypoints = new HashSet<SwingWaypoint>();
     private JLabel zoomValue;
     static boolean dataMiningRunning = true;
     protected static long latestTweetID;

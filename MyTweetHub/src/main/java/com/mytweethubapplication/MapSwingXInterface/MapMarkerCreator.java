@@ -41,20 +41,6 @@ public class MapMarkerCreator extends MapInterface {
                 }
                 drawMarkers(waypoints);
 
-                // FOR TESTING PURPOSES - TESTS RATELIMIT
-//                try {
-//                    Map<String ,RateLimitStatus> rateLimitStatus = twitter.getRateLimitStatus();
-//                    for (String endpoint : rateLimitStatus.keySet()) {
-//                        RateLimitStatus status = rateLimitStatus.get(endpoint);
-//                        System.out.println("Endpoint: " + endpoint);
-//                        System.out.println(" Limit: " + status.getLimit());
-//                        System.out.println(" Remaining: " + status.getRemaining());
-//                        System.out.println(" ResetTimeInSeconds: " + status.getResetTimeInSeconds());
-//                        System.out.println(" SecondsUntilReset: " + status.getSecondsUntilReset());
-//                    }
-//                } catch (TwitterException e) {
-//                    e.printStackTrace();
-//                }
             }
         });
 
