@@ -1,7 +1,7 @@
 # MyTweetHub
 Java, Twitter REST API, Twitter4j, JMapViewer, BeautyEye Library -This application is a part of a third year project which consisted of integration of the Twitter REST API using Twitter4j Library. Features consisted of a graphical user interface of OAuth 2.0 with basic Twitter functionality. Using the JMapViewer library, a map visualisation can be used to visualise Tweets in a specific location with an algorithm for displaying the relationships between each response from a Tweet source ID.
 
-Intructions
+Instructions
 -----------------------------------
 - Download <a href="https://github.com/DomHeal/MyTweetHub/releases">MyTweetHub.jar</a>
 - Open up MyTweethub.jar
